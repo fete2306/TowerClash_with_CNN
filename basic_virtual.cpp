@@ -5,6 +5,26 @@
 #include<format>
 #include<algorithm>
 
+class StaticActor{
+    public:
+    std::vector<std::vector<float>> attributeList;
+    std::vector<float> nowAttribute;
+    std::vector<float> stateEndTime;//[0]攻击 [1]移动 [2]减速 [3]脆弱 
+    int rankNum;
+
+    virtual void get_attributeList();
+    virtual void rankUp(){};
+    virtual void rankDown(){};
+    
+    virtual void attack(std::vector<StaticActor>& StaticPool,std::vector<MobileActor>& MobilePool,std::vector<std::vector<int>>& aliveStaticList,std::vector<std::vector<int>>& aliveMobileList,std::unordered_set<int>& eraseStaticList,std::unordered_set<int>& eraseMobileList){};
+    virtual void move(){};
+    virtual void del(){};
+    virtual void skill1(){};
+    virtual void skill2(){};
+
+};
+
+
 
 
 class StaticActor{
@@ -401,32 +421,3 @@ class Game{
     }
 
 };
-
-
-
-
-/*地图如何表示?
-// 用一个bool[][]来表示障碍物
-// 用两个bool[][]来表示双方单位的分布状态 1表示当前格有敌方单位存在
-// 亦或者直接用yg
-用一个int[][]来表示地图状态 0为障碍物 1为空地 2为A方 3为B方
-再用void*(?可能非常危险 要不尝试下java的泛型)
-可以考虑引入一个bool
-
-单位由外部类管理
-int[][]当前剩余生命
-int[][]平均攻击力
-int[][]最长攻击距离(半径)
-int[][]移速
-
-
-*/ 
-
-
-/*
-如何把敌人状态用状态矩阵表示
-可以通过单格密度与危险度(平均攻击,平均生命,平均移速决定)
-但是路径以及未来危险度很难导入
-
-
-*/
