@@ -5,6 +5,7 @@
 #include<format>
 #include<algorithm>
 #include<optional>
+#include<deque>
 
 class StaticActor{
     public:
@@ -268,7 +269,10 @@ class MobileActor{
     
 };
 
-
+class basicTower:public StaticActor{
+    public:
+    
+};
 
 
 
@@ -285,6 +289,10 @@ class Game{
     std::vector<std::vector<float>> meanCostMap;
     std::vector<std::vector<float>> meanCostRateMap;
     std::vector<std::vector<float>> meanSpeedMap; 
+
+    std::deque<basicTower> basicTowerPool;
+
+
 
     std::vector<StaticActor*> staticActorPool;
     std::vector<MobileActor*> mobileActorPool;
