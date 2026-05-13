@@ -6,13 +6,14 @@
 #include<algorithm>
 #include<optional>
 #include<deque>
+#include<queue>
+#include<tuple>
 
 class StaticActor{
     public:
     std::vector<std::vector<float>> attributeList;/*
     抗性 (maxRank,attackTypeCount,1)
         
-        生命
         生命上限
         
         攻击力
@@ -20,14 +21,16 @@ class StaticActor{
         攻击数量
         攻击速度
 
-        造成攻击减速倍率
-        造成移动减速倍率
-        脆弱(加伤)效果
+        攻击类型
+        
+        阻挡数目
 
         到达该等级的费用消耗
         费用产出(/s)*/
-    std::vector<float> nowAttribute;
-    std::vector<float> stateEndTime;//[0]攻击 [1]移动 [2]减速 [3]脆弱 
+        //特殊属性由子类单独实现
+    // std::vector<float> stateEndTime;//[0]攻击 [1]移动 [2]减速 [3]脆弱 //由子类各自实现吧
+    std::vector<MobileActor*> resistList;//被阻挡敌人的列表 在析构时清空对方被阻挡的状态
+
     int rankNum;
     int owner;
     float x,y;
@@ -38,7 +41,11 @@ class StaticActor{
     float attackSpeed;
     float lastAttackTime;
     int attackType;
+
+    float rasistCount;
+
     int cost;
+    float costRate;
 
     virtual void get_attributeList();
     virtual void setRank();
@@ -51,7 +58,11 @@ class StaticActor{
         setRank();
     };
 
-    virtual void applyEffect(StaticActor* staticActorPtr,MobileActor* mobileActorPtr,bool flag){
+    virtual void applyEffect(StaticActor* staticActorPtr){
+        return;
+    };
+
+    virtual void applyEffect(MobileActor* mobileActorPtr){
         return;
     };
 
@@ -63,54 +74,63 @@ class StaticActor{
         if(nowTime-lastAttackTime<1/attackSpeed){
             return;
         }
-        for(int i=0;i<attackCount;i++){
-            bool attacked=false;
-            for(int j=0;j<aliveStaticList.size()&&!attacked;j++){
-                if(j==owner){
-                    continue;
-                }
-                for(int k=0;k<aliveStaticList[j].size();k++){
-                    auto actor=StaticPool[aliveStaticList[j][k]];
-                    float d2=abs(this->x-actor->x)*abs(this->x-actor->x)+abs(this->y-actor->y)*abs(this->y-actor->y);
-                    if(d2<scope*scope){
-                        this->applyEffect(actor,nullptr,false);
-                        actor->beHurted(attackType,attackNum);
-                        if(actor->hp<=0){
-                            eraseStaticSet.insert(aliveStaticList[j][k]);
-                            aliveStaticList[j].erase(aliveStaticList[j].begin()+k);
-                        }
-                        attacked=true;
-                        break;
-                    }
-                }
-            }
-            if(attacked){
+        std::priority_queue<std::tuple<float,int>,std::vector<std::tuple<float,int>>,std::greater<std::tuple<float,int>>> attackMobileList;
+        std::vector<int> attackMobileList;//优先攻击移动单位
+        for(int i=0;i<aliveMobileList.size();i++){
+            if(i==owner){
                 continue;
             }
-            for(int j=0;j<aliveMobileList.size()&&!attacked;j++){
-                if(j==owner){
-                    continue;
-                }
-                for(int k=0;k<aliveMobileList[j].size();k++){
-                    auto actor=MobilePool[aliveMobileList[j][k]];
-                    float d2=abs(this->x-actor->x)*abs(this->x-actor->x)+abs(this->y-actor->y)*abs(this->y-actor->y);
-                    if(d2<scope*scope){
-                        this->applyEffect(nullptr,actor,false);
-                        actor->beHurted(attackType,attackNum);
-                        if(attackNum>=actor->hp){
-                            eraseMobileSet.insert(aliveMobileList[j][k]);
-                            aliveMobileList[j].erase(aliveMobileList[j].begin()+k);
-                        }
-                        attacked=true;
-                        break;
+            for(int j=0;j<aliveMobileList[i].size();j++){
+                auto actor=MobilePool[aliveMobileList[i][j]];
+                float d2=abs(this->x-actor->x)*abs(this->x-actor->x)+abs(this->y-actor->y)*abs(this->y-actor->y);
+                if(d2<scope*scope){
+                    attackMobileList.push(std::tuple<float,int>(d2,aliveMobileList[i][j]));
+                    if(attackMobileList.size()>attackCount){
+                        attackMobileList.pop();
                     }
                 }
             }
-            if(!attacked){//无单位可攻击
-                break;
+        }
+        auto AttackedCount=attackMobileList.size();
+        while(attackMobileList.size()){
+            auto actor=MobilePool[std::get<1>(attackMobileList.top())];
+            this->applyEffect(actor);
+            actor->beHurted(attackType,attackNum);
+            if(actor->hp<=0){
+                eraseMobileSet.insert(std::get<1>(attackMobileList.top()));
+            }
+            attackMobileList.pop();
+        }
+        if(AttackedCount>=attackCount){//攻击数量足够
+            return;
+        }
+        std::priority_queue<std::tuple<float,int>,std::vector<std::tuple<float,int>>,std::greater<std::tuple<float,int>>> attackStaticList;
+        for(int i=0;i<aliveStaticList.size();i++){
+            if(i==owner){
+                continue;
+            }
+            for(int j=0;j<aliveStaticList[i].size();j++){
+                auto actor=StaticPool[aliveStaticList[i][j]];
+                float d2=abs(this->x-actor->x)*abs(this->x-actor->x)+abs(this->y-actor->y)*abs(this->y-actor->y);
+                if(d2<scope*scope){
+                    attackStaticList.push(std::tuple<float,int>(d2,aliveStaticList[i][j]));
+                    if(attackStaticList.size()>attackCount-AttackedCount){
+                        attackStaticList.pop();
+                    }
+                }
             }
         }
+        while(attackStaticList.size()){
+            auto actor=StaticPool[std::get<1>(attackStaticList.top())];
+            this->applyEffect(actor);
+            actor->beHurted(attackType,attackNum);
+            if(actor->hp<=0){
+                eraseStaticSet.insert(std::get<1>(attackStaticList.top()));
+            }
+            attackStaticList.pop();
+        }
     };
+
     virtual void move(std::pair<int,int> goalPos){
         this->x=goalPos.first;
         this->y=goalPos.second;
@@ -133,6 +153,7 @@ class MobileActor{
     int owner;
     float x,y;
     float hp;
+
     float attackNum;
     float scope;
     int attackCount;
@@ -140,6 +161,8 @@ class MobileActor{
     float lastAttackTime;
     int attackType;
     int cost;
+    float costRate;
+    bool resisted;//是否被阻挡
 
     virtual void get_attributeList();
     virtual void setRank();
@@ -152,7 +175,11 @@ class MobileActor{
         setRank();
     };
 
-    virtual void applyEffect(StaticActor* staticActorPtr,MobileActor* mobileActorPtr,bool flag){
+    virtual void applyEffect(StaticActor* staticActorPtr){
+        return;
+    };
+
+    virtual void applyEffect(MobileActor* mobileActorPtr){
         return;
     };
 
@@ -164,56 +191,65 @@ class MobileActor{
         if(nowTime-lastAttackTime<1/attackSpeed){
             return;
         }
-        for(int i=0;i<attackCount;i++){
-            bool attacked=false;
-            for(int j=0;j<aliveStaticList.size()&&!attacked;j++){
-                if(j==owner){
-                    continue;
-                }
-                for(int k=0;k<aliveStaticList[j].size();k++){
-                    auto actor=StaticPool[aliveStaticList[j][k]];
-                    float d2=abs(this->x-actor->x)*abs(this->x-actor->x)+abs(this->y-actor->y)*abs(this->y-actor->y);
-                    if(d2<scope*scope){
-                        this->applyEffect(actor,nullptr,false);
-                        actor->beHurted(attackType,attackNum);
-                        if(actor->hp<=0){
-                            eraseStaticSet.insert(aliveStaticList[j][k]);
-                            aliveStaticList[j].erase(aliveStaticList[j].begin()+k);
-                        }
-                        attacked=true;
-                        break;
-                    }
-                }
-            }
-            if(attacked){
+        std::priority_queue<std::tuple<float,int>,std::vector<std::tuple<float,int>>,std::greater<std::tuple<float,int>>> attackMobileList;
+        std::vector<int> attackMobileList;//优先攻击移动单位
+        for(int i=0;i<aliveMobileList.size();i++){
+            if(i==owner){
                 continue;
             }
-            for(int j=0;j<aliveMobileList.size()&&!attacked;j++){
-                if(j==owner){
-                    continue;
-                }
-                for(int k=0;k<aliveMobileList[j].size();k++){
-                    auto actor=MobilePool[aliveMobileList[j][k]];
-                    float d2=abs(this->x-actor->x)*abs(this->x-actor->x)+abs(this->y-actor->y)*abs(this->y-actor->y);
-                    if(d2<scope*scope){
-                        this->applyEffect(nullptr,actor,false);
-                        actor->beHurted(attackType,attackNum);
-                        if(attackNum>=actor->hp){
-                            eraseMobileSet.insert(aliveMobileList[j][k]);
-                            aliveMobileList[j].erase(aliveMobileList[j].begin()+k);
-                        }
-                        attacked=true;
-                        break;
+            for(int j=0;j<aliveMobileList[i].size();j++){
+                auto actor=MobilePool[aliveMobileList[i][j]];
+                float d2=abs(this->x-actor->x)*abs(this->x-actor->x)+abs(this->y-actor->y)*abs(this->y-actor->y);
+                if(d2<scope*scope){
+                    attackMobileList.push(std::tuple<float,int>(d2,aliveMobileList[i][j]));
+                    if(attackMobileList.size()>attackCount){
+                        attackMobileList.pop();
                     }
                 }
             }
-            if(!attacked){//无单位可攻击
-                break;
+        }
+        auto AttackedCount=attackMobileList.size();
+        while(attackMobileList.size()){
+            auto actor=MobilePool[std::get<1>(attackMobileList.top())];
+            this->applyEffect(actor);
+            actor->beHurted(attackType,attackNum);
+            if(actor->hp<=0){
+                eraseMobileSet.insert(std::get<1>(attackMobileList.top()));
+            }
+            attackMobileList.pop();
+        }
+        if(AttackedCount>=attackCount){//攻击数量足够
+            return;
+        }
+        std::priority_queue<std::tuple<float,int>,std::vector<std::tuple<float,int>>,std::greater<std::tuple<float,int>>> attackStaticList;
+        for(int i=0;i<aliveStaticList.size();i++){
+            if(i==owner){
+                continue;
+            }
+            for(int j=0;j<aliveStaticList[i].size();j++){
+                auto actor=StaticPool[aliveStaticList[i][j]];
+                float d2=abs(this->x-actor->x)*abs(this->x-actor->x)+abs(this->y-actor->y)*abs(this->y-actor->y);
+                if(d2<scope*scope){
+                    attackStaticList.push(std::tuple<float,int>(d2,aliveStaticList[i][j]));
+                    if(attackStaticList.size()>attackCount-AttackedCount){
+                        attackStaticList.pop();
+                    }
+                }
             }
         }
+        while(attackStaticList.size()){
+            auto actor=StaticPool[std::get<1>(attackStaticList.top())];
+            this->applyEffect(actor);
+            actor->beHurted(attackType,attackNum);
+            if(actor->hp<=0){
+                eraseStaticSet.insert(std::get<1>(attackStaticList.top()));
+            }
+            attackStaticList.pop();
+        }
     };
+
     virtual void move(){//移动以0.1s为单位
-        if(path.size()!=0&&pathNum<path.size()-1){
+        if(path.size()!=0&&pathNum<path.size()-1&&!resisted){//有路&&未走完&&未阻挡
             float dx=path[pathNum][0]-this->x;
             float dy=path[pathNum][1]-this->y;
             float d=sqrt(dx*dx+dy*dy);
@@ -269,9 +305,18 @@ class MobileActor{
     
 };
 
-class basicTower:public StaticActor{
+class SingleTower:public StaticActor{
     public:
     
+};
+class GroupAttackTower:public StaticActor{
+    public:
+};
+class SlowTower:public StaticActor{
+    public:
+};
+class CenterTower:public StaticActor{
+    public:
 };
 
 
@@ -290,7 +335,7 @@ class Game{
     std::vector<std::vector<float>> meanCostRateMap;
     std::vector<std::vector<float>> meanSpeedMap; 
 
-    std::deque<basicTower> basicTowerPool;
+    std::deque<SingleTower> singleTowerPool;
 
 
 
