@@ -31,13 +31,14 @@ class StaticActor{
     费用产出(/s)*/
     //特殊属性由子类单独实现
     // std::vector<float> stateEndTime;//[0]攻击 [1]移动 [2]减速 [3]脆弱 //由子类各自实现吧
-    std::vector<MobileActor*> resistList;//被阻挡敌人的列表 在析构时清空对方被阻挡的状态
+    std::unordered_set<MobileActor*> resistSet;//被阻挡敌人的集合 在析构时清空对方被阻挡的状态
     std::vector<std::array<int,2>> spoceList;//攻击范围覆盖的格子 非直接坐标而是偏移量[dx,dy] 获取真实坐标是x+dx,y+dy
 
     std::vector<specialEffect&> effecedtList;//存引用.对方死亡时会将其结束时间置0
     std::vector<specialEffect> effectList;//在析构时将造成的所有异常状态全部结束
     
     Game* gamePtr;
+    int poolIndex;
     int rankNum;
     int owner;
     float x,y;
@@ -56,8 +57,18 @@ class StaticActor{
         rankNum=0;
         get_attributeList();
         setRank();
-        gamePtr->staticActorMap[int(y)][int(x)].push_back(gamePtr->staticActorPool.size());
+        poolIndex=gamePtr->staticActorPool.size();
+        gamePtr->staticActorMap[int(y)][int(x)].insert(poolIndex);
+        gamePtr->aliveStaticList[owner].push_back(poolIndex);
         gamePtr->staticActorPool.push_back(this);
+    };
+
+    virtual void dead(){//之后可能大改 长时间运行需要清除缓存,后继节点索引会需要大幅度更新
+        gamePtr->staticActorMap[int(y)][int(x)].erase(poolIndex);
+        auto index=std::find(gamePtr->aliveStaticList[owner].begin(),gamePtr->aliveStaticList[owner].end(),poolIndex);
+        gamePtr->aliveStaticList[owner].erase(index);
+
+
     };
 
     virtual void get_attributeList(){};
@@ -74,6 +85,7 @@ class StaticActor{
         this->rasistCount=attributeList[rankNum][11];
         if(scope!=lastScope)setScope();
     };
+    
     virtual void rankUp(){
         rankNum++;
         setRank();
@@ -194,12 +206,14 @@ class StaticActor{
 
 
     virtual void move(std::pair<int,int> goalPos){
+        gamePtr->mobileActorMap[int(this->y)][int(this->x)].erase(poolIndex);
         this->x=goalPos.first;
         this->y=goalPos.second;
         this->setScope();
+        gamePtr->mobileActorMap[int(this->y)][int(this->x)].insert(poolIndex);
     };
 
-    virtual void del(){};
+    
     virtual void skill1(){};
     virtual void skill2(){};
 
@@ -215,6 +229,8 @@ class MobileActor{
     std::vector<specialEffect> effectList;//在析构时将造成的所有异常状态全部结束
 
     Game* gamePtr;
+    StaticActor* resistSourceActor;
+    int poolIndex;
     int pathNum;
     float moveSpeed;
     int rankNum;
@@ -236,9 +252,16 @@ class MobileActor{
         rankNum=0;
         get_attributeList();
         setRank();
-        gamePtr->mobileActorMap[int(y)][int(x)].push_back(gamePtr->mobileActorPool.size());
+        poolIndex=gamePtr->mobileActorPool.size();
+        gamePtr->mobileActorMap[int(y)][int(x)].insert(poolIndex);
+        gamePtr->aliveMobileList[owner].push_back(poolIndex);
         gamePtr->mobileActorPool.push_back(this);
     };
+    virtual void dead(){
+        gamePtr->mobileActorMap[int(y)][int(x)].erase(poolIndex);
+        auto index=std::find(gamePtr->aliveMobileList[owner].begin(),gamePtr->aliveMobileList[owner].end(),poolIndex);
+        gamePtr->aliveMobileList[owner].erase(index);
+    }
 
     virtual void get_attributeList();
     virtual void setRank(){
@@ -386,13 +409,19 @@ class MobileActor{
             float dx=path[pathNum][0]-this->x;
             float dy=path[pathNum][1]-this->y;
             float d=sqrt(dx*dx+dy*dy);
-            this->x+=dx/d*this->moveSpeed*0.1;
-            this->y+=dy/d*this->moveSpeed*0.1;
+            float newX=this->x+dx/d*this->moveSpeed*0.1;
+            float newY=this->y+dy/d*this->moveSpeed*0.1;
+            if(int(newX)!=int(this->x)||int(newY)!=int(this->y)){
+                gamePtr->mobileActorMap[int(this->y)][int(this->x)].erase(poolIndex);
+                gamePtr->mobileActorMap[int(newY)][int(newX)].insert(poolIndex);
+            }
+            this->x=newX;
+            this->y=newY;
             for(auto index:gamePtr->staticActorMap[int(this->y)][int(this->x)]){
                 auto& actor=*gamePtr->staticActorPool[index];
                 if(actor.owner!=this->owner){
                     this->resisted=true;
-                    actor.resistList.push_back(this);
+                    actor.resistSet.insert(this);
                     break;
                 }
             }
@@ -401,19 +430,70 @@ class MobileActor{
             }
         }
     }
-    virtual void del(){};
 
-    virtual std::vector<std::array<int,2>> getPath(float goalX,float goalY,std::vector<std::vector<int>>&ownerShip){
+    virtual std::vector<std::array<int,2>> getPath(float goalX,float goalY){
+        this->resistSourceActor->resistSet.erase(this);//主动清除被阻挡状态
+        this->resisted=false;
         std::vector<std::array<int,2>> resPath;
-        std::vector<std::vector<bool>>visited(ownerShip.size(),std::vector<bool>(ownerShip[0].size(),false));
-        auto minStep=1000000;
-        int& minStep=minStep;
-        dfs(x,y,goalX,goalY,minStep,0,ownerShip,visited,resPath,resPath);//不包含起点
+        // this->getPath_dfs(goalX,goalY,resPath);
+        this->aStar(goalX,goalY,resPath);
         this->pathNum=0;
         return resPath;
     }
     
-    void dfs(int nowX,int nowY,int goalX,int goalY,int& minStep,int moveStep,std::vector<std::vector<int>>&ownerShip,std::vector<std::vector<bool>>&visited,std::vector<std::array<int,2>>tempPath,std::vector<std::array<int,2>>&resPath){
+    void aStar(float goalX,float goalY,std::vector<std::array<int,2>>& resPath){
+        int startX=int(this->x);
+        int startY=int(this->y);
+        std::priority_queue<std::tuple<float,int,int>,std::vector<std::tuple<float,int,int>>,std::greater<std::tuple<float,int,int>>> openSet;//f,g,x,y
+        std::unordered_set<std::pair<int,int>> closedSet;
+        std::vector<std::vector<std::pair<int,int>>> parent(gamePtr->basicMap.size(),std::vector<std::pair<int,int>>(gamePtr->basicMap[0].size(),{-1,-1}));
+        std::vector<std::vector<int>> g(gamePtr->basicMap.size(),std::vector<int>(gamePtr->basicMap[0].size(),-1));
+        int dx[4]={0,1,0,-1};
+        int dy[4]={1,0,-1,0};
+        bool findFlag=false;
+        openSet.push({abs(goalX-startX)+abs(goalY-startY),startX,startY});
+        
+        while(openSet.size()!=0&&!findFlag){
+            auto& [f,tempX,tempY]=openSet.top();
+            closedSet.insert({tempX,tempY});
+            openSet.pop();
+            for(int i=0;i<4;i++){
+                int nextX=tempX+dx[i];
+                int nextY=tempY+dy[i];
+                auto tempLenth=g[tempY][tempX]+1;
+                if(nextX==goalX&&nextY==goalY){
+                    parent[nextY][nextX]={tempX,tempY};
+                    g[nextY][nextX]=tempLenth;
+                    findFlag=true;
+                    break;
+                }
+
+                if(nextX<0||nextX>=gamePtr->basicMap[0].size()||nextY<0||nextY>=gamePtr->basicMap.size()||gamePtr->basicMap[nextY][nextX]==0||!(closedSet.count({nextX,nextY})==0||(closedSet.count({nextX,nextY})!=0&&g[nextY][nextX]>tempLenth))){
+                    continue;
+                }
+                g[nextY][nextX]=tempLenth;
+                parent[nextY][nextX]={tempX,tempY};
+                openSet.push(std::tuple<float,int,int>(tempLenth+abs(goalX-nextX)+abs(goalY-nextY),nextX,nextY));
+            }
+        }
+        auto goalLenth=g[goalY][goalX];
+        resPath.resize(goalLenth);
+        auto tempPos=std::array<int,2>{int(goalX),int(goalY)};
+        for(int _th=goalLenth-1;_th>=0;_th--){
+            resPath[_th]=tempPos;
+            auto partentPos=parent[tempPos[1]][tempPos[0]];
+            tempPos=std::array<int,2>{partentPos.first,partentPos.second};
+        }
+    };
+
+    void getPath_dfs(float goalX,float goalY,std::vector<std::array<int,2>>& resPath){
+        auto minStep=1000000;
+        int& minStep=minStep;
+        std::vector<std::vector<bool>>visited(gamePtr->basicMap.size(),std::vector<bool>(gamePtr->basicMap[0].size(),false));
+        dfs(x,y,goalX,goalY,minStep,0,visited,resPath,resPath);
+    }
+
+    void dfs(int nowX,int nowY,int goalX,int goalY,int& minStep,int moveStep,std::vector<std::vector<bool>>&visited,std::vector<std::array<int,2>>tempPath,std::vector<std::array<int,2>>&resPath){
         if(nowX==goalX&&nowY==goalY){
             if(moveStep<minStep){
                 resPath=tempPath;
@@ -421,7 +501,8 @@ class MobileActor{
             }
             return;
         }
-        if(nowX<0||nowX>=ownerShip[0].size()||nowY<0||nowY>=ownerShip.size()||ownerShip[nowY][nowX]==0||ownerShip[nowY][nowX]==(owner+1)*2||visited[nowY][nowX]){
+        auto& basicMap=gamePtr->basicMap;//暂时先用basicMap来判断,之后可以改成专门的地图数据结构
+        if(nowX<0||nowX>=basicMap[0].size()||nowY<0||nowY>=basicMap.size()||basicMap[nowY][nowX]==0||visited[nowY][nowX]){
             return;
         }
         int dx[4]={0,1,0,-1};
@@ -431,12 +512,12 @@ class MobileActor{
         for(int i=0;i<4;i++){
             int nextX=nowX+dx[i];
             int nextY=nowY+dy[i];
-            if(nextX<0||nextX>=ownerShip[0].size()||nextY<0||nextY>=ownerShip.size()||ownerShip[nextY][nextX]==0||ownerShip[nowY][nowX]==(owner+1)*2||visited[nextY][nextX]){
+            if(nextX<0||nextX>=basicMap[0].size()||nextY<0||nextY>=basicMap.size()||basicMap[nextY][nextX]==0||visited[nextY][nextX]){//不绕开敌方防御塔,可能被阻挡 路径完全自定义
                 continue;
             }
             std::array<int,2> pos{nextX,nextY};
             tempPath.push_back(pos);
-            dfs(nextX,nextY,goalX,goalY,minStep,moveStep+1,ownerShip,visited,tempPath,resPath);
+            dfs(nextX,nextY,goalX,goalY,minStep,moveStep+1,visited,tempPath,resPath);
          }
         visited[nowY][nowX]=false;
     }
@@ -448,16 +529,20 @@ class MobileActor{
 
 class SingleTower:public StaticActor{
     public:
+    SingleTower(Game* gamePtr,int owner,float x,float y):StaticActor(gamePtr,owner,x,y){}
     
 };
 class GroupAttackTower:public StaticActor{
     public:
+    GroupAttackTower(Game* gamePtr,int owner,float x,float y):StaticActor(gamePtr,owner,x,y){}
 };
 class SlowTower:public StaticActor{
     public:
+    SlowTower(Game* gamePtr,int owner,float x,float y):StaticActor(gamePtr,owner,x,y){}
 };
 class CenterTower:public StaticActor{
     public:
+    CenterTower(Game* gamePtr,int owner,float x,float y):StaticActor(gamePtr,owner,x,y){}
 };
 
 
@@ -465,8 +550,8 @@ class CenterTower:public StaticActor{
 class Game{
     public:
     std::vector<std::vector<bool>> basicMap;//0为障碍物 1为空地 2为A方固定单位 3为A方移动单位 4为B方固定单位 5为B方移动单位 以A方为例，仅0和2无法通过 //废弃,单格可能有多个不同阵营单位,仅保留0/1来标明障碍物
-    std::vector<std::vector<std::vector<int>>> staticActorMap;//存每个格子的固定单位索引列表
-    std::vector<std::vector<std::vector<int>>> mobileActorMap;//存每个格子的移动单位索引列表
+    std::vector<std::vector<std::unordered_set<int>>> staticActorMap;//存每个格子的固定单位索引列表
+    std::vector<std::vector<std::unordered_set<int>>> mobileActorMap;//存每个格子的移动单位索引列表
 
     //以下均用,且仅用于转为张量传入CNN
     std::vector<std::vector<float>> meanHpMap;
@@ -479,8 +564,12 @@ class Game{
     std::vector<std::vector<float>> meanSpeedMap;
 
     std::deque<SingleTower> singleTowerPool;
+    std::deque<GroupAttackTower> groupAttackTowerPool;
+    std::deque<SlowTower> slowTowerPool;
+    std::deque<CenterTower> centerTowerPool;
 
-    std::vector<StaticActor*> staticActorPool;
+
+    std::vector<StaticActor*> staticActorPool;//基类指针池恒定不变,与节点池一样,不删除元素
     std::vector<MobileActor*> mobileActorPool;
 
     std::vector<std::vector<int>> aliveStaticList;
@@ -503,9 +592,23 @@ class Game{
 
     }
 
-    void creatStaticActor(int x,int y,int owner){
-        aliveStaticList[owner].push_back(staticActorPool.size());
-        staticActorPool.emplace_back(x,y);
+    void creatStaticActor(int x,int y,int owner,int StaticActorType){
+        switch(StaticActorType){
+            case 0:
+                singleTowerPool.emplace_back(SingleTower(this,owner,x,y));
+                break;
+            case 1:
+                groupAttackTowerPool.emplace_back(GroupAttackTower(this,owner,x,y));
+                break;
+            case 2:
+                slowTowerPool.emplace_back(SlowTower(this,owner,x,y));
+                break;
+            case 3:
+                centerTowerPool.emplace_back(CenterTower(this,owner,x,y));
+                break;
+            default:
+                throw std::runtime_error(std::format("[ERROR][Game] the StaticActorType is {}",StaticActorType));
+        }
     }
 
     void creatMobileActor(int x,int y,int owner){
@@ -523,8 +626,6 @@ class Game{
                 mobileActorPool[i]->move();
             }
 
-            std::unordered_set<int> eraseStaticList;
-            std::unordered_set<int> eraseMobileList;
             for(int i=0;i<staticActorPool.size();i++){
                 staticActorPool[i]->attack();
             }
@@ -533,17 +634,29 @@ class Game{
                 
             }
 
-           
+            //严重问题 直接删除基类指针池中的元素会导致后续元素索引变更而失效 有很多信息都是根据索引来进行 否则需要单独存基类指针,更难管理
+            // while(!eraseStaticQueue.empty()){
+            //     int index=eraseStaticQueue.top();
+            //     eraseStaticQueue.pop();
+            //     staticActorPool.erase(staticActorPool.begin()+index);
+            // }
+
+            // while(!eraseMobileQueue.empty()){
+            //     int index=eraseMobileQueue.top();
+            //     eraseMobileQueue.pop();
+            //     mobileActorPool.erase(mobileActorPool.begin()+index);
+            // }
+            //现在处理方案:留空洞,不改节点池和基类指针池，由存活列表与地图单位列表来管理单位存活状态
             while(!eraseStaticQueue.empty()){
                 int index=eraseStaticQueue.top();
                 eraseStaticQueue.pop();
-                staticActorPool.erase(staticActorPool.begin()+index);
+                staticActorPool[index]->dead();
             }
 
             while(!eraseMobileQueue.empty()){
                 int index=eraseMobileQueue.top();
                 eraseMobileQueue.pop();
-                mobileActorPool.erase(mobileActorPool.begin()+index);
+                mobileActorPool[index]->dead();
             }
 
                         
