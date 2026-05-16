@@ -94,6 +94,23 @@ class StaticActor{
         gamePtr->staticActorPool.push_back(this);
     };
 
+    StaticActor(Game* gamePtr,int owner,float x,float y,bool subclassFlag):gamePtr(gamePtr),owner(owner),x(x),y(y){//子类调用版
+
+        resistList=new std::vector<bool>;
+
+        rankNum=0;
+        get_attributeList();
+        setRank();
+
+        poolIndex=gamePtr->staticActorPool.size();
+        mapListIndex=gamePtr->staticActorMap[int(y)][int(x)].size();
+        aliveListIndex=gamePtr->aliveStaticList[owner].size();
+
+        gamePtr->staticActorMap[int(y)][int(x)].push_back(poolIndex);
+        gamePtr->aliveStaticList[owner].push_back(poolIndex);
+        gamePtr->staticActorPool.push_back(this);
+    };
+
     virtual void dead(){//仅删除子类对象池中的对象的数据 基类指针池、存活列表、对象图等由外部进行删除(对整个索引序列重排)
         //只有基类指针池不能由子类进行 因为删除列表使用的是其索引
         gamePtr->staticActorPool[gamePtr->staticActorMap[int(this->y)][int(this->x)][gamePtr->staticActorMap[int(this->y)][int(this->x)].size()-1]]->mapListIndex=this->mapListIndex;
@@ -102,8 +119,17 @@ class StaticActor{
         gamePtr->staticActorPool[gamePtr->aliveStaticList[owner][gamePtr->aliveStaticList[owner].size()-1]]->aliveListIndex=this->aliveListIndex;
         erase_basedSwap(gamePtr->aliveStaticList[owner],this->aliveListIndex);
 
-        erase_basedSwap(gamePtr->basicTowerPool,poolIndex);
+        erase_basedSwap(gamePtr->basicTowerPool,subclassPoolIndex);
     };
+
+    virtual void dead(bool subclassFlag){//子类调用部分
+       gamePtr->staticActorPool[gamePtr->staticActorMap[int(this->y)][int(this->x)][gamePtr->staticActorMap[int(this->y)][int(this->x)].size()-1]]->mapListIndex=this->mapListIndex;
+        erase_basedSwap(gamePtr->staticActorMap[int(this->y)][int(this->x)],this->mapListIndex);
+
+        gamePtr->staticActorPool[gamePtr->aliveStaticList[owner][gamePtr->aliveStaticList[owner].size()-1]]->aliveListIndex=this->aliveListIndex;
+        erase_basedSwap(gamePtr->aliveStaticList[owner],this->aliveListIndex);
+
+    }
 
     virtual void get_attributeList(){
         /*物理抗性 魔法抗性 真实伤害抗性(?) 生命上限 攻击力 攻击范围 攻击数量 攻击速度 攻击类型 到达该等级的费用消耗 费用产出(/s) 阻挡数目*/
@@ -216,6 +242,9 @@ class StaticActor{
             auto&[d,index]=attackQueue.top();
             attackQueue.pop();
             auto& actor=gamePtr->mobileActorPool[index];
+            if(actor->hp<=0){
+                continue;
+            }
             actor->beHurted(attackType,attackNum);
             this->applyEffect(actor);
             if(actor->hp<=0){
@@ -249,6 +278,9 @@ class StaticActor{
             auto&[d,index]=attackQueue.top();
             attackQueue.pop();
             auto& actor=gamePtr->staticActorPool[index];
+            if(actor->hp<=0){
+                continue;
+            }
             actor->beHurted(attackType,attackNum);
             this->applyEffect(actor);
             if(actor->hp<=0){
@@ -327,6 +359,22 @@ class MobileActor{
         gamePtr->aliveMobileList[owner].push_back(poolIndex);
         gamePtr->mobileActorPool.push_back(this);
     }
+    MobileActor(Game* gamePtr,int owner,float x,float y,bool subclassFlag):gamePtr(gamePtr),owner(owner),x(x),y(y){
+
+        resistedList=nullptr;
+
+        rankNum=0;
+        get_attributeList();
+        setRank();
+
+        poolIndex=gamePtr->mobileActorPool.size();
+        mapListIndex=gamePtr->mobileActorMap[int(y)][int(x)].size();
+        aliveListIndex=gamePtr->aliveMobileList[owner].size();
+
+        gamePtr->mobileActorMap[int(y)][int(x)].push_back(poolIndex);
+        gamePtr->aliveMobileList[owner].push_back(poolIndex);
+        gamePtr->mobileActorPool.push_back(this);
+    }
 
     virtual void dead(){//仅删除子类对象池中的对象的数据 基类指针池、存活列表、对象图等由外部进行删除(对整个索引序列重排)
         //只有基类指针池不能由子类进行 因为删除列表使用的是其索引
@@ -336,7 +384,15 @@ class MobileActor{
         gamePtr->mobileActorPool[gamePtr->aliveMobileList[owner][gamePtr->aliveMobileList[owner].size()-1]]->aliveListIndex=this->aliveListIndex;
         erase_basedSwap(gamePtr->aliveMobileList[owner],this->aliveListIndex);
 
-        erase_basedSwap(gamePtr->basicMobilePool,poolIndex);
+        erase_basedSwap(gamePtr->basicMobilePool,subclassPoolIndex);
+    };
+    virtual void dead(bool subclassFlag){//子类调用
+        gamePtr->mobileActorPool[gamePtr->mobileActorMap[int(this->y)][int(this->x)][gamePtr->mobileActorMap[int(this->y)][int(this->x)].size()]]->mapListIndex=this->mapListIndex;
+        erase_basedSwap(gamePtr->mobileActorMap[int(this->y)][int(this->x)],this->mapListIndex);
+
+        gamePtr->mobileActorPool[gamePtr->aliveMobileList[owner][gamePtr->aliveMobileList[owner].size()-1]]->aliveListIndex=this->aliveListIndex;
+        erase_basedSwap(gamePtr->aliveMobileList[owner],this->aliveListIndex);
+        
     };
 
     virtual void get_attributeList(){
@@ -423,7 +479,14 @@ class MobileActor{
         auto& eraseMobileActorSet=gamePtr->eraseMobileActorSet;
 
         std::priority_queue<std::tuple<float,int>,std::vector<std::tuple<float,int>>,std::greater<std::tuple<float,int>>>attackQueue;//距离,索引
-        
+
+        for(auto [x,y]:this->spoceList){//动态获取实时攻击范围
+            if(this->x+x<0||this->x+x>=gamePtr->basicMap[0].size()||this->y+y<0||this->y+y>=gamePtr->basicMap.size()){
+                continue;
+            }
+            spoceList.push_back({x,y});
+        }
+
         for(auto [x,y]:spoceList){
             for(auto index:mobileActorMap[int(this->y+y)][int(this->x+x)]){
                 auto& actor=gamePtr->mobileActorPool[index];
@@ -445,6 +508,9 @@ class MobileActor{
             auto&[d,index]=attackQueue.top();
             attackQueue.pop();
             auto& actor=gamePtr->mobileActorPool[index];
+            if(actor->hp<=0){
+                continue;
+            }
             actor->beHurted(attackType,attackNum);
             this->applyEffect(actor);
             if(actor->hp<=0){
@@ -478,6 +544,9 @@ class MobileActor{
             auto&[d,index]=attackQueue.top();
             attackQueue.pop();
             auto& actor=gamePtr->staticActorPool[index];
+            if(actor->hp<=0){
+                continue;
+            }
             actor->beHurted(attackType,attackNum);
             this->applyEffect(actor);
             if(actor->hp<=0){
@@ -620,34 +689,268 @@ class MobileActor{
 
 class SingleTower:public StaticActor{//单体攻击
     public:
-    SingleTower(Game* gamePtr,int owner,float x,float y):StaticActor(gamePtr,owner,x,y){}
-    
+    SingleTower(Game* gamePtr,int owner,float x,float y):StaticActor(gamePtr,owner,x,y,true){
+       this->subclassPoolIndex=gamePtr->singleTowerPool.size();
+    }
+    void dead() override{
+        StaticActor::dead(true);
+        erase_basedSwap(gamePtr->singleTowerPool,subclassPoolIndex);
+    }
+    void get_attributeList() override{
+        /*物理抗性 魔法抗性 真实伤害抗性(?) 生命上限 攻击力 攻击范围 攻击数量 攻击速度 攻击类型 到达该等级的费用消耗 费用产出(/s) 阻挡数目*/
+        this->attributeList={
+            {10.0f  ,0.05f  ,0.0f   ,500.0f     ,200.0f  ,2.0f   ,1.0f   ,0.5f   ,1.0f   ,100.0f ,0.0f    ,1.0f},
+            {20.0f  ,0.1f   ,0.0f   ,750.0f     ,400.0f  ,2.5f   ,1.0f   ,0.8f   ,1.0f   ,50.0f  ,0.0f    ,1.0f},
+            {30.0f  ,0.15f  ,0.0f   ,1000.0f    ,600.0f  ,3.0f   ,1.0f   ,1.5f   ,1.0f   ,100.0f ,0.0f    ,1.0f},
+        };
+    };
+
 };
 class GroupAttackTower:public StaticActor{//群攻
     public:
-    GroupAttackTower(Game* gamePtr,int owner,float x,float y):StaticActor(gamePtr,owner,x,y){}
+    std::vector<std::array<int,2>> groupAttackArea;//溅射攻击范围
+    float groupAttackScope;
+
+    GroupAttackTower(Game* gamePtr,int owner,float x,float y):StaticActor(gamePtr,owner,x,y,true){
+        this->subclassPoolIndex=gamePtr->groupAttackTowerPool.size();
+    }
+
+    void dead() override{
+        StaticActor::dead(true);
+        erase_basedSwap(gamePtr->groupAttackTowerPool,subclassPoolIndex);
+    }
+    void get_attributeList() override{
+        /*物理抗性 魔法抗性 真实伤害抗性(?) 生命上限 攻击力 攻击范围 攻击数量 攻击速度 攻击类型 到达该等级的费用消耗 费用产出(/s) 阻挡数目 溅射攻击范围*/
+        this->attributeList={
+            {10.0f  ,0.05f  ,0.0f   ,500.0f     ,100.0f  ,1.5f   ,1.0f   ,0.5f   ,1.0f   ,200.0f ,0.0f    ,1.0f, 0.5f},
+            {20.0f  ,0.1f   ,0.0f   ,750.0f     ,200.0f  ,2.0f   ,1.0f   ,0.8f   ,1.0f   ,100.0f  ,0.0f   ,1.0f, 1.0f},
+            {30.0f  ,0.15f  ,0.0f   ,1000.0f    ,300.0f  ,2.5f   ,2.0f   ,1.5f   ,1.0f   ,150.0f ,0.0f    ,1.0f, 1.5f},
+        };
+    };
+    void setRank() override{
+        StaticActor::setRank();
+        this->groupAttackScope=attributeList[rankNum][12];
+    }
+
+    void set_groupAttackArea(){
+        groupAttackArea.clear();
+        int r=int(groupAttackScope);
+        for(int dx=-r;dx<=r;dx++){
+            int dy_max=int(sqrt(groupAttackScope*groupAttackScope-dx*dx));
+            for(int dy=-dy_max;dy<=dy_max;dy++){
+                groupAttackArea.push_back({dx,dy});
+            }
+        }
+    }
+
+    void attack() override{
+        int attackCount=int(this->attackCount);//取整
+        
+        auto& nowTime=gamePtr->nowTime;
+        
+        if(nowTime-lastAttackTime<1/attackSpeed){
+            return;
+        }
+
+        auto& mobileActorMap=gamePtr->mobileActorMap;
+        auto& eraseMobileActorSet=gamePtr->eraseMobileActorSet;
+
+        std::priority_queue<std::tuple<float,int>,std::vector<std::tuple<float,int>>,std::greater<std::tuple<float,int>>>attackQueue;//距离,索引
+        
+        for(auto [x,y]:spoceList){
+            for(auto index:mobileActorMap[int(this->y+y)][int(this->x+x)]){
+                auto& actor=gamePtr->mobileActorPool[index];
+                if(actor->owner==owner){
+                    continue;
+                }
+                float d2=abs(this->x-actor->x)*abs(this->x-actor->x)+abs(this->y-actor->y)*abs(this->y-actor->y);
+                if(d2<scope*scope){
+                    attackQueue.emplace(d2,index);
+                    while(attackQueue.size()-attackCount>0){
+                        attackQueue.pop();
+                    }
+                }
+            }
+        }
+        
+        int residualAttackCount=attackCount-attackQueue.size();
+        std::vector<int> tempGropAttackList;
+        while(attackQueue.size()>0){//优先级为 先攻击移动单位，再攻击固定单位 其次，优先攻击最近
+            auto&[d,index]=attackQueue.top();
+            tempGropAttackList.push_back(index);
+            attackQueue.pop();
+            auto& actor=gamePtr->mobileActorPool[index];
+            if(actor->hp<=0){
+                continue;
+            }
+            actor->beHurted(attackType,attackNum);
+            this->applyEffect(actor);
+            if(actor->hp<=0){
+                eraseMobileActorSet.push_back(index);
+            }
+        }
+        
+        std::vector<int> tempAttackList;
+        for(auto& index:tempGropAttackList){
+            auto& mainActor=gamePtr->mobileActorPool[index];
+            for(auto& [x,y]:groupAttackArea){
+                if(mainActor->x+x<0||mainActor->x+x>=gamePtr->basicMap[0].size()||mainActor->y+y<0||mainActor->y+y>=gamePtr->basicMap.size()){
+                    continue;
+                }
+                for(auto& index_map:gamePtr->mobileActorMap[int(mainActor->y)][int(mainActor->x)]){
+                    auto& actor=gamePtr->mobileActorPool[index_map];
+                    if(actor->owner==owner){
+                        continue;
+                    }
+                    float d2=abs(mainActor->x-actor->x)*abs(mainActor->x-actor->x)+abs(mainActor->y-actor->y)*abs(mainActor->y-actor->y);
+                    if(d2<groupAttackScope*groupAttackScope){
+                        tempAttackList.push_back(index_map);
+                    }
+                }
+            }
+        }
+        for(auto& index:tempAttackList){
+            auto& actor=gamePtr->mobileActorPool[index];
+            if(actor->hp<=0){
+                continue;
+            }
+            actor->beHurted(attackType,attackNum);
+            this->applyEffect(actor);
+            if(actor->hp<=0){
+                eraseMobileActorSet.push_back(index);
+            }
+        }
+
+        if(residualAttackCount<=0){//攻击数量足够
+            return;
+        }
+        tempGropAttackList.clear();
+        tempAttackList.clear();
+
+        auto& staticActorMap=gamePtr->staticActorMap;
+        auto& eraseStaticActorSet=gamePtr->eraseStaticActorSet;
+        
+        for(auto [x,y]:spoceList){
+            for(auto index:staticActorMap[int(this->y+y)][int(this->x+x)]){
+                auto& actor=gamePtr->staticActorPool[index];
+                if(actor->owner==owner){
+                    continue;
+                }
+                float d2=abs(this->x-actor->x)*abs(this->x-actor->x)+abs(this->y-actor->y)*abs(this->y-actor->y);
+                if(d2<scope*scope){
+                    attackQueue.emplace(d2,index);
+                    while(attackQueue.size()-residualAttackCount>0){
+                        attackQueue.pop();
+                    }
+                }
+            }
+        }
+        while(attackQueue.size()>0){
+            auto&[d,index]=attackQueue.top();
+            attackQueue.pop();
+            tempGropAttackList.push_back(index);
+            auto& actor=gamePtr->staticActorPool[index];
+            if(actor->hp<=0){
+                continue;
+            }
+            actor->beHurted(attackType,attackNum);
+            this->applyEffect(actor);
+            if(actor->hp<=0){
+                eraseStaticActorSet.push_back(index);
+            }
+        }
+        
+        for(auto& index:tempGropAttackList){
+            auto& mainActor=gamePtr->staticActorPool[index];
+            for(auto& [x,y]:groupAttackArea){
+                if(mainActor->x+x<0||mainActor->x+x>=gamePtr->basicMap[0].size()||mainActor->y+y<0||mainActor->y+y>=gamePtr->basicMap.size()){
+                    continue;
+                }
+                for(auto& index_map:gamePtr->staticActorMap[int(mainActor->y)][int(mainActor->x)]){
+                    auto& actor=gamePtr->staticActorPool[index_map];
+                    if(actor->owner==owner){
+                        continue;
+                    }
+                    float d2=abs(mainActor->x-actor->x)*abs(mainActor->x-actor->x)+abs(mainActor->y-actor->y)*abs(mainActor->y-actor->y);
+                    if(d2<groupAttackScope*groupAttackScope){
+                        tempAttackList.push_back(index_map);
+                    }
+                }
+            }
+        }
+        for(auto& index:tempAttackList){
+            auto& actor=gamePtr->staticActorPool[index];
+            if(actor->hp<=0){
+                continue;
+            }
+            actor->beHurted(attackType,attackNum);
+            this->applyEffect(actor);
+            if(actor->hp<=0){
+                eraseStaticActorSet.push_back(index);
+            }
+        }
+        
+        lastAttackTime=nowTime;
+    }
 };
 class SlowTower:public StaticActor{//减速
     public:
-    SlowTower(Game* gamePtr,int owner,float x,float y):StaticActor(gamePtr,owner,x,y){}
+    SlowTower(Game* gamePtr,int owner,float x,float y):StaticActor(gamePtr,owner,x,y,true){
+        this->subclassPoolIndex=gamePtr->slowTowerPool.size();
+    }
+    void dead() override{
+        StaticActor::dead(true);
+        erase_basedSwap(gamePtr->slowTowerPool,subclassPoolIndex);
+    }
+    void get_attributeList() override{
+        /*物理抗性 魔法抗性 真实伤害抗性(?) 生命上限 攻击力 攻击范围 攻击数量 攻击速度 攻击类型 到达该等级的费用消耗 费用产出(/s) 阻挡数目 攻击减速倍率 移动减速倍率*/
+        this->attributeList={
+            {10.0f  ,0.05f  ,0.0f   ,500.0f     ,200.0f  ,2.0f   ,1.0f   ,0.5f   ,1.0f   ,100.0f ,0.0f    ,1.0f},
+            {20.0f  ,0.1f   ,0.0f   ,750.0f     ,400.0f  ,2.5f   ,1.0f   ,0.8f   ,1.0f   ,50.0f  ,0.0f    ,1.0f},
+            {30.0f  ,0.15f  ,0.0f   ,1000.0f    ,600.0f  ,3.0f   ,1.0f   ,1.5f   ,1.0f   ,100.0f ,0.0f    ,1.0f},
+        };
+    };
 };
 class CenterTower:public StaticActor{//枢纽
     public:
-    CenterTower(Game* gamePtr,int owner,float x,float y):StaticActor(gamePtr,owner,x,y){}
+    CenterTower(Game* gamePtr,int owner,float x,float y):StaticActor(gamePtr,owner,x,y,true){
+        this->subclassPoolIndex=gamePtr->centerTowerPool.size();
+    }
+    void dead() override{
+        StaticActor::dead(true);
+        erase_basedSwap(gamePtr->centerTowerPool,subclassPoolIndex);
+    }
+    void get_attributeList() override{
+        /*物理抗性 魔法抗性 真实伤害抗性(?) 生命上限 攻击力 攻击范围 攻击数量 攻击速度 攻击类型 到达该等级的费用消耗 费用产出(/s) 阻挡数目*/
+        this->attributeList={
+            {100.0f  ,0.1f  ,0.0f   ,3000.0f     ,0.0f  ,0.0f   ,1.0f   ,1.0f   ,1.0f   ,100.0f ,0.5f    ,1.0f},
+            {200.0f  ,0.2f  ,0.0f   ,4000.0f     ,0.0f  ,0.0f   ,1.0f   ,1.0f   ,1.0f   ,200.0f ,0.7f    ,1.0f},
+            {300.0f  ,0.3f  ,0.0f   ,5000.0f     ,0.0f  ,0.0f   ,1.0f   ,1.0f   ,1.0f   ,300.0f ,1.0f    ,1.0f},
+        };
+    };
+    void attack() override{
+        return;
+    }
 };
 
-class meleeMobile:public MobileActor{//近战
+
+
+class MeleeMobile:public MobileActor{//近战
     public:
+    MeleeMobile(Game* gamePtr,int owner,float x,float y):MobileActor(gamePtr,owner,x,y){}
 
 };
-class rangedMobile:public MobileActor{//远程
+class RangedMobile:public MobileActor{//远程
     public:
+    RangedMobile(Game* gamePtr,int owner,float x,float y):MobileActor(gamePtr,owner,x,y){}
 };
-class defenseMobile:public MobileActor{//防御
+class DefenseMobile:public MobileActor{//防御
     public:
+    DefenseMobile(Game* gamePtr,int owner,float x,float y):MobileActor(gamePtr,owner,x,y){}
 };
-class explosionMobile:public MobileActor{//自爆
+class ExplosionMobile:public MobileActor{//自爆
     public:
+    ExplosionMobile(Game* gamePtr,int owner,float x,float y):MobileActor(gamePtr,owner,x,y){}
 };
 
 
@@ -677,10 +980,10 @@ class Game{
 
     //可移动单位子类对象池
     std::deque<MobileActor> basicMobilePool;
-    std::deque<meleeMobile> meleeMobilePool;
-    std::deque<rangedMobile> rangedMobilePool;
-    std::deque<defenseMobile> defenseMobilePool;
-    std::deque<explosionMobile> explosionMobilePool;
+    std::deque<MeleeMobile> meleeMobilePool;
+    std::deque<RangedMobile> rangedMobilePool;
+    std::deque<DefenseMobile> defenseMobilePool;
+    std::deque<ExplosionMobile> explosionMobilePool;
 
     std::vector<StaticActor*> staticActorPool;
     std::vector<MobileActor*> mobileActorPool;
@@ -710,15 +1013,18 @@ class Game{
     void creatStaticActor(int x,int y,int owner,int StaticActorType){
         switch(StaticActorType){
             case 0:
-                singleTowerPool.emplace_back(SingleTower(this,owner,x,y));
+                basicTowerPool.emplace_back(StaticActor(this,owner,x,y));
                 break;
             case 1:
-                groupAttackTowerPool.emplace_back(GroupAttackTower(this,owner,x,y));
+                singleTowerPool.emplace_back(SingleTower(this,owner,x,y));
                 break;
             case 2:
-                slowTowerPool.emplace_back(SlowTower(this,owner,x,y));
+                groupAttackTowerPool.emplace_back(GroupAttackTower(this,owner,x,y));
                 break;
             case 3:
+                slowTowerPool.emplace_back(SlowTower(this,owner,x,y));
+                break;
+            case 4:
                 centerTowerPool.emplace_back(CenterTower(this,owner,x,y));
                 break;
             default:
@@ -726,19 +1032,39 @@ class Game{
         }
     }
 
-    void creatMobileActor(int x,int y,int owner){
-        aliveMobileList[owner].push_back(mobileActorPool.size());
-        mobileActorPool.emplace_back(x,y);
+    void creatMobileActor(int x,int y,int owner,int MobileActorType){
+        switch(MobileActorType){
+            case 0:
+                basicMobilePool.emplace_back(MobileActor(this,owner,x,y));
+                break;
+            case 1:
+                meleeMobilePool.emplace_back(MeleeMobile(this,owner,x,y));
+                break;
+            case 2:
+                rangedMobilePool.emplace_back(RangedMobile(this,owner,x,y));
+                break;
+            case 3:
+                defenseMobilePool.emplace_back(DefenseMobile(this,owner,x,y));
+                break;
+            case 4:
+                explosionMobilePool.emplace_back(ExplosionMobile(this,owner,x,y));
+                break;
+            default:
+                throw std::runtime_error(std::format("[ERROR][Game] the MobileActorType is {}",MobileActorType));
+        }
     }
 
     void solveDeadActor(){
+        std::sort(eraseStaticActorSet.begin(),eraseStaticActorSet.end(),std::greater<int>());
+        eraseStaticActorSet.erase(std::unique(eraseStaticActorSet.begin(),eraseStaticActorSet.end()),eraseStaticActorSet.end());//去重
+
+
         std::vector<std::tuple<int,StaticActor*>> subclassStaticPoolIndexs;
         for(auto index:eraseStaticActorSet){
             auto& actor=staticActorPool[index];
             subclassStaticPoolIndexs.emplace_back(actor->subclassPoolIndex,actor);
         }
         std::sort(subclassStaticPoolIndexs.begin(),subclassStaticPoolIndexs.end(),std::greater<std::tuple<int,StaticActor*>>());
-        std::sort(eraseStaticActorSet.begin(),eraseStaticActorSet.end(),std::greater<int>());
         for(auto eraseIndex:eraseStaticActorSet){//删除节点池元素并更新其索引
             auto& eraseActor=this->staticActorPool[eraseIndex];
             auto& endActor=this->staticActorPool[this->staticActorPool.size()-1];
@@ -756,6 +1082,9 @@ class Game{
         }
 
         eraseStaticActorSet.clear();
+        
+        std::sort(eraseMobileActorSet.begin(),eraseMobileActorSet.end(),std::greater<int>());
+        eraseMobileActorSet.erase(std::unique(eraseMobileActorSet.begin(),eraseMobileActorSet.end()),eraseMobileActorSet.end());//去重
 
         std::vector<std::tuple<int,MobileActor*>> subclassMobilePoolIndexs;
         for(auto index:eraseMobileActorSet){
@@ -763,7 +1092,6 @@ class Game{
             subclassMobilePoolIndexs.emplace_back(actor->subclassPoolIndex,actor);
         }
         std::sort(subclassMobilePoolIndexs.begin(),subclassMobilePoolIndexs.end(),std::greater<std::tuple<int,MobileActor*>>());
-        std::sort(eraseMobileActorSet.begin(),eraseMobileActorSet.end(),std::greater<int>());
         for(auto eraseIndex:eraseMobileActorSet){//删除节点池元素并更新其索引
             auto& eraseActor=this->mobileActorPool[eraseIndex];
             auto& endActor=this->mobileActorPool[this->mobileActorPool.size()-1];
@@ -802,8 +1130,12 @@ class Game{
             }
 
             this->solveDeadActor();
+            
+            costSpeed=std::vector<float>(costSpeed.size(),1.0f);
+            for(auto actor:centerTowerPool){
+                costSpeed[actor.owner]+=actor.costRate;    
+            }
 
-                        
             for(int i=0;i<nowCost.size();i++){
                 nowCost[i]+=costSpeed[i]*0.1;
             }
