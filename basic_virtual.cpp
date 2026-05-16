@@ -215,7 +215,7 @@ class StaticActor{
         while(attackQueue.size()>0){//优先级为 先攻击移动单位，再攻击固定单位 其次，优先攻击最近
             auto&[d,index]=attackQueue.top();
             attackQueue.pop();
-            auto& actor=gamePtr->staticActorPool[index];
+            auto& actor=gamePtr->mobileActorPool[index];
             actor->beHurted(attackType,attackNum);
             this->applyEffect(actor);
             if(actor->hp<=0){
@@ -255,6 +255,7 @@ class StaticActor{
                 eraseStaticActorSet.push_back(index);
             }
         }
+        lastAttackTime=nowTime;
 
     }
 
@@ -443,7 +444,7 @@ class MobileActor{
         while(attackQueue.size()>0){//优先级为 先攻击移动单位，再攻击固定单位 其次，优先攻击最近
             auto&[d,index]=attackQueue.top();
             attackQueue.pop();
-            auto& actor=gamePtr->staticActorPool[index];
+            auto& actor=gamePtr->mobileActorPool[index];
             actor->beHurted(attackType,attackNum);
             this->applyEffect(actor);
             if(actor->hp<=0){
@@ -483,6 +484,7 @@ class MobileActor{
                 eraseStaticActorSet.push_back(index);
             }
         }
+        lastAttackTime=nowTime;
 
     }
 
@@ -497,8 +499,8 @@ class MobileActor{
                 gamePtr->staticActorPool[gamePtr->staticActorMap[int(this->y)][int(this->x)][gamePtr->staticActorMap[int(this->y)][int(this->x)].size()]]->mapListIndex=this->mapListIndex;
                 erase_basedSwap(gamePtr->staticActorMap[int(this->y)][int(this->x)],this->mapListIndex);
 
-                this->mapListIndex=gamePtr->mobileActorMap[newY][newX].size();
-                gamePtr->mobileActorMap[newY][newX].push_back(poolIndex);
+                this->mapListIndex=gamePtr->mobileActorMap[int(newY)][int(newX)].size();
+                gamePtr->mobileActorMap[int(newY)][int(newX)].push_back(poolIndex);
             }
             this->x=newX;
             this->y=newY;
@@ -730,12 +732,12 @@ class Game{
     }
 
     void solveDeadActor(){
-        std::vector<std::tuple<int,StaticActor*>> subclassPoolIndexs;
+        std::vector<std::tuple<int,StaticActor*>> subclassStaticPoolIndexs;
         for(auto index:eraseStaticActorSet){
             auto& actor=staticActorPool[index];
-            subclassPoolIndexs.emplace_back(actor->subclassPoolIndex,actor);
+            subclassStaticPoolIndexs.emplace_back(actor->subclassPoolIndex,actor);
         }
-        std::sort(subclassPoolIndexs.begin(),subclassPoolIndexs.end(),std::greater<std::tuple<int,StaticActor*>>());
+        std::sort(subclassStaticPoolIndexs.begin(),subclassStaticPoolIndexs.end(),std::greater<std::tuple<int,StaticActor*>>());
         std::sort(eraseStaticActorSet.begin(),eraseStaticActorSet.end(),std::greater<int>());
         for(auto eraseIndex:eraseStaticActorSet){//删除节点池元素并更新其索引
             auto& eraseActor=this->staticActorPool[eraseIndex];
@@ -749,18 +751,18 @@ class Game{
 
             erase_basedSwap(staticActorPool,eraseIndex);
         }
-        for(auto [subclassPoolIndex,eraseActor]:subclassPoolIndexs){//删除子类对象池元素并更新其索引
+        for(auto [subclassPoolIndex,eraseActor]:subclassStaticPoolIndexs){//删除子类对象池元素并更新其索引
             eraseActor->dead();//把自身索引所在数组的最后一个元素与自己的索引更换位置,最后删除自身对象
         }
 
         eraseStaticActorSet.clear();
 
-        std::vector<std::tuple<int,MobileActor*>> subclassPoolIndexs;
+        std::vector<std::tuple<int,MobileActor*>> subclassMobilePoolIndexs;
         for(auto index:eraseMobileActorSet){
             auto& actor=mobileActorPool[index];
-            subclassPoolIndexs.emplace_back(actor->subclassPoolIndex,actor);
+            subclassMobilePoolIndexs.emplace_back(actor->subclassPoolIndex,actor);
         }
-        std::sort(subclassPoolIndexs.begin(),subclassPoolIndexs.end(),std::greater<std::tuple<int,MobileActor*>>());
+        std::sort(subclassMobilePoolIndexs.begin(),subclassMobilePoolIndexs.end(),std::greater<std::tuple<int,MobileActor*>>());
         std::sort(eraseMobileActorSet.begin(),eraseMobileActorSet.end(),std::greater<int>());
         for(auto eraseIndex:eraseMobileActorSet){//删除节点池元素并更新其索引
             auto& eraseActor=this->mobileActorPool[eraseIndex];
@@ -774,7 +776,7 @@ class Game{
 
             erase_basedSwap(mobileActorPool,eraseIndex);
         }
-        for(auto [subclassPoolIndex,eraseActor]:subclassPoolIndexs){//删除子类对象池元素并更新其索引
+        for(auto [subclassPoolIndex,eraseActor]:subclassMobilePoolIndexs){//删除子类对象池元素并更新其索引
             eraseActor->dead();//把自身索引所在数组的最后一个元素与自己的索引更换位置,最后删除自身对象
         }
         eraseMobileActorSet.clear();
