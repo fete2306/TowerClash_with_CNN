@@ -11,12 +11,12 @@
 
 
 template<typename T>
-void erase_basedSwap(std::vector<T> vec,size_t index){
+void erase_basedSwap(std::vector<T>& vec,size_t index){
     swap(vec[index],vec[vec.size()-1]);
     vec.pop_back();
 }
 template<typename T>
-void erase_basedSwap(std::deque<T> vec,size_t index){
+void erase_basedSwap(std::deque<T>& vec,size_t index){
     swap(vec[index],vec[vec.size()-1]);
     vec.pop_back();
 }
@@ -96,7 +96,7 @@ class StaticActor{
 
     virtual void dead(){//仅删除子类对象池中的对象的数据 基类指针池、存活列表、对象图等由外部进行删除(对整个索引序列重排)
         //只有基类指针池不能由子类进行 因为删除列表使用的是其索引
-        gamePtr->staticActorPool[gamePtr->staticActorMap[int(this->y)][int(this->x)][gamePtr->staticActorMap[int(this->y)][int(this->x)].size()]]->mapListIndex=this->mapListIndex;
+        gamePtr->staticActorPool[gamePtr->staticActorMap[int(this->y)][int(this->x)][gamePtr->staticActorMap[int(this->y)][int(this->x)].size()-1]]->mapListIndex=this->mapListIndex;
         erase_basedSwap(gamePtr->staticActorMap[int(this->y)][int(this->x)],this->mapListIndex);
 
         gamePtr->staticActorPool[gamePtr->aliveStaticList[owner][gamePtr->aliveStaticList[owner].size()-1]]->aliveListIndex=this->aliveListIndex;
@@ -260,7 +260,7 @@ class StaticActor{
 
 
     virtual void move(std::pair<int,int> goalPos){
-        gamePtr->staticActorPool[gamePtr->staticActorMap[int(this->y)][int(this->x)][gamePtr->staticActorMap[int(this->y)][int(this->x)].size()]]->mapListIndex=this->mapListIndex;
+        gamePtr->staticActorPool[gamePtr->staticActorMap[int(this->y)][int(this->x)][gamePtr->staticActorMap[int(this->y)][int(this->x)].size()-1]]->mapListIndex=this->mapListIndex;
         erase_basedSwap(gamePtr->staticActorMap[int(this->y)][int(this->x)],this->mapListIndex);
         this->x=goalPos.first;
         this->y=goalPos.second;
