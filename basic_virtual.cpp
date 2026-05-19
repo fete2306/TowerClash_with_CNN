@@ -437,7 +437,7 @@ class MobileActor{
     }
     virtual void dead(){//仅删除子类对象池中的对象的数据 基类指针池、存活列表、对象图等由外部进行删除(对整个索引序列重排)
         //只有基类指针池不能由子类进行 因为删除列表使用的是其索引
-        gamePtr->mobileActorPool[gamePtr->mobileActorMap[int(this->y)][int(this->x)][gamePtr->mobileActorMap[int(this->y)][int(this->x)].size()]]->mapListIndex=this->mapListIndex;
+        gamePtr->mobileActorPool[gamePtr->mobileActorMap[int(this->y)][int(this->x)][gamePtr->mobileActorMap[int(this->y)][int(this->x)].size()-1]]->mapListIndex=this->mapListIndex;
         erase_basedSwap(gamePtr->mobileActorMap[int(this->y)][int(this->x)],this->mapListIndex);
 
         gamePtr->mobileActorPool[gamePtr->aliveMobileList[owner][gamePtr->aliveMobileList[owner].size()-1]]->aliveListIndex=this->aliveListIndex;
@@ -446,7 +446,7 @@ class MobileActor{
         erase_basedSwap(gamePtr->basicMobilePool,subclassPoolIndex);
     };
     virtual void dead(bool subclassFlag){//子类调用
-        gamePtr->mobileActorPool[gamePtr->mobileActorMap[int(this->y)][int(this->x)][gamePtr->mobileActorMap[int(this->y)][int(this->x)].size()]]->mapListIndex=this->mapListIndex;
+        gamePtr->mobileActorPool[gamePtr->mobileActorMap[int(this->y)][int(this->x)][gamePtr->mobileActorMap[int(this->y)][int(this->x)].size()-1]]->mapListIndex=this->mapListIndex;
         erase_basedSwap(gamePtr->mobileActorMap[int(this->y)][int(this->x)],this->mapListIndex);
 
         gamePtr->mobileActorPool[gamePtr->aliveMobileList[owner][gamePtr->aliveMobileList[owner].size()-1]]->aliveListIndex=this->aliveListIndex;
@@ -1251,6 +1251,7 @@ class Game{
                 break;
             case 3:
                 defenseMobilePool.emplace_back(DefenseMobile(this,owner,x,y));
+
                 break;
             case 4:
                 explosionMobilePool.emplace_back(ExplosionMobile(this,owner,x,y));
