@@ -9,6 +9,9 @@
 #include<queue>
 #include<tuple>
 
+class StaticActor;
+class MobileActor;
+class Game;
 
 template<typename T>
 void erase_basedSwap(std::vector<T>& vec,size_t index){
