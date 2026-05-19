@@ -4,8 +4,9 @@
 #include<unordered_set>
 #include<format>
 #include<algorithm>
-
-
+class StaticActor;
+class MobileActor;
+class Game;
 
 class StaticActor{
     public:
