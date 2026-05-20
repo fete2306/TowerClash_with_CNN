@@ -1,0 +1,88 @@
+{
+	"configurations" : 
+	[
+		{
+			"abstractTargets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "nlohmann_json::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-nlohmann_json-Debug-b997af5f1c4e31066d3f.json",
+					"name" : "nlohmann_json",
+					"projectIndex" : 0
+				}
+			],
+			"directories" : 
+			[
+				{
+					"abstractTargetIndexes" : 
+					[
+						0
+					],
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-fec540a6d532d2fac42c.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"abstractTargetIndexes" : 
+					[
+						0
+					],
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "JAVA_Course_Project",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "game::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-game-Debug-d6b9d42fef0f0356d4a0.json",
+					"name" : "game",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "imgui::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-imgui-Debug-d53c7f724b1774dec2ba.json",
+					"name" : "imgui",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "D:/Creat/GAME/JAVA\u8bfe\u7a0b\u8bbe\u8ba1/build",
+		"source" : "D:/Creat/GAME/JAVA\u8bfe\u7a0b\u8bbe\u8ba1"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 10
+	}
+}

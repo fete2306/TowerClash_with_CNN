@@ -9,7 +9,10 @@
 #include<queue>
 #include<tuple>
 #include<string>
-#include "ui/basic_virtual_ui.h"
+#include<unordered_map>
+#include <fstream>
+#include "basic_virtual_ui.h"
+#include<json.hpp>
 
 class StaticActor;
 class MobileActor;
@@ -36,9 +39,17 @@ class specialEffect{
 
 };
 
-class StaticActor{
+template<typename T>
+class Attribute{
     public:
-    std::vector<std::vector<float>> attributeList;/*
+    static std::vector<std::vector<float>>& attributeList;
+};
+
+
+
+class StaticActor:public Attribute<StaticActor>{
+    public:
+    std::vector<std::vector<float>>& attributeList;/*
     抗性 (maxRank,attackTypeCount,1) //暂定attackTypeCount=3 物理/魔法/真实伤害
     生命上限
     攻击力
@@ -77,12 +88,14 @@ class StaticActor{
     float costRate;
     float rasistCount;
 
+    static float basicCost;
+
     StaticActor(Game* gamePtr,int owner,float x,float y):gamePtr(gamePtr),owner(owner),x(x),y(y){
 
         resistList=new std::vector<bool>;
 
         rankNum=0;
-        get_attributeList();
+        this->attributeList=Attribute<StaticActor>::attributeList;
         setRank();
         subclassPoolIndex=gamePtr->basicTowerPool.size();//构造函数结束后size++,此刻可正常表示当前对象插入位置
         poolIndex=gamePtr->staticActorPool.size();
@@ -93,13 +106,13 @@ class StaticActor{
         gamePtr->aliveStaticList[owner].push_back(poolIndex);
         gamePtr->staticActorPool.push_back(this);
     };
-
+    template<typename SubClass>
     StaticActor(Game* gamePtr,int owner,float x,float y,bool subclassFlag):gamePtr(gamePtr),owner(owner),x(x),y(y){//子类调用版
 
         resistList=new std::vector<bool>;
 
         rankNum=0;
-        get_attributeList();
+        this->attributeList=Attribute<SubClass>::attributeList;
         setRank();
 
         poolIndex=gamePtr->staticActorPool.size();
@@ -140,15 +153,6 @@ class StaticActor{
 
     }
 
-    virtual void get_attributeList(){
-        /*物理抗性 魔法抗性 真实伤害抗性(?) 生命上限 攻击力 攻击范围 攻击数量 攻击速度 攻击类型 到达该等级的费用消耗 费用产出(/s) 阻挡数目*/
-        this->attributeList={
-            {50.0f  ,0.1f   ,0.0f   ,1000.0f    ,100.0f ,2.0f   ,1.0f   ,1.0f   ,1.0f   ,100.0f      ,0.f    ,1.0f},
-            {100.0f ,0.15f  ,0.0f   ,1500.0f    ,150.0f ,2.5f   ,1.0f   ,1.5f   ,1.0f   ,100.0f      ,0.f    ,1.0f},
-            {150.0f ,0.2f   ,0.0f   ,2000.0f    ,200.0f ,3.0f   ,2.0f   ,2.0f   ,1.0f   ,100.0f      ,0.f    ,1.0f},
-        };
-
-    };
     virtual void setRank(){
         float lastScope=scope;
         this->hp=attributeList[rankNum][3];
@@ -366,9 +370,9 @@ class StaticActor{
 
 };
 
-class MobileActor{
+class MobileActor:public Attribute<MobileActor>{
     public:
-    std::vector<std::vector<float>> attributeList;
+    std::vector<std::vector<float>>& attributeList;
     std::vector<std::array<int,2>> path;
     
     std::vector<bool>* resistedList;//阻挡方的列表
@@ -406,7 +410,7 @@ class MobileActor{
         resistedList=nullptr;
 
         rankNum=0;
-        get_attributeList();
+        this->attributeList=Attribute<MobileActor>::attributeList;
         setRank();
         subclassPoolIndex=gamePtr->basicMobilePool.size();//构造函数结束后size++,此刻可正常表示当前对象插入位置
         poolIndex=gamePtr->mobileActorPool.size();
@@ -417,12 +421,13 @@ class MobileActor{
         gamePtr->aliveMobileList[owner].push_back(poolIndex);
         gamePtr->mobileActorPool.push_back(this);
     }
+    template<typename SubClass>
     MobileActor(Game* gamePtr,int owner,float x,float y,bool subclassFlag):gamePtr(gamePtr),owner(owner),x(x),y(y){
 
         resistedList=nullptr;
 
         rankNum=0;
-        get_attributeList();
+        this->attributeList=Attribute<SubClass>::attributeList;
         setRank();
 
         poolIndex=gamePtr->mobileActorPool.size();
@@ -459,14 +464,6 @@ class MobileActor{
         
     };
 
-    virtual void get_attributeList(){
-        /*物理抗性 魔法抗性 真实伤害抗性(?) 生命上限 攻击力 攻击范围 攻击数量 攻击速度 攻击类型 到达该等级的费用消耗 费用产出(/s) 移动速度*/
-        this->attributeList={
-            {10.0f  ,0.05f  ,0.0f   ,300.0f     ,30.0f  ,1.0f   ,1.0f   ,1.0f   ,1.0f   ,30.0f  ,0.0f    ,1.0f},
-            {20.0f  ,0.08f  ,0.0f   ,500.0f     ,50.0f  ,1.0f   ,1.0f   ,1.5f   ,1.0f   ,50.0f  ,0.0f    ,1.5f},
-            {30.0f  ,0.1f   ,0.0f   ,800.0f     ,80.0f  ,1.0f   ,1.0f   ,2.0f   ,1.0f   ,80.0f  ,0.0f    ,2.0f},
-        };
-    };
     virtual void setRank(){
         float lastScope=scope;
         this->hp=attributeList[rankNum][3];
@@ -800,7 +797,7 @@ class MobileActor{
     
 };
 
-class SingleTower:public StaticActor{//单体攻击
+class SingleTower:public StaticActor,public Attribute<SingleTower>{//单体攻击
     public:
     SingleTower(Game* gamePtr,int owner,float x,float y):StaticActor(gamePtr,owner,x,y,true){
        this->subclassPoolIndex=gamePtr->singleTowerPool.size();
@@ -809,14 +806,7 @@ class SingleTower:public StaticActor{//单体攻击
         StaticActor::dead(true);
         erase_basedSwap(gamePtr->singleTowerPool,subclassPoolIndex);
     }
-    void get_attributeList() override{
-        /*物理抗性 魔法抗性 真实伤害抗性(?) 生命上限 攻击力 攻击范围 攻击数量 攻击速度 攻击类型 到达该等级的费用消耗 费用产出(/s) 阻挡数目*/
-        this->attributeList={
-            {10.0f  ,0.05f  ,0.0f   ,500.0f     ,200.0f  ,2.0f   ,1.0f   ,0.5f   ,1.0f   ,100.0f ,0.0f    ,1.0f},
-            {20.0f  ,0.1f   ,0.0f   ,750.0f     ,400.0f  ,2.5f   ,1.0f   ,0.8f   ,1.0f   ,50.0f  ,0.0f    ,1.0f},
-            {30.0f  ,0.15f  ,0.0f   ,1000.0f    ,600.0f  ,3.0f   ,1.0f   ,1.5f   ,1.0f   ,100.0f ,0.0f    ,1.0f},
-        };
-    };
+    
 
 };
 class GroupAttackTower:public StaticActor{//群攻
@@ -1206,8 +1196,7 @@ class Game{
 
     std::vector<float> nowCost;//根据owner作为索引来划分
     std::vector<float> costSpeed;
-    std::vector<float> staticActorBaseCost;
-    std::vector<float> mobileActorBaseCost;
+
     
     float nowTime;
 
@@ -1223,8 +1212,25 @@ class Game{
 
     }
 
-    void setBaseCost(){
-        
+    void setBaseAttribute(std::string staticActorJsonPath="assets/ActorAttribute/StaticActor.json",std::string mobileActorJsonPath="assets/ActorAttribute/MobileActor.json"){
+        using json = nlohmann::json;
+        std::ifstream staticActorAttributeFile(staticActorJsonPath);
+        std::ifstream mobileActorAttributeFile(mobileActorJsonPath);
+        auto staticActorAttribute=json::parse(staticActorAttributeFile);
+        auto mobileActorAttribute=json::parse(mobileActorAttributeFile);
+
+        Attribute<StaticActor>::attributeList=*(new std::vector<std::vector<float>>(staticActorAttribute["StaticActor"].get<std::vector<std::vector<float>>>()));
+        Attribute<SingleTower>::attributeList=*(new std::vector<std::vector<float>>(staticActorAttribute["SingleTower"].get<std::vector<std::vector<float>>>()));
+        Attribute<GroupAttackTower>::attributeList=*(new std::vector<std::vector<float>>(staticActorAttribute["GroupAttackTower"].get<std::vector<std::vector<float>>>()));
+        Attribute<SlowTower>::attributeList=*(new std::vector<std::vector<float>>(staticActorAttribute["SlowTower"].get<std::vector<std::vector<float>>>()));
+        Attribute<CenterTower>::attributeList=*(new std::vector<std::vector<float>>(staticActorAttribute["CenterTower"].get<std::vector<std::vector<float>>>()));
+
+        Attribute<MobileActor>::attributeList=*(new std::vector<std::vector<float>>(staticActorAttribute["MobileActor"].get<std::vector<std::vector<float>>>()));
+        Attribute<MeleeMobile>::attributeList=*(new std::vector<std::vector<float>>(staticActorAttribute["MeleeMobile"].get<std::vector<std::vector<float>>>()));
+        Attribute<RangedMobile>::attributeList=*(new std::vector<std::vector<float>>(staticActorAttribute["RangedMobile"].get<std::vector<std::vector<float>>>()));
+        Attribute<DefenseMobile>::attributeList=*(new std::vector<std::vector<float>>(staticActorAttribute["DefenseMobile"].get<std::vector<std::vector<float>>>()));
+        Attribute<ExplosionMobile>::attributeList=*(new std::vector<std::vector<float>>(staticActorAttribute["ExplosionMobile"].get<std::vector<std::vector<float>>>()));
+
     }
 
     bool creatStaticActor(int x,int y,int owner,int StaticActorType){
