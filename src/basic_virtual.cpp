@@ -42,15 +42,19 @@ class specialEffect{
 template<typename T>
 class Attribute{
     public:
-    static std::vector<std::vector<float>>& attributeList;
+    static std::vector<std::vector<float>> attributeList;
 };
 
-
+template<typename T>
+class ActorPool{
+    public:
+    static std::deque<T>Pool;
+};
 
 class StaticActor:public Attribute<StaticActor>{
     public:
-    std::vector<std::vector<float>>& attributeList;/*
-    抗性 (maxRank,attackTypeCount,1) //暂定attackTypeCount=3 物理/魔法/真实伤害
+    // std::vector<std::vector<float>>& attributeList;
+    /*抗性 (maxRank,attackTypeCount,1) //暂定attackTypeCount=3 物理/魔法/真实伤害
     生命上限
     攻击力
     攻击范围
@@ -95,34 +99,34 @@ class StaticActor:public Attribute<StaticActor>{
         resistList=new std::vector<bool>;
 
         rankNum=0;
-        this->attributeList=Attribute<StaticActor>::attributeList;
-        setRank();
-        subclassPoolIndex=gamePtr->basicTowerPool.size();//构造函数结束后size++,此刻可正常表示当前对象插入位置
+        setRank(this);
+        subclassPoolIndex=ActorPool<StaticActor>::Pool.size();//构造函数结束后size++,此刻可正常表示当前对象插入位置
         poolIndex=gamePtr->staticActorPool.size();
         mapListIndex=gamePtr->staticActorMap[int(y)][int(x)].size();
         aliveListIndex=gamePtr->aliveStaticList[owner].size();
 
+        gamePtr->staticActorPool.push_back(this);
         gamePtr->staticActorMap[int(y)][int(x)].push_back(poolIndex);
         gamePtr->aliveStaticList[owner].push_back(poolIndex);
-        gamePtr->staticActorPool.push_back(this);
     };
     template<typename SubClass>
-    StaticActor(Game* gamePtr,int owner,float x,float y,bool subclassFlag):gamePtr(gamePtr),owner(owner),x(x),y(y){//子类调用版
+    StaticActor(Game* gamePtr,int owner,float x,float y,SubClass* subclassPtr):gamePtr(gamePtr),owner(owner),x(x),y(y){//子类调用版
 
         resistList=new std::vector<bool>;
 
         rankNum=0;
-        this->attributeList=Attribute<SubClass>::attributeList;
-        setRank();
 
-        poolIndex=gamePtr->staticActorPool.size();
+        setRank(subclassPtr);
+
+        poolIndex=ActorPool<SubClass>Pool.size();
         mapListIndex=gamePtr->staticActorMap[int(y)][int(x)].size();
         aliveListIndex=gamePtr->aliveStaticList[owner].size();
 
+        gamePtr->staticActorPool.push_back(this);
         gamePtr->staticActorMap[int(y)][int(x)].push_back(poolIndex);
         gamePtr->aliveStaticList[owner].push_back(poolIndex);
-        gamePtr->staticActorPool.push_back(this);
     };
+
     virtual ~StaticActor(){
         for(int i=0;i<resistList->size();i++){
             resistList->at(i)=false;
@@ -133,27 +137,57 @@ class StaticActor:public Attribute<StaticActor>{
         }
     }
 
-    virtual void dead(){//仅删除子类对象池中的对象的数据 基类指针池、存活列表、对象图等由外部进行删除(对整个索引序列重排)
+    void dead(){//仅删除子类对象池中的对象的数据 基类指针池、存活列表、对象图等由外部进行删除(对整个索引序列重排)
         //只有基类指针池不能由子类进行 因为删除列表使用的是其索引
+        this->_dead(this);
+    };
+
+    template<typename SubClass>
+    void _dead(SubClass* subclassPtr){//子类调用部分
         gamePtr->staticActorPool[gamePtr->staticActorMap[int(this->y)][int(this->x)][gamePtr->staticActorMap[int(this->y)][int(this->x)].size()-1]]->mapListIndex=this->mapListIndex;
         erase_basedSwap(gamePtr->staticActorMap[int(this->y)][int(this->x)],this->mapListIndex);
 
         gamePtr->staticActorPool[gamePtr->aliveStaticList[owner][gamePtr->aliveStaticList[owner].size()-1]]->aliveListIndex=this->aliveListIndex;
         erase_basedSwap(gamePtr->aliveStaticList[owner],this->aliveListIndex);
 
-        erase_basedSwap(gamePtr->basicTowerPool,subclassPoolIndex);
-    };
-
-    virtual void dead(bool subclassFlag){//子类调用部分
-       gamePtr->staticActorPool[gamePtr->staticActorMap[int(this->y)][int(this->x)][gamePtr->staticActorMap[int(this->y)][int(this->x)].size()-1]]->mapListIndex=this->mapListIndex;
-        erase_basedSwap(gamePtr->staticActorMap[int(this->y)][int(this->x)],this->mapListIndex);
-
-        gamePtr->staticActorPool[gamePtr->aliveStaticList[owner][gamePtr->aliveStaticList[owner].size()-1]]->aliveListIndex=this->aliveListIndex;
-        erase_basedSwap(gamePtr->aliveStaticList[owner],this->aliveListIndex);
-
+        erase_basedSwap(ActorPool<SubClass>::Pool,subclassPoolIndex);
+    }
+    bool setRank(int rankOffest=0){
+        return _setRank(this,rankOffest);    
     }
 
-    virtual void setRank(){
+    template<typename T>
+    bool _setRank(T* thisPtr,int rankOffest=0){//子类需要重新实现一个方法
+        auto& attributeList=Attribute<T>::attributeList;
+
+        if(rankOffest!=0){
+            if(rankNum+rankOffest>attributeList.size()-1||rankNum+rankOffest<0){
+                throw std::runtime_error(std::format("[StaticActor][setRank]the rankNum={} rankOffest={} and rankMax is {}",rankNum,rankOffest,attributeList.size()));
+                return false;
+            }
+            float costOffest;
+            if(rankOffest>0){
+                for(int i=1;i<=rankOffest;i++){//统计[rankNum+1,rankNum+rankOffest]区间内的费用消耗
+                    costOffest-=attributeList[rankNum+i][9];
+                }
+            }
+            else{//降级返费
+                for(int i=0;i<-rankOffest;i++){//统计[rankNum,rankNum+|rankOffest|+1]区间内的费用消耗
+                    costOffest+=attributeList[rankNum-i][9]*gamePtr->returnCostMul;
+                }
+            }
+            if(gamePtr->nowCost[this->owner]+costOffest<gamePtr->costMin[this->owner]){//内存低于临界
+                throw std::runtime_error(std::format("[StaticActor][setRank]the nowCost={} costOffest={} and rankMax={} the rankMin={}",gamePtr->nowCost[this->owner],costOffest,gamePtr->costMax[this->owner],gamePtr->costMin[this->owner]));
+                return false;
+            }
+            else{
+                if(gamePtr->nowCost[this->owner]+costOffest>gamePtr->costMax[this->owner]){
+                    gamePtr->nowCost[this->owner]=gamePtr->costMax[this->owner];//置为最大值
+                }
+                else{gamePtr->nowCost[this->owner]+=costOffest;}//合法情况
+            }
+            rankNum+=rankOffest;
+        }
         float lastScope=scope;
         this->hp=attributeList[rankNum][3];
         this->attackNum=attributeList[rankNum][4];
@@ -166,17 +200,17 @@ class StaticActor:public Attribute<StaticActor>{
         this->rasistCount=attributeList[rankNum][11];
         if(scope!=lastScope)setScope();
 
-        
+        return true;
     };
     
-    virtual void rankUp(){
+    virtual bool rankUp(){
         rankNum++;
-        setRank();
+        setRank(this);
         gamePtr->nowCost[this->owner]-=this->cost;
     };
-    virtual void rankDown(){
+    virtual bool rankDown(){
         rankNum--;
-        setRank();
+        setRank(this);
         gamePtr->nowCost[this->owner]+=this->cost * gamePtr->returnCostMul;
     };
 
@@ -1172,19 +1206,6 @@ class Game{
     std::vector<std::vector<float>> meanSpeedMap;
 
     
-    //固定单位子类对象池
-    std::deque<StaticActor> basicTowerPool;
-    std::deque<SingleTower> singleTowerPool;
-    std::deque<GroupAttackTower> groupAttackTowerPool;
-    std::deque<SlowTower> slowTowerPool;
-    std::deque<CenterTower> centerTowerPool;
-
-    //可移动单位子类对象池
-    std::deque<MobileActor> basicMobilePool;
-    std::deque<MeleeMobile> meleeMobilePool;
-    std::deque<RangedMobile> rangedMobilePool;
-    std::deque<DefenseMobile> defenseMobilePool;
-    std::deque<ExplosionMobile> explosionMobilePool;
 
     std::vector<StaticActor*> staticActorPool;
     std::vector<MobileActor*> mobileActorPool;
@@ -1195,6 +1216,8 @@ class Game{
     std::vector<int> eraseMobileActorSet;//
 
     std::vector<float> nowCost;//根据owner作为索引来划分
+    std::vector<float> costMax;
+    std::vector<float> costMin;
     std::vector<float> costSpeed;
 
     
@@ -1219,17 +1242,17 @@ class Game{
         auto staticActorAttribute=json::parse(staticActorAttributeFile);
         auto mobileActorAttribute=json::parse(mobileActorAttributeFile);
 
-        Attribute<StaticActor>::attributeList=*(new std::vector<std::vector<float>>(staticActorAttribute["StaticActor"].get<std::vector<std::vector<float>>>()));
-        Attribute<SingleTower>::attributeList=*(new std::vector<std::vector<float>>(staticActorAttribute["SingleTower"].get<std::vector<std::vector<float>>>()));
-        Attribute<GroupAttackTower>::attributeList=*(new std::vector<std::vector<float>>(staticActorAttribute["GroupAttackTower"].get<std::vector<std::vector<float>>>()));
-        Attribute<SlowTower>::attributeList=*(new std::vector<std::vector<float>>(staticActorAttribute["SlowTower"].get<std::vector<std::vector<float>>>()));
-        Attribute<CenterTower>::attributeList=*(new std::vector<std::vector<float>>(staticActorAttribute["CenterTower"].get<std::vector<std::vector<float>>>()));
+        Attribute<StaticActor>::attributeList=std::move(staticActorAttribute["StaticActor"].get<std::vector<std::vector<float>>>());
+        Attribute<SingleTower>::attributeList=std::move(staticActorAttribute["SingleTower"].get<std::vector<std::vector<float>>>());
+        Attribute<GroupAttackTower>::attributeList=std::move(staticActorAttribute["GroupAttackTower"].get<std::vector<std::vector<float>>>());
+        Attribute<SlowTower>::attributeList=std::move(staticActorAttribute["SlowTower"].get<std::vector<std::vector<float>>>());
+        Attribute<CenterTower>::attributeList=std::move(staticActorAttribute["CenterTower"].get<std::vector<std::vector<float>>>());
 
-        Attribute<MobileActor>::attributeList=*(new std::vector<std::vector<float>>(staticActorAttribute["MobileActor"].get<std::vector<std::vector<float>>>()));
-        Attribute<MeleeMobile>::attributeList=*(new std::vector<std::vector<float>>(staticActorAttribute["MeleeMobile"].get<std::vector<std::vector<float>>>()));
-        Attribute<RangedMobile>::attributeList=*(new std::vector<std::vector<float>>(staticActorAttribute["RangedMobile"].get<std::vector<std::vector<float>>>()));
-        Attribute<DefenseMobile>::attributeList=*(new std::vector<std::vector<float>>(staticActorAttribute["DefenseMobile"].get<std::vector<std::vector<float>>>()));
-        Attribute<ExplosionMobile>::attributeList=*(new std::vector<std::vector<float>>(staticActorAttribute["ExplosionMobile"].get<std::vector<std::vector<float>>>()));
+        Attribute<MobileActor>::attributeList=std::move(staticActorAttribute["MobileActor"].get<std::vector<std::vector<float>>>());
+        Attribute<MeleeMobile>::attributeList=std::move(staticActorAttribute["MeleeMobile"].get<std::vector<std::vector<float>>>());
+        Attribute<RangedMobile>::attributeList=std::move(staticActorAttribute["RangedMobile"].get<std::vector<std::vector<float>>>());
+        Attribute<DefenseMobile>::attributeList=std::move(staticActorAttribute["DefenseMobile"].get<std::vector<std::vector<float>>>());
+        Attribute<ExplosionMobile>::attributeList=std::move(staticActorAttribute["ExplosionMobile"].get<std::vector<std::vector<float>>>());
 
     }
 
