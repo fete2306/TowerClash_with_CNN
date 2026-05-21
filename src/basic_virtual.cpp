@@ -99,7 +99,7 @@ class StaticActor:public Attribute<StaticActor>{
         resistList=new std::vector<bool>;
 
         rankNum=0;
-        setRank(this);
+        auto setRankFlag=setRank(0);
         subclassPoolIndex=ActorPool<StaticActor>::Pool.size();//构造函数结束后size++,此刻可正常表示当前对象插入位置
         poolIndex=gamePtr->staticActorPool.size();
         mapListIndex=gamePtr->staticActorMap[int(y)][int(x)].size();
@@ -115,8 +115,6 @@ class StaticActor:public Attribute<StaticActor>{
         resistList=new std::vector<bool>;
 
         rankNum=0;
-
-        setRank(subclassPtr);
 
         poolIndex=ActorPool<SubClass>Pool.size();
         mapListIndex=gamePtr->staticActorMap[int(y)][int(x)].size();
@@ -136,7 +134,7 @@ class StaticActor:public Attribute<StaticActor>{
             effectList[i]->endTime=0;
         }
     }
-
+    
     void dead(){//仅删除子类对象池中的对象的数据 基类指针池、存活列表、对象图等由外部进行删除(对整个索引序列重排)
         //只有基类指针池不能由子类进行 因为删除列表使用的是其索引
         this->_dead(this);
@@ -201,17 +199,6 @@ class StaticActor:public Attribute<StaticActor>{
         if(scope!=lastScope)setScope();
 
         return true;
-    };
-    
-    virtual bool rankUp(){
-        rankNum++;
-        setRank(this);
-        gamePtr->nowCost[this->owner]-=this->cost;
-    };
-    virtual bool rankDown(){
-        rankNum--;
-        setRank(this);
-        gamePtr->nowCost[this->owner]+=this->cost * gamePtr->returnCostMul;
     };
 
     virtual void applyEffect(StaticActor* staticActorPtr){
@@ -445,6 +432,7 @@ class MobileActor:public Attribute<MobileActor>{
 
         rankNum=0;
         this->attributeList=Attribute<MobileActor>::attributeList;
+
         setRank();
         subclassPoolIndex=gamePtr->basicMobilePool.size();//构造函数结束后size++,此刻可正常表示当前对象插入位置
         poolIndex=gamePtr->mobileActorPool.size();
@@ -1037,28 +1025,26 @@ class SlowTower:public StaticActor{//减速
     float moveSlowMul;
     float moveSlowTime;
 
-    SlowTower(Game* gamePtr,int owner,float x,float y):StaticActor(gamePtr,owner,x,y,true){
-        this->subclassPoolIndex=gamePtr->slowTowerPool.size();
+    SlowTower(Game* gamePtr,int owner,float x,float y):StaticActor(gamePtr,owner,x,y,this){
+        setRank(0);
     }
-    void dead() override{
-        StaticActor::dead(true);
-        erase_basedSwap(gamePtr->slowTowerPool,subclassPoolIndex);
+    
+    void dead(){
+        _dead(this);
     }
-    void get_attributeList() override{
-        /*物理抗性 魔法抗性 真实伤害抗性(?) 生命上限 攻击力 攻击范围 攻击数量 攻击速度 攻击类型 到达该等级的费用消耗 费用产出(/s) 阻挡数目 攻击减速倍率 移动减速倍率 攻击减速持续时间 移动减速持续时间*/
-        this->attributeList={
-            {10.0f  ,0.05f  ,0.0f   ,500.0f     ,100.0f  ,2.0f   ,1.0f   ,0.5f   ,1.0f   ,200.0f ,0.0f    ,1.0f ,0.2f,0.2f,1.0f,1.5f},
-            {20.0f  ,0.1f   ,0.0f   ,750.0f     ,150.0f  ,2.5f   ,1.0f   ,0.8f   ,1.0f   ,100.0f  ,0.0f    ,1.0f ,0.5f,0.5f,1.3f,1.5f},
-            {30.0f  ,0.15f  ,0.0f   ,1000.0f    ,200.0f  ,3.0f   ,1.0f   ,1.5f   ,1.0f   ,150.0f ,0.0f    ,1.0f ,0.7f,0.7f,1.5f,1.5f},
-        };
-    };
-    virtual void setRank() override{
-        StaticActor::setRank();
-        this->attackSlowMul=attributeList[rankNum][12];
-        this->moveSlowMul=attributeList[rankNum][13];
-        this->attackSlowTime=attributeList[rankNum][14];
-        this->moveSlowTime=attributeList[rankNum][15];
+    
+    bool setRank(int rankOffest){
+        auto flag= _setRank(this,rankOffest);
+        if(!flag){
+            return false;
+        }
+        this->attackSlowMul=Attribute<SlowTower>::attributeList[rankNum][12];
+        this->moveSlowMul=Attribute<SlowTower>::attributeList[rankNum][13];
+        this->attackSlowTime=Attribute<SlowTower>::attributeList[rankNum][14];
+        this->moveSlowTime=Attribute<SlowTower>::attributeList[rankNum][15];
+        return true;
     }
+
     virtual void applyEffect(StaticActor* staticActorPtr) override{
         staticActorPtr->effectedList.push_back(new specialEffect{0,gamePtr->nowTime+attackSlowTime,staticActorPtr->attackSpeed,attackSlowMul});
         return;
