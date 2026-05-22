@@ -447,7 +447,7 @@ class StaticActor:public IStaticActor{//用于实现通用方法的模板类
         this->y=goalPos.second;
         this->setScope();
         this->mapListIndex=gamePtr->staticActorMap[int(this->y)][int(this->x)].size();
-        gamePtr->mobileActorMap[int(this->y)][int(this->x)].push_back(poolIndex);
+        gamePtr->staticActorMap[int(this->y)][int(this->x)].push_back(poolIndex);
     };
     virtual float getTotalCost()override{
         return Attribute<SubClass>::getCost(0,this->rankNum);//rankNum在IStaticActor,不用管
@@ -1225,25 +1225,25 @@ class Game{
                 if(nowCost[owner]-Attribute<SingleTower>::attributeList[0][9]<costMin[owner]){
                     return false;
                 }
-                ActorPool<SingleTower>::Pool.emplace_back(SingleTower(this,owner,x,y));
+                ActorPool<SingleTower>::Pool.emplace_back(this,owner,x,y);
                 break;
             case 2:
                 if(nowCost[owner]-Attribute<GroupAttackTower>::attributeList[0][9]<costMin[owner]){
                     return false;
                 }
-                ActorPool<GroupAttackTower>::Pool.emplace_back(GroupAttackTower(this,owner,x,y));
+                ActorPool<GroupAttackTower>::Pool.emplace_back(this,owner,x,y);
                 break;
             case 3:
                 if(nowCost[owner]-Attribute<SlowTower>::attributeList[0][9]<costMin[owner]){
                     return false;
                 }
-                ActorPool<SlowTower>::Pool.emplace_back(SlowTower(this,owner,x,y));
+                ActorPool<SlowTower>::Pool.emplace_back(this,owner,x,y);
                 break;
             case 4:
                 if(nowCost[owner]-Attribute<CenterTower>::attributeList[0][9]<costMin[owner]){
                     return false;
                 }
-                ActorPool<CenterTower>::Pool.emplace_back(CenterTower(this,owner,x,y));
+                ActorPool<CenterTower>::Pool.emplace_back(this,owner,x,y);
                 break;
             default:
                 throw std::runtime_error(std::format("[ERROR][Game] the StaticActorType is {}",StaticActorType));
@@ -1260,25 +1260,25 @@ class Game{
                 if(nowCost[owner]-Attribute<MeleeMobile>::attributeList[0][9]<costMin[owner]){
                     return false;
                 }
-                ActorPool<MeleeMobile>::Pool.emplace_back(MeleeMobile(this,owner,x,y));
+                ActorPool<MeleeMobile>::Pool.emplace_back(this,owner,x,y);
                 break;
             case 2:
                 if(nowCost[owner]-Attribute<RangedMobile>::attributeList[0][9]<costMin[owner]){
                     return false;
                 }
-                ActorPool<RangedMobile>::Pool.emplace_back(RangedMobile(this,owner,x,y));
+                ActorPool<RangedMobile>::Pool.emplace_back(this,owner,x,y);
                 break;
             case 3:
                 if(nowCost[owner]-Attribute<DefenseMobile>::attributeList[0][9]<costMin[owner]){
                     return false;
                 }
-                ActorPool<DefenseMobile>::Pool.emplace_back(DefenseMobile(this,owner,x,y));
+                ActorPool<DefenseMobile>::Pool.emplace_back(this,owner,x,y);
                 break;
             case 4:
                 if(nowCost[owner]-Attribute<ExplosionMobile>::attributeList[0][9]<costMin[owner]){
                     return false;
                 }
-                ActorPool<ExplosionMobile>::Pool.emplace_back(ExplosionMobile(this,owner,x,y));
+                ActorPool<ExplosionMobile>::Pool.emplace_back(this,owner,x,y);
                 break;
             default:
                 throw std::runtime_error(std::format("[ERROR][Game] the StaticActorType is {}",MobileActorType));
@@ -1322,6 +1322,8 @@ class Game{
         eraseMobileActorSet.clear();
 
     }
+
+    
 
     void run(){
         while(true){
