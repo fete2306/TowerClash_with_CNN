@@ -1154,20 +1154,13 @@ class ExplosionMobile:public MobileActor<ExplosionMobile>{//自爆
 class Game{
     public:
     std::vector<std::vector<bool>> basicMap;//0为障碍物 1为空地 2为A方固定单位 3为A方移动单位 4为B方固定单位 5为B方移动单位 以A方为例，仅0和2无法通过 //废弃,单格可能有多个不同阵营单位,仅保留0/1来标明障碍物
+    std::unordered_map<std::string,std::vector<std::vector<bool>>> mapTable;//存地图列表
     std::vector<std::vector<std::vector<int>>> staticActorMap;//存每个格子的固定单位索引列表
     std::vector<std::vector<std::vector<int>>> mobileActorMap;//存每个格子的移动单位索引列表
 
     //以下均用,且仅用于转为张量传入CNN
-    std::vector<std::vector<float>> meanHpMap;
-    std::vector<std::vector<float>> meanAttackNumMap;
-    std::vector<std::vector<float>> maxScopeMap;
-    std::vector<std::vector<float>> meanAttackSpeedMap;
-    std::vector<std::vector<float>> meanAttackCountMap;
-    std::vector<std::vector<float>> meanCostMap;
-    std::vector<std::vector<float>> meanCostRateMap;
-    std::vector<std::vector<float>> meanSpeedMap;
-
-    
+    std::deque<std::pair<std::vector<float>,std::vector<int64_t>>>tensor;//存近frameNum次操作帧 [(张量,形状)]
+    std::deque<std::vector<int>>resultOut;//存进行的操作
 
     std::vector<IStaticActor*> staticActorPool;
     std::vector<IMobileActor*> mobileActorPool;
@@ -1182,19 +1175,27 @@ class Game{
     std::vector<float> costMin;
     std::vector<float> costSpeed;
 
-    
+    int frameNum=5;
+    int mapIndex;
     float nowTime;
 
     float returnCostMul=0.5f;//返回时消耗的倍率 
 
     bool cnnSwitch;
 
-    
 
+    Game(std::string mapJsonPath="assets/MapData/Map.json",int mapIndex=0,std::string staticActorJsonPath="assets/ActorAttribute/StaticActor.json",std::string mobileActorJsonPath="assets/ActorAttribute/MobileActor.json"){//初始地图,仅01
+        using json = nlohmann::json;
+        std::ifstream mapFile(mapJsonPath);
+        this->mapTable=json::parse(mapFile);
+        this->basicMap=this->mapTable[std::to_string(mapIndex)];
 
-    Game(std::vector<std::vector<bool>> basicMap){//初始地图,仅01
-        this->basicMap=basicMap;
+        setBaseAttribute(staticActorJsonPath,mobileActorJsonPath);
 
+    }
+    void setMap(int index){
+        this->basicMap=this->mapTable[std::to_string(index)];
+        
     }
 
     void setBaseAttribute(std::string staticActorJsonPath="assets/ActorAttribute/StaticActor.json",std::string mobileActorJsonPath="assets/ActorAttribute/MobileActor.json"){
@@ -1216,7 +1217,13 @@ class Game{
 
     }
 
+    void creatTensor(){
+        //基础属性
+        //对每个阵营 需要存储 当前费用(标量) 当前费用速率(标量) 当前操作类型(标量) 当前操作 静态和动态单位的布局 平均剩余生命值 平均攻击力 平均攻击范围 平均攻击速度 
+    }
+
     bool creatStaticActor(int x,int y,int owner,int StaticActorType){
+        if(!basicMap[y][x])return false;
         switch(StaticActorType){
             // case 0:
             //     basicTowerPool.emplace_back(StaticActor(this,owner,x,y));
@@ -1252,6 +1259,7 @@ class Game{
     }
 
     bool creatMobileActor(int x,int y,int owner,int MobileActorType){
+        if(!basicMap[y][x])return false;
         switch(MobileActorType){
             // case 0:
             //     basicTowerPool.emplace_back(StaticActor(this,owner,x,y));
@@ -1325,8 +1333,7 @@ class Game{
 
     
 
-    void run(){
-        while(true){
+    void tick(){
             //之后绑定操作按钮 暂时先不处理创建逻辑
 
             //移动->攻击->删除
@@ -1362,7 +1369,6 @@ class Game{
             
             nowTime+=0.1;
         }
-    }
 
 };
 
