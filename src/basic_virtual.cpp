@@ -462,7 +462,7 @@ class MobileActor:public IMobileActor{
     public:
     
 
-    MobileActor(Game* gamePtr,int owner,float x,float y,bool subclassFlag):gamePtr(gamePtr),owner(owner),x(x),y(y){
+    MobileActor(Game* gamePtr,int owner,float x,float y,SubClass* subclassPtr):gamePtr(gamePtr),owner(owner),x(x),y(y){
 
         resistedList=nullptr;
 
