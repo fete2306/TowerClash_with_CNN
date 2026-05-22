@@ -821,12 +821,19 @@ class MobileActor:public Attribute<MobileActor>{
 
 class SingleTower:public StaticActor,public Attribute<SingleTower>{//单体攻击
     public:
-    SingleTower(Game* gamePtr,int owner,float x,float y):StaticActor(gamePtr,owner,x,y,true){
-       this->subclassPoolIndex=gamePtr->singleTowerPool.size();
+    SingleTower(Game* gamePtr,int owner,float x,float y):StaticActor(gamePtr,owner,x,y,this){
+       setRank(0);
     }
-    void dead() override{
-        StaticActor::dead(true);
-        erase_basedSwap(gamePtr->singleTowerPool,subclassPoolIndex);
+    void dead(){
+        _dead(this);
+    }
+    
+    bool setRank(int rankOffest){
+        auto flag= _setRank(this,rankOffest);
+        if(!flag){
+            return false;
+        }
+        return true;
     }
     
 
