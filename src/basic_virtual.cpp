@@ -10,9 +10,17 @@
 #include<tuple>
 #include<string>
 #include<unordered_map>
-#include <fstream>
-#include "basic_virtual_ui.h"
+#include<fstream>
+#include<chrono>
+
 #include<json.hpp>
+
+//imgui相关
+#include "imgui.h"
+#include "imgui_impl_win32.h"  // 平台后端
+#include "imgui_impl_dx11.h"   // 渲染后端
+#include <d3d11.h>             // DX11 底层
+#include <windows.h>           // Win32 底层
 
 template<typename SubClass>
 class StaticActor;
@@ -21,6 +29,39 @@ class MobileActor;
 class IStaticActor;
 class IMobileActor;
 class Game;
+
+class SingleTower;
+class GroupAttackTower;
+class SlowTower;
+class CenterTower;
+
+class MeleeMobile;
+class RangedMobile;
+class DefenseMobile;
+class ExplosionMobile;
+
+
+template<typename T>
+class TypeId{
+    static constexpr int value=-1;
+};
+
+template<>class TypeId<SingleTower>{ public: static constexpr int value=1; };
+
+template<>class TypeId<GroupAttackTower>{ public: static constexpr int value=2; };
+
+template<>class TypeId<SlowTower>{ public: static constexpr int value=3; };
+
+template<>class TypeId<CenterTower>{ public: static constexpr int value=4; };
+
+template<>class TypeId<MeleeMobile>{ public: static constexpr int value=1; };
+
+template<>class TypeId<RangedMobile>{ public: static constexpr int value=2; };
+
+template<>class TypeId<DefenseMobile>{ public: static constexpr int value=3; };
+
+template<>class TypeId<ExplosionMobile>{ public: static constexpr int value=4; };
+
 
 template<typename T>
 void erase_basedSwap(std::vector<T>& vec,size_t index){
@@ -105,6 +146,8 @@ class IStaticActor{//仅用作基类指针
     float costRate;
     float rasistCount;
 
+    int typeId;
+
     static float basicCost;
     virtual ~IStaticActor()=default;
     virtual void dead(){};
@@ -139,7 +182,7 @@ class IMobileActor{
     
     int resistListIndex;
 
-    int pathNum;
+    int pathIndex;
     float moveSpeed;
     int rankNum;
     int owner;
@@ -154,6 +197,8 @@ class IMobileActor{
     int attackType;
     int cost;
     float costRate;
+
+    int typeId;
     virtual ~IMobileActor()=default;
     virtual void dead(){};
     virtual bool setRank(int rankOffest){};
@@ -177,6 +222,8 @@ class StaticActor:public IStaticActor{//用于实现通用方法的模板类
     public:
     StaticActor(Game* gamePtr,int owner,float x,float y,SubClass* subclassPtr):gamePtr(gamePtr),owner(owner),x(x),y(y){
 
+        typeId=TypeId<SubClass>::value;
+        
         resistList=new std::vector<bool>;
 
         rankNum=0;
@@ -464,6 +511,8 @@ class MobileActor:public IMobileActor{
 
     MobileActor(Game* gamePtr,int owner,float x,float y,SubClass* subclassPtr):gamePtr(gamePtr),owner(owner),x(x),y(y){
 
+        typeId=TypeId<SubClass>::value;
+
         resistedList=nullptr;
 
         rankNum=0;
@@ -729,12 +778,12 @@ class MobileActor:public IMobileActor{
     }
 
     virtual void move()override{//移动以0.1s为单位
-        if(path.size()!=0&&pathNum<path.size()-1&&(resistedList==nullptr||(resistedList!=nullptr&&(resistedList->size()<=resistListIndex||(*resistedList)[resistListIndex]==false)))){//有路&&未走完&&未阻挡
-            float dx=path[pathNum][0]-this->x;
-            float dy=path[pathNum][1]-this->y;
+        if(path.size()!=0&&pathIndex<path.size()-1&&(resistedList==nullptr||(resistedList!=nullptr&&(resistedList->size()<=resistListIndex||(*resistedList)[resistListIndex]==false)))){//有路&&未走完&&未阻挡
+            float dx=path[pathIndex][0]-this->x;
+            float dy=path[pathIndex][1]-this->y;
             float d=sqrt(dx*dx+dy*dy);
-            float newX=this->x+dx/d*this->moveSpeed*0.1;
-            float newY=this->y+dy/d*this->moveSpeed*0.1;
+            float newX=this->x+dx/d*this->moveSpeed*gamePtr->timeStep;
+            float newY=this->y+dy/d*this->moveSpeed*gamePtr->timeStep;
             if(int(newX)!=int(this->x)||int(newY)!=int(this->y)){
                 gamePtr->mobileActorPool[gamePtr->mobileActorMap[int(this->y)][int(this->x)][gamePtr->mobileActorMap[int(this->y)][int(this->x)].size()-1]]->mapListIndex=this->mapListIndex;
                 erase_basedSwap(gamePtr->mobileActorMap[int(this->y)][int(this->x)],this->mapListIndex);
@@ -755,8 +804,8 @@ class MobileActor:public IMobileActor{
                     break;
                 }
             }
-            if(d<=this->moveSpeed*0.1){
-                pathNum++;
+            if(d<=this->moveSpeed*gamePtr->timestep){
+                pathIndex++;
             }
         }
     }
@@ -768,7 +817,7 @@ class MobileActor:public IMobileActor{
         std::vector<std::array<int,2>> resPath;
         // this->getPath_dfs(goalX,goalY,resPath);
         this->aStar(goalX,goalY,resPath);
-        this->pathNum=0;
+        this->pathIndex=0;
         return resPath;
     }
     
@@ -1153,21 +1202,21 @@ class ExplosionMobile:public MobileActor<ExplosionMobile>{//自爆
 
 class Game{
     public:
-    std::vector<std::vector<bool>> basicMap;//0为障碍物 1为空地 2为A方固定单位 3为A方移动单位 4为B方固定单位 5为B方移动单位 以A方为例，仅0和2无法通过 //废弃,单格可能有多个不同阵营单位,仅保留0/1来标明障碍物
+    std::vector<std::vector<bool>> basicMap;//0为障碍物 1为空地
     std::unordered_map<std::string,std::vector<std::vector<bool>>> mapTable;//存地图列表
     std::vector<std::vector<std::vector<int>>> staticActorMap;//存每个格子的固定单位索引列表
     std::vector<std::vector<std::vector<int>>> mobileActorMap;//存每个格子的移动单位索引列表
 
     //以下均用,且仅用于转为张量传入CNN
     std::deque<std::pair<std::vector<float>,std::vector<int64_t>>>tensor;//存近frameNum次操作帧 [(张量,形状)]
-    std::deque<std::vector<int>>resultOut;//存进行的操作
+    std::deque<std::pair<std::vector<int>,std::vector<int64_t>>>resultOut;//存对应操作帧进行的操作[( (操作类型,操作对象,操作参数),形状)]
 
     std::vector<IStaticActor*> staticActorPool;
     std::vector<IMobileActor*> mobileActorPool;
 
     std::vector<std::vector<int>> aliveStaticList;
     std::vector<std::vector<int>> aliveMobileList;
-    std::vector<int> eraseStaticActorSet;//后续进行sort与unique来处理 从大到小来进行 删除时需要swap待删除与队尾,且将所有对于基类指针池的索引一并swap
+    std::vector<int> eraseStaticActorSet;//后续进行sort与unique来处理 从大到小来进行
     std::vector<int> eraseMobileActorSet;//
 
     std::vector<float> nowCost;//根据owner作为索引来划分
@@ -1178,6 +1227,10 @@ class Game{
     int frameNum=5;
     int mapIndex;
     float nowTime;
+    float timeStep=0.1f;
+    float lastFrameTime;
+    float accumLastFrameTime;
+
 
     float returnCostMul=0.5f;//返回时消耗的倍率 
 
@@ -1299,7 +1352,7 @@ class Game{
         eraseStaticActorSet.push_back(index);
         auto actorPtr=staticActorPool[index];
         nowCost[actorPtr->owner]+=actorPtr->getTotalCost()*returnCostMul;
-        nowCost[actorPtr->owner]=std::min(nowCost[actorPtr->owner],costMax[actorPtr->owner]);
+        nowCost[actorPtr->owner]=std::min<float>(nowCost[actorPtr->owner],costMax[actorPtr->owner]);
         solveDeadActor();
     }
 
@@ -1307,7 +1360,7 @@ class Game{
         eraseMobileActorSet.push_back(index);
         auto actorPtr=mobileActorPool[index];
         nowCost[actorPtr->owner]+=actorPtr->getTotalCost()*returnCostMul;
-        nowCost[actorPtr->owner]=std::min(nowCost[actorPtr->owner],costMax[actorPtr->owner]);
+        nowCost[actorPtr->owner]=std::min<float>(nowCost[actorPtr->owner],costMax[actorPtr->owner]);
         solveDeadActor();
     }
 
@@ -1358,7 +1411,7 @@ class Game{
 
             this->solveDeadActor();
             
-            costSpeed=std::vector<float>(costSpeed.size(),1.0f);//每0.1s产生的费用
+            costSpeed=std::vector<float>(costSpeed.size(),timeStep);//每0.1s产生的费用
             for(auto actor:ActorPool<CenterTower>::Pool){
                 costSpeed[actor.owner]+=actor.costRate;  
             }
@@ -1367,31 +1420,20 @@ class Game{
                 nowCost[i]+=costSpeed[i];
             }
             
-            nowTime+=0.1;
+            nowTime+=timeStep;
         }
 
+    void draw(){
+        
+
+
+
+
+
+
+
+
+        lastFrameTime = std::chrono::duration<float>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
+    }
+
 };
-
-BasicVirtualDebugState GetBasicVirtualDebugState(Game* game)
-{
-    BasicVirtualDebugState state;
-    if (!game)
-        return state;
-
-    state.nowTime = game->nowTime;
-    state.cnnSwitch = game->cnnSwitch;
-    state.mapHeight = (int)game->basicMap.size();
-    state.mapWidth = state.mapHeight ? (int)game->basicMap[0].size() : 0;
-    state.staticActorCount = (int)game->staticActorPool.size();
-    state.mobileActorCount = (int)game->mobileActorPool.size();
-    state.nowCost = game->nowCost;
-    state.costSpeed = game->costSpeed;
-    return state;
-}
-
-void SetGameCnnSwitch(Game* game, bool enabled)
-{
-    if (game)
-        game->cnnSwitch = enabled;
-}
-

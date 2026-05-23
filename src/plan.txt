@@ -1,0 +1,19 @@
+basicMap;//0为障碍物 1为空地
+staticActorMap;//存每个格子的固定单位索引列表
+mobileActorMap;//存每个格子的移动单位索引列表
+std::vector<int> eraseStaticActorSet;//后续进行sort与unique来处理 从大到小来进行 删除时需要swap待删除与队尾,且将所有对于基类指针池的索引一并swap
+std::vector<int> eraseMobileActorSet;//
+    std::vector<float> nowCost;//根据owner作为索引来划分
+    std::vector<float> costMax;
+    std::vector<float> costMin;
+    std::vector<float> costSpeed;
+
+    int frameNum=5;
+    int mapIndex;
+    float nowTime;
+    float timeStep=0.1f;
+    float lastFrameTime;
+    float accumLastFrameTime;
+
+
+    float returnCostMul=0.5f;//返回时消耗的倍率 
