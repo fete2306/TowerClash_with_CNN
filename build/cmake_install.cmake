@@ -1,4 +1,4 @@
-# Install script for directory: D:/Creat/GAME/JAVA课程设计
+# Install script for directory: D:/Creat/GAME/TowerClash_with_CNN
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -33,13 +33,13 @@ if(NOT DEFINED CMAKE_CROSSCOMPILING)
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" TYPE EXECUTABLE FILES "D:/Creat/GAME/JAVA课程设计/build/bin/game.exe")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" TYPE EXECUTABLE FILES "D:/Creat/GAME/TowerClash_with_CNN/build/bin/game.exe")
 endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
 if(CMAKE_INSTALL_LOCAL_ONLY)
-  file(WRITE "D:/Creat/GAME/JAVA课程设计/build/install_local_manifest.txt"
+  file(WRITE "D:/Creat/GAME/TowerClash_with_CNN/build/install_local_manifest.txt"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()
 if(CMAKE_INSTALL_COMPONENT)
@@ -55,6 +55,6 @@ else()
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  file(WRITE "D:/Creat/GAME/JAVA课程设计/build/${CMAKE_INSTALL_MANIFEST}"
+  file(WRITE "D:/Creat/GAME/TowerClash_with_CNN/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()

@@ -42,19 +42,19 @@
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 24,
-				"parent" : 0
-			},
-			{
-				"command" : 2,
-				"file" : 0,
 				"line" : 28,
 				"parent" : 0
 			},
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 31,
+				"line" : 36,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 39,
 				"parent" : 0
 			}
 		]
@@ -77,7 +77,11 @@
 			[
 				{
 					"backtrace" : 2,
-					"path" : "D:/Creat/GAME/JAVA\u8bfe\u7a0b\u8bbe\u8ba1/external/imgui"
+					"path" : "D:/Creat/GAME/TowerClash_with_CNN/external/imgui"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "D:/Creat/GAME/TowerClash_with_CNN/external/imgui/backends"
 				}
 			],
 			"language" : "CXX",
@@ -97,7 +101,9 @@
 				3,
 				4,
 				5,
-				6
+				6,
+				7,
+				8
 			]
 		}
 	],
@@ -121,7 +127,9 @@
 				3,
 				4,
 				5,
-				6
+				6,
+				7,
+				8
 			]
 		}
 	],
@@ -155,6 +163,18 @@
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "external/imgui/imgui_demo.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "external/imgui/backends/imgui_impl_win32.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "external/imgui/backends/imgui_impl_dx11.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{

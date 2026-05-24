@@ -44,7 +44,6 @@ events:
       - "D:/VisualStudio/VisualStudio/Common7/Tools/"
       - "D:/conda/condabin/"
       - "C:/Users/ASD/AppData/Local/cloud-code/installer/google-cloud-sdk/bin/"
-      - "D:/VSCode/Microsoft VS Code/"
       - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8/bin/"
       - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8/libnvvp/"
       - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.8/bin/"
@@ -217,15 +216,6 @@ events:
       - "C:/Users/ASD/AppData/Local/cloud-code/installer/google-cloud-sdk/bin/samu.com"
       - "C:/Users/ASD/AppData/Local/cloud-code/installer/google-cloud-sdk/bin/samu.exe"
       - "C:/Users/ASD/AppData/Local/cloud-code/installer/google-cloud-sdk/bin/samu"
-      - "D:/VSCode/Microsoft VS Code/ninja-build.com"
-      - "D:/VSCode/Microsoft VS Code/ninja-build.exe"
-      - "D:/VSCode/Microsoft VS Code/ninja-build"
-      - "D:/VSCode/Microsoft VS Code/ninja.com"
-      - "D:/VSCode/Microsoft VS Code/ninja.exe"
-      - "D:/VSCode/Microsoft VS Code/ninja"
-      - "D:/VSCode/Microsoft VS Code/samu.com"
-      - "D:/VSCode/Microsoft VS Code/samu.exe"
-      - "D:/VSCode/Microsoft VS Code/samu"
       - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8/bin/ninja-build.com"
       - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8/bin/ninja-build.exe"
       - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8/bin/ninja-build"
@@ -545,7 +535,6 @@ events:
         - "D:\\VisualStudio\\VisualStudio\\Common7\\Tools\\"
         - "D:\\conda\\condabin"
         - "C:\\Users\\ASD\\AppData\\Local\\cloud-code\\installer\\google-cloud-sdk\\bin"
-        - "D:\\VSCode\\Microsoft VS Code"
         - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.8\\bin"
         - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.8\\libnvvp"
         - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.8\\bin"
@@ -618,7 +607,6 @@ events:
       - "D:/VisualStudio/VisualStudio/Common7/Tools/"
       - "D:/conda/condabin/"
       - "C:/Users/ASD/AppData/Local/cloud-code/installer/google-cloud-sdk/bin/"
-      - "D:/VSCode/Microsoft VS Code/"
       - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8/bin/"
       - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8/libnvvp/"
       - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.8/bin/"
@@ -675,7 +663,6 @@ events:
         - "D:\\VisualStudio\\VisualStudio\\Common7\\Tools\\"
         - "D:\\conda\\condabin"
         - "C:\\Users\\ASD\\AppData\\Local\\cloud-code\\installer\\google-cloud-sdk\\bin"
-        - "D:\\VSCode\\Microsoft VS Code"
         - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.8\\bin"
         - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.8\\libnvvp"
         - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.8\\bin"
@@ -755,7 +742,6 @@ events:
         - "D:\\VisualStudio\\VisualStudio\\Common7\\Tools\\"
         - "D:\\conda\\condabin"
         - "C:\\Users\\ASD\\AppData\\Local\\cloud-code\\installer\\google-cloud-sdk\\bin"
-        - "D:\\VSCode\\Microsoft VS Code"
         - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.8\\bin"
         - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.8\\libnvvp"
         - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.8\\bin"
@@ -833,7 +819,7 @@ events:
       Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CMakeCXXCompilerId.obj"
       
       The CXX compiler identification is MSVC, found in:
-        D:/Creat/GAME/JAVA课程设计/build/CMakeFiles/4.3.2/CompilerIdCXX/CMakeCXXCompilerId.exe
+        D:/Creat/GAME/TowerClash_with_CNN/build/CMakeFiles/4.3.2/CompilerIdCXX/CMakeCXXCompilerId.exe
       
   -
     kind: "message-v1"
@@ -845,7 +831,7 @@ events:
     message: |
       Detecting CXX compiler /showIncludes prefix:
         main.c
-        注意: 包含文件:  D:\\Creat\\GAME\\JAVA课程设计\\build\\CMakeFiles\\ShowIncludes\\foo.h
+        注意: 包含文件:  D:\\Creat\\GAME\\TowerClash_with_CNN\\build\\CMakeFiles\\ShowIncludes\\foo.h
         
       Found prefix "注意: 包含文件:  "
   -
@@ -885,7 +871,6 @@ events:
       - "D:/VisualStudio/VisualStudio/Common7/Tools/"
       - "D:/conda/condabin/"
       - "C:/Users/ASD/AppData/Local/cloud-code/installer/google-cloud-sdk/bin/"
-      - "D:/VSCode/Microsoft VS Code/"
       - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8/bin/"
       - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8/libnvvp/"
       - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.8/bin/"
@@ -942,7 +927,6 @@ events:
         - "D:\\VisualStudio\\VisualStudio\\Common7\\Tools\\"
         - "D:\\conda\\condabin"
         - "C:\\Users\\ASD\\AppData\\Local\\cloud-code\\installer\\google-cloud-sdk\\bin"
-        - "D:\\VSCode\\Microsoft VS Code"
         - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.8\\bin"
         - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.8\\libnvvp"
         - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.8\\bin"
@@ -1017,7 +1001,6 @@ events:
       - "D:/VisualStudio/VisualStudio/Common7/Tools/"
       - "D:/conda/condabin/"
       - "C:/Users/ASD/AppData/Local/cloud-code/installer/google-cloud-sdk/bin/"
-      - "D:/VSCode/Microsoft VS Code/"
       - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8/bin/"
       - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8/libnvvp/"
       - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.8/bin/"
@@ -1100,9 +1083,6 @@ events:
       - "C:/Users/ASD/AppData/Local/cloud-code/installer/google-cloud-sdk/bin/lld-link.com"
       - "C:/Users/ASD/AppData/Local/cloud-code/installer/google-cloud-sdk/bin/lld-link.exe"
       - "C:/Users/ASD/AppData/Local/cloud-code/installer/google-cloud-sdk/bin/lld-link"
-      - "D:/VSCode/Microsoft VS Code/lld-link.com"
-      - "D:/VSCode/Microsoft VS Code/lld-link.exe"
-      - "D:/VSCode/Microsoft VS Code/lld-link"
       - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8/bin/lld-link.com"
       - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8/bin/lld-link.exe"
       - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8/bin/lld-link"
@@ -1229,7 +1209,6 @@ events:
         - "D:\\VisualStudio\\VisualStudio\\Common7\\Tools\\"
         - "D:\\conda\\condabin"
         - "C:\\Users\\ASD\\AppData\\Local\\cloud-code\\installer\\google-cloud-sdk\\bin"
-        - "D:\\VSCode\\Microsoft VS Code"
         - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.8\\bin"
         - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.8\\libnvvp"
         - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.8\\bin"
@@ -1302,7 +1281,6 @@ events:
       - "D:/VisualStudio/VisualStudio/Common7/Tools/"
       - "D:/conda/condabin/"
       - "C:/Users/ASD/AppData/Local/cloud-code/installer/google-cloud-sdk/bin/"
-      - "D:/VSCode/Microsoft VS Code/"
       - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8/bin/"
       - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8/libnvvp/"
       - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.8/bin/"
@@ -1359,7 +1337,6 @@ events:
         - "D:\\VisualStudio\\VisualStudio\\Common7\\Tools\\"
         - "D:\\conda\\condabin"
         - "C:\\Users\\ASD\\AppData\\Local\\cloud-code\\installer\\google-cloud-sdk\\bin"
-        - "D:\\VSCode\\Microsoft VS Code"
         - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.8\\bin"
         - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.8\\libnvvp"
         - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.8\\bin"
@@ -1432,7 +1409,6 @@ events:
       - "D:/VisualStudio/VisualStudio/Common7/Tools/"
       - "D:/conda/condabin/"
       - "C:/Users/ASD/AppData/Local/cloud-code/installer/google-cloud-sdk/bin/"
-      - "D:/VSCode/Microsoft VS Code/"
       - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8/bin/"
       - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8/libnvvp/"
       - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.8/bin/"
@@ -1510,7 +1486,6 @@ events:
         - "D:\\VisualStudio\\VisualStudio\\Common7\\Tools\\"
         - "D:\\conda\\condabin"
         - "C:\\Users\\ASD\\AppData\\Local\\cloud-code\\installer\\google-cloud-sdk\\bin"
-        - "D:\\VSCode\\Microsoft VS Code"
         - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.8\\bin"
         - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.8\\libnvvp"
         - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.8\\bin"
@@ -1583,7 +1558,6 @@ events:
       - "D:/VisualStudio/VisualStudio/Common7/Tools/"
       - "D:/conda/condabin/"
       - "C:/Users/ASD/AppData/Local/cloud-code/installer/google-cloud-sdk/bin/"
-      - "D:/VSCode/Microsoft VS Code/"
       - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8/bin/"
       - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8/libnvvp/"
       - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.8/bin/"
@@ -1640,7 +1614,6 @@ events:
         - "D:\\VisualStudio\\VisualStudio\\Common7\\Tools\\"
         - "D:\\conda\\condabin"
         - "C:\\Users\\ASD\\AppData\\Local\\cloud-code\\installer\\google-cloud-sdk\\bin"
-        - "D:\\VSCode\\Microsoft VS Code"
         - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.8\\bin"
         - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.8\\libnvvp"
         - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.8\\bin"
@@ -1716,7 +1689,6 @@ events:
       - "D:/VisualStudio/VisualStudio/Common7/Tools/"
       - "D:/conda/condabin/"
       - "C:/Users/ASD/AppData/Local/cloud-code/installer/google-cloud-sdk/bin/"
-      - "D:/VSCode/Microsoft VS Code/"
       - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8/bin/"
       - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8/libnvvp/"
       - "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.8/bin/"
@@ -1806,7 +1778,6 @@ events:
         - "D:\\VisualStudio\\VisualStudio\\Common7\\Tools\\"
         - "D:\\conda\\condabin"
         - "C:\\Users\\ASD\\AppData\\Local\\cloud-code\\installer\\google-cloud-sdk\\bin"
-        - "D:\\VSCode\\Microsoft VS Code"
         - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.8\\bin"
         - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.8\\libnvvp"
         - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.8\\bin"
@@ -1859,8 +1830,8 @@ events:
     checks:
       - "Detecting CXX compiler ABI info"
     directories:
-      source: "D:/Creat/GAME/JAVA\u8bfe\u7a0b\u8bbe\u8ba1/build/CMakeFiles/CMakeScratch/TryCompile-yqgkjd"
-      binary: "D:/Creat/GAME/JAVA\u8bfe\u7a0b\u8bbe\u8ba1/build/CMakeFiles/CMakeScratch/TryCompile-yqgkjd"
+      source: "D:/Creat/GAME/TowerClash_with_CNN/build/CMakeFiles/CMakeScratch/TryCompile-swyoei"
+      binary: "D:/Creat/GAME/TowerClash_with_CNN/build/CMakeFiles/CMakeScratch/TryCompile-swyoei"
     cmakeVariables:
       CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /GR /EHsc"
       CMAKE_CXX_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
@@ -1871,11 +1842,11 @@ events:
       variable: "CMAKE_CXX_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: 'D:/Creat/GAME/JAVA课程设计/build/CMakeFiles/CMakeScratch/TryCompile-yqgkjd'
+        Change Dir: 'D:/Creat/GAME/TowerClash_with_CNN/build/CMakeFiles/CMakeScratch/TryCompile-swyoei'
         
-        Run Build Command(s): D:/VisualStudio/VisualStudio/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe -v cmTC_b6bac
-        [1/2] D:\\VisualStudio\\VisualStudio\\VC\\Tools\\MSVC\\14.50.35717\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -D_MBCS  /DWIN32 /D_WINDOWS /GR /EHsc  /Zi /Ob0 /Od /RTC1 -MDd /showIncludes /FoCMakeFiles\\cmTC_b6bac.dir\\CMakeCXXCompilerABI.cpp.obj /FdCMakeFiles\\cmTC_b6bac.dir\\ /FS -c D:\\CMake\\share\\cmake-4.3\\Modules\\CMakeCXXCompilerABI.cpp
-        [2/2] C:\\Windows\\system32\\cmd.exe /C "cd . && D:\\CMake\\bin\\cmake.exe -E vs_link_exe --msvc-ver=1950 --intdir=CMakeFiles\\cmTC_b6bac.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\mt.exe --manifests  -- D:\\VisualStudio\\VisualStudio\\VC\\Tools\\MSVC\\14.50.35717\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_b6bac.dir\\CMakeCXXCompilerABI.cpp.obj  /out:cmTC_b6bac.exe /implib:cmTC_b6bac.lib /pdb:cmTC_b6bac.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+        Run Build Command(s): D:/VisualStudio/VisualStudio/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe -v cmTC_d29ee
+        [1/2] D:\\VisualStudio\\VisualStudio\\VC\\Tools\\MSVC\\14.50.35717\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -D_MBCS  /DWIN32 /D_WINDOWS /GR /EHsc  /Zi /Ob0 /Od /RTC1 -MDd /showIncludes /FoCMakeFiles\\cmTC_d29ee.dir\\CMakeCXXCompilerABI.cpp.obj /FdCMakeFiles\\cmTC_d29ee.dir\\ /FS -c D:\\CMake\\share\\cmake-4.3\\Modules\\CMakeCXXCompilerABI.cpp
+        [2/2] C:\\Windows\\system32\\cmd.exe /C "cd . && D:\\CMake\\bin\\cmake.exe -E vs_link_exe --msvc-ver=1950 --intdir=CMakeFiles\\cmTC_d29ee.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\mt.exe --manifests  -- D:\\VisualStudio\\VisualStudio\\VC\\Tools\\MSVC\\14.50.35717\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_d29ee.dir\\CMakeCXXCompilerABI.cpp.obj  /out:cmTC_d29ee.exe /implib:cmTC_d29ee.lib /pdb:cmTC_d29ee.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
         
       exitCode: 0
   -

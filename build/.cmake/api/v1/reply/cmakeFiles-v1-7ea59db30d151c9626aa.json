@@ -2,19 +2,20 @@
 	"globsDependent" : 
 	[
 		{
-			"expression" : "D:/Creat/GAME/JAVA\u8bfe\u7a0b\u8bbe\u8ba1/src/**/*.cpp",
+			"expression" : "D:/Creat/GAME/TowerClash_with_CNN/src/**/*.cpp",
 			"paths" : 
 			[
-				"D:/Creat/GAME/JAVA\u8bfe\u7a0b\u8bbe\u8ba1/src/ui/basic_virtual_ui.cpp"
+				"D:/Creat/GAME/TowerClash_with_CNN/src/ui/basic_virtual_ui.cpp"
 			],
 			"recurse" : true
 		},
 		{
-			"expression" : "D:/Creat/GAME/JAVA\u8bfe\u7a0b\u8bbe\u8ba1/src/*.cpp",
+			"expression" : "D:/Creat/GAME/TowerClash_with_CNN/src/*.cpp",
 			"paths" : 
 			[
-				"D:/Creat/GAME/JAVA\u8bfe\u7a0b\u8bbe\u8ba1/src/basic_virtual.cpp",
-				"D:/Creat/GAME/JAVA\u8bfe\u7a0b\u8bbe\u8ba1/src/ui/basic_virtual_ui.cpp"
+				"D:/Creat/GAME/TowerClash_with_CNN/src/Game.cpp",
+				"D:/Creat/GAME/TowerClash_with_CNN/src/basic_virtual.cpp",
+				"D:/Creat/GAME/TowerClash_with_CNN/src/ui/basic_virtual_ui.cpp"
 			],
 			"recurse" : true
 		}
@@ -150,8 +151,8 @@
 	"kind" : "cmakeFiles",
 	"paths" : 
 	{
-		"build" : "D:/Creat/GAME/JAVA\u8bfe\u7a0b\u8bbe\u8ba1/build",
-		"source" : "D:/Creat/GAME/JAVA\u8bfe\u7a0b\u8bbe\u8ba1"
+		"build" : "D:/Creat/GAME/TowerClash_with_CNN/build",
+		"source" : "D:/Creat/GAME/TowerClash_with_CNN"
 	},
 	"version" : 
 	{

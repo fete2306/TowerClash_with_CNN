@@ -20,8 +20,16 @@ add_library(imgui STATIC
 	${EXTERNAL_DIR}/imgui/imgui_tables.cpp
 	${EXTERNAL_DIR}/imgui/imgui_widgets.cpp
 	${EXTERNAL_DIR}/imgui/imgui_demo.cpp
+	# 添加 Win32 和 DX11 后端源码
+	${EXTERNAL_DIR}/imgui/backends/imgui_impl_win32.cpp
+	${EXTERNAL_DIR}/imgui/backends/imgui_impl_dx11.cpp
 )
-target_include_directories(imgui PUBLIC ${EXTERNAL_DIR}/imgui)
+# 同时将 backends 目录加入头文件搜索路径
+target_include_directories(imgui PUBLIC 
+	${EXTERNAL_DIR}/imgui
+	${EXTERNAL_DIR}/imgui/backends
+)
+
 
 # 可选地把后端源码加入到 imgui 库（如果存在）
 if(EXISTS ${EXTERNAL_DIR}/imgui/backends/imgui_impl_sdl2.cpp)

@@ -39,7 +39,8 @@ class MeleeMobile;
 class RangedMobile;
 class DefenseMobile;
 class ExplosionMobile;
-
+class Resist;
+class ResistList;
 
 template<typename T>
 class TypeId{
@@ -74,14 +75,69 @@ void erase_basedSwap(std::deque<T>& vec,size_t index){
     vec.pop_back();
 }
 
-class specialEffect{
+class SpecialEffect{
     public:
     int Id;//0攻击减速 //1移动减速 //2脆弱
     float value;
     float normalData;
     float endTime;
-    specialEffect(int Id,float value,float normalData,float endTime):Id(Id),value(value),normalData(normalData),endTime(endTime){};
+    SpecialEffect(int Id,float value,float normalData,float endTime):Id(Id),value(value),normalData(normalData),endTime(endTime){};
 
+};
+class Resist{
+    public:
+    ResistList* resistedList;//用于主动解除
+    int index;
+    bool state;
+    Resist():state(false),index(-1),resistedList(nullptr){};
+
+    void removeResist(){
+        if(resistedList==nullptr){
+            return;
+        }
+        if(state){
+            state=false;
+            resistedList->residualResistNum+=1;
+            resistedList->resistList.erase(resistedList->resistList.begin()+index);
+            resistedList=nullptr;
+            index=-1;
+        }
+    }
+};
+
+class ResistList{
+    public:
+    std::vector<Resist*> resistList;
+    int resistNum;
+    int residualResistNum;
+    ResistList():resistNum(0),residualResistNum(0){};
+    void push(Resist& resist){
+        if(residualResistNum<=0){
+            return;
+        }
+        residualResistNum-=1;
+        resist.resistedList=this;
+        resist.index=resistList.size();
+        resist.state=true;
+
+        resistList.push_back(&resist);
+    }
+
+    void pop(){
+        if(resistList.size()==0){
+            return;
+        }
+        resistList[resistList.size()-1]->removeResist();
+    }
+
+    void clear(){
+        if(resistList.size()==0){
+            return;
+        }
+        for(auto i=resistList.size()-1;i>=0;i--){
+            resistList[i]->removeResist();
+        }
+    }
 };
 
 template<typename T>
@@ -120,13 +176,16 @@ class ActorPool{
 
 class IStaticActor{//仅用作基类指针
     public:
-    std::vector<bool>* resistList;//阻挡状态的列表 在析构时清空对方被阻挡的状态
+    
     std::vector<std::array<int,2>> scopeList;//攻击范围覆盖的格子 非直接坐标而是偏移量[dx,dy] 获取真实坐标是x+dx,y+dy
 
-    std::vector<specialEffect*> effectedList;//所拥有的特殊状态         对方析构时会将其结束时间置0
-    std::vector<specialEffect*> effectList;//所施加的特殊状态           在自身析构时将造成的所有异常状态全部结束
+    std::vector<SpecialEffect*> effectedList;//所拥有的特殊状态         对方析构时会将其结束时间置0
+    std::vector<SpecialEffect*> effectList;//所施加的特殊状态           在自身析构时将造成的所有异常状态全部结束
     
     Game* gamePtr;
+    
+    ResistList resistList;
+
     int subclassPoolIndex;
     int poolIndex;
     int aliveListIndex;
@@ -144,7 +203,6 @@ class IStaticActor{//仅用作基类指针
     int attackType;
     int cost;
     float costRate;
-    float rasistCount;
 
     int typeId;
 
@@ -168,19 +226,18 @@ class IMobileActor{
     public:
     std::vector<std::array<int,2>> path;
     
-    std::vector<bool>* resistedList;//阻挡方的列表
-    
     std::vector<std::array<int,2>> scopeList;//攻击范围覆盖的格子 非直接坐标而是偏移量[dx,dy] 获取真实坐标是x+dx,y+dy
     
-    std::vector<specialEffect*> effectedList;//所拥有的特殊状态         对方析构时会将其结束时间置0
-    std::vector<specialEffect*> effectList;//所施加的特殊状态           在自身析构时将造成的所有异常状态全部结束
+    std::vector<SpecialEffect*> effectedList;//所拥有的特殊状态         对方析构时会将其结束时间置0
+    std::vector<SpecialEffect*> effectList;//所施加的特殊状态           在自身析构时将造成的所有异常状态全部结束
     Game* gamePtr;
+
+    Resist resistState;//自身阻挡状态
+
     int subclassPoolIndex;
     int poolIndex;
     int aliveListIndex;
     int mapListIndex;
-    
-    int resistListIndex;
 
     int pathIndex;
     float moveSpeed;
@@ -208,7 +265,8 @@ class IMobileActor{
     virtual void setScope(){};
     virtual void beHurted(int attackType,float attackNum){};
     virtual void attack(){};
-    virtual void move(){};
+    virtual void move(std::pair<int,int> goalPos){};
+    virtual void followPath(){};
     virtual std::vector<std::array<int,2>> getPath(float goalX,float goalY){};
     virtual float getTotalCost(){};
     virtual void skill1(){};
@@ -283,7 +341,7 @@ class StaticActor:public IStaticActor{//用于实现通用方法的模板类
             }
             else{//降级返费
                 for(int i=0;i<-rankOffest;i++){//统计[rankNum,rankNum+|rankOffest|+1]区间内的费用消耗
-                    costOffest+=attributeList[rankNum-i][9]*gamePtr->returnCostMul;
+                    costOffest+=attributeList[rankNum-i][9]*gamePtr->returnCostMul[this->owner];
                 }
             }
             if(gamePtr->nowCost[this->owner]+costOffest<gamePtr->costMin[this->owner]){//内存低于临界
@@ -568,7 +626,7 @@ class MobileActor:public IMobileActor{
             }
             else{//降级返费
                 for(int i=0;i<-rankOffest;i++){//统计[rankNum,rankNum+|rankOffest|+1]区间内的费用消耗
-                    costOffest+=attributeList[rankNum-i][9]*gamePtr->returnCostMul;
+                    costOffest+=attributeList[rankNum-i][9]*gamePtr->returnCostMul[this->owner];
                 }
             }
             if(gamePtr->nowCost[this->owner]+costOffest<gamePtr->costMin[this->owner]){//内存低于临界
@@ -777,13 +835,24 @@ class MobileActor:public IMobileActor{
 
     }
 
-    virtual void move()override{//移动以0.1s为单位
-        if(path.size()!=0&&pathIndex<path.size()-1&&(resistedList==nullptr||(resistedList!=nullptr&&(resistedList->size()<=resistListIndex||(*resistedList)[resistListIndex]==false)))){//有路&&未走完&&未阻挡
+    virtual void move(std::pair<int,int> goalPos)override{
+        this->path.clear();
+
+    }
+
+    virtual void followPath()override{//移动以0.1s为单位
+        if(path.size()!=0&&pathIndex<path.size()-1&&resistState.state==false){//有路&&未走完&&未阻挡
             float dx=path[pathIndex][0]-this->x;
             float dy=path[pathIndex][1]-this->y;
             float d=sqrt(dx*dx+dy*dy);
             float newX=this->x+dx/d*this->moveSpeed*gamePtr->timeStep;
             float newY=this->y+dy/d*this->moveSpeed*gamePtr->timeStep;
+            //暂时没有合适的方案来修复速度过快导致的越界/进入障碍物的问题 保留，等待以后修复
+            // //修正x  
+            // if(gamePtr->basicMap[int(newY)][int(newX)]==1){
+            //    newX;
+            // }
+
             if(int(newX)!=int(this->x)||int(newY)!=int(this->y)){
                 gamePtr->mobileActorPool[gamePtr->mobileActorMap[int(this->y)][int(this->x)][gamePtr->mobileActorMap[int(this->y)][int(this->x)].size()-1]]->mapListIndex=this->mapListIndex;
                 erase_basedSwap(gamePtr->mobileActorMap[int(this->y)][int(this->x)],this->mapListIndex);
@@ -793,14 +862,13 @@ class MobileActor:public IMobileActor{
             }
             this->x=newX;
             this->y=newY;
-            for(auto index:gamePtr->staticActorMap[int(this->y)][int(this->x)]){
+            for(auto index:gamePtr->staticActorMap[int(this->y)][int(this->x)]){//阻挡相关
+                if(this->resistState.state==true){
+                    break;
+                }
                 auto& actor=gamePtr->staticActorPool[index];
                 if(actor->owner!=this->owner){
-
-                    this->resistedList=actor->resistList;
-                    this->resistListIndex=actor->resistList->size();
-
-                    (*(actor->resistList)).push_back(true);
+                    actor->resistList.push(this->resistState);
                     break;
                 }
             }
@@ -1128,13 +1196,13 @@ class SlowTower:public StaticActor<SlowTower>{//减速
     }
 
     virtual void applyEffect(IStaticActor* staticActorPtr) override{
-        staticActorPtr->effectedList.push_back(new specialEffect{0,attackSlowMul,staticActorPtr->attackSpeed,gamePtr->nowTime+attackSlowTime});
+        staticActorPtr->effectedList.push_back(new SpecialEffect{0,attackSlowMul,staticActorPtr->attackSpeed,gamePtr->nowTime+attackSlowTime});
         return;
     };
 
     virtual void applyEffect(IMobileActor* mobileActorPtr)override{
-        mobileActorPtr->effectedList.push_back(new specialEffect{0,attackSlowMul,mobileActorPtr->attackSpeed,gamePtr->nowTime+attackSlowTime});
-        mobileActorPtr->effectedList.push_back(new specialEffect{1,moveSlowMul,mobileActorPtr->moveSpeed,gamePtr->nowTime+moveSlowTime});
+        mobileActorPtr->effectedList.push_back(new SpecialEffect{0,attackSlowMul,mobileActorPtr->attackSpeed,gamePtr->nowTime+attackSlowTime});
+        mobileActorPtr->effectedList.push_back(new SpecialEffect{1,moveSlowMul,mobileActorPtr->moveSpeed,gamePtr->nowTime+moveSlowTime});
         return;
     };
 
@@ -1223,6 +1291,8 @@ class Game{
     std::vector<float> costMax;
     std::vector<float> costMin;
     std::vector<float> costSpeed;
+    std::vector<float> returnCostMul;//返回时消耗费用的倍率 
+    std::vector<float> moveCostMul;//移动单位消耗费用的倍率
 
     int frameNum=5;
     int mapIndex;
@@ -1230,9 +1300,6 @@ class Game{
     float timeStep=0.1f;
     float lastFrameTime;
     float accumLastFrameTime;
-
-
-    float returnCostMul=0.5f;//返回时消耗的倍率 
 
     bool cnnSwitch;
 
@@ -1351,7 +1418,7 @@ class Game{
     void eraseStaticActor(int index){
         eraseStaticActorSet.push_back(index);
         auto actorPtr=staticActorPool[index];
-        nowCost[actorPtr->owner]+=actorPtr->getTotalCost()*returnCostMul;
+        nowCost[actorPtr->owner]+=actorPtr->getTotalCost()*returnCostMul[actorPtr->owner];
         nowCost[actorPtr->owner]=std::min<float>(nowCost[actorPtr->owner],costMax[actorPtr->owner]);
         solveDeadActor();
     }
@@ -1359,7 +1426,7 @@ class Game{
     void eraseMobileActor(int index){
         eraseMobileActorSet.push_back(index);
         auto actorPtr=mobileActorPool[index];
-        nowCost[actorPtr->owner]+=actorPtr->getTotalCost()*returnCostMul;
+        nowCost[actorPtr->owner]+=actorPtr->getTotalCost()*returnCostMul[actorPtr->owner];
         nowCost[actorPtr->owner]=std::min<float>(nowCost[actorPtr->owner],costMax[actorPtr->owner]);
         solveDeadActor();
     }

@@ -39,7 +39,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "d:/Creat/GAME/JAVA\u8bfe\u7a0b\u8bbe\u8ba1/build"
+			"value" : "d:/Creat/GAME/TowerClash_with_CNN/build"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -379,7 +379,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "D:/Creat/GAME/JAVA\u8bfe\u7a0b\u8bbe\u8ba1/build/CMakeFiles/pkgRedirects"
+			"value" : "D:/Creat/GAME/TowerClash_with_CNN/build/CMakeFiles/pkgRedirects"
 		},
 		{
 			"name" : "CMAKE_GENERATOR",
@@ -439,7 +439,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "D:/Creat/GAME/JAVA\u8bfe\u7a0b\u8bbe\u8ba1"
+			"value" : "D:/Creat/GAME/TowerClash_with_CNN"
 		},
 		{
 			"name" : "CMAKE_INSTALL_PREFIX",
@@ -1027,7 +1027,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "D:/Creat/GAME/JAVA\u8bfe\u7a0b\u8bbe\u8ba1/build"
+			"value" : "D:/Creat/GAME/TowerClash_with_CNN/build"
 		},
 		{
 			"name" : "JAVA_Course_Project_IS_TOP_LEVEL",
@@ -1051,7 +1051,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "D:/Creat/GAME/JAVA\u8bfe\u7a0b\u8bbe\u8ba1"
+			"value" : "D:/Creat/GAME/TowerClash_with_CNN"
 		}
 	],
 	"kind" : "cache",

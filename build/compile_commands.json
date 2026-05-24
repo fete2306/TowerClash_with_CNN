@@ -1,56 +1,74 @@
 [
 {
-  "directory": "D:/Creat/GAME/JAVA课程设计/build",
-  "command": "D:\\VisualStudio\\VisualStudio\\VC\\Tools\\MSVC\\14.50.35717\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -ID:\\Creat\\GAME\\JAVA课程设计\\external\\imgui /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /FoCMakeFiles\\imgui.dir\\external\\imgui\\imgui.cpp.obj /FdCMakeFiles\\imgui.dir\\imgui.pdb /FS -c D:\\Creat\\GAME\\JAVA课程设计\\external\\imgui\\imgui.cpp",
-  "file": "D:/Creat/GAME/JAVA课程设计/external/imgui/imgui.cpp",
-  "output": "D:/Creat/GAME/JAVA课程设计/build/CMakeFiles/imgui.dir/external/imgui/imgui.cpp.obj"
+  "directory": "D:/Creat/GAME/TowerClash_with_CNN/build",
+  "command": "D:\\VisualStudio\\VisualStudio\\VC\\Tools\\MSVC\\14.50.35717\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -ID:\\Creat\\GAME\\TowerClash_with_CNN\\external\\imgui -ID:\\Creat\\GAME\\TowerClash_with_CNN\\external\\imgui\\backends /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /FoCMakeFiles\\imgui.dir\\external\\imgui\\imgui.cpp.obj /FdCMakeFiles\\imgui.dir\\imgui.pdb /FS -c D:\\Creat\\GAME\\TowerClash_with_CNN\\external\\imgui\\imgui.cpp",
+  "file": "D:/Creat/GAME/TowerClash_with_CNN/external/imgui/imgui.cpp",
+  "output": "D:/Creat/GAME/TowerClash_with_CNN/build/CMakeFiles/imgui.dir/external/imgui/imgui.cpp.obj"
 },
 {
-  "directory": "D:/Creat/GAME/JAVA课程设计/build",
-  "command": "D:\\VisualStudio\\VisualStudio\\VC\\Tools\\MSVC\\14.50.35717\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -ID:\\Creat\\GAME\\JAVA课程设计\\external\\imgui /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /FoCMakeFiles\\imgui.dir\\external\\imgui\\imgui_draw.cpp.obj /FdCMakeFiles\\imgui.dir\\imgui.pdb /FS -c D:\\Creat\\GAME\\JAVA课程设计\\external\\imgui\\imgui_draw.cpp",
-  "file": "D:/Creat/GAME/JAVA课程设计/external/imgui/imgui_draw.cpp",
-  "output": "D:/Creat/GAME/JAVA课程设计/build/CMakeFiles/imgui.dir/external/imgui/imgui_draw.cpp.obj"
+  "directory": "D:/Creat/GAME/TowerClash_with_CNN/build",
+  "command": "D:\\VisualStudio\\VisualStudio\\VC\\Tools\\MSVC\\14.50.35717\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -ID:\\Creat\\GAME\\TowerClash_with_CNN\\external\\imgui -ID:\\Creat\\GAME\\TowerClash_with_CNN\\external\\imgui\\backends /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /FoCMakeFiles\\imgui.dir\\external\\imgui\\imgui_draw.cpp.obj /FdCMakeFiles\\imgui.dir\\imgui.pdb /FS -c D:\\Creat\\GAME\\TowerClash_with_CNN\\external\\imgui\\imgui_draw.cpp",
+  "file": "D:/Creat/GAME/TowerClash_with_CNN/external/imgui/imgui_draw.cpp",
+  "output": "D:/Creat/GAME/TowerClash_with_CNN/build/CMakeFiles/imgui.dir/external/imgui/imgui_draw.cpp.obj"
 },
 {
-  "directory": "D:/Creat/GAME/JAVA课程设计/build",
-  "command": "D:\\VisualStudio\\VisualStudio\\VC\\Tools\\MSVC\\14.50.35717\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -ID:\\Creat\\GAME\\JAVA课程设计\\external\\imgui /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /FoCMakeFiles\\imgui.dir\\external\\imgui\\imgui_tables.cpp.obj /FdCMakeFiles\\imgui.dir\\imgui.pdb /FS -c D:\\Creat\\GAME\\JAVA课程设计\\external\\imgui\\imgui_tables.cpp",
-  "file": "D:/Creat/GAME/JAVA课程设计/external/imgui/imgui_tables.cpp",
-  "output": "D:/Creat/GAME/JAVA课程设计/build/CMakeFiles/imgui.dir/external/imgui/imgui_tables.cpp.obj"
+  "directory": "D:/Creat/GAME/TowerClash_with_CNN/build",
+  "command": "D:\\VisualStudio\\VisualStudio\\VC\\Tools\\MSVC\\14.50.35717\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -ID:\\Creat\\GAME\\TowerClash_with_CNN\\external\\imgui -ID:\\Creat\\GAME\\TowerClash_with_CNN\\external\\imgui\\backends /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /FoCMakeFiles\\imgui.dir\\external\\imgui\\imgui_tables.cpp.obj /FdCMakeFiles\\imgui.dir\\imgui.pdb /FS -c D:\\Creat\\GAME\\TowerClash_with_CNN\\external\\imgui\\imgui_tables.cpp",
+  "file": "D:/Creat/GAME/TowerClash_with_CNN/external/imgui/imgui_tables.cpp",
+  "output": "D:/Creat/GAME/TowerClash_with_CNN/build/CMakeFiles/imgui.dir/external/imgui/imgui_tables.cpp.obj"
 },
 {
-  "directory": "D:/Creat/GAME/JAVA课程设计/build",
-  "command": "D:\\VisualStudio\\VisualStudio\\VC\\Tools\\MSVC\\14.50.35717\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -ID:\\Creat\\GAME\\JAVA课程设计\\external\\imgui /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /FoCMakeFiles\\imgui.dir\\external\\imgui\\imgui_widgets.cpp.obj /FdCMakeFiles\\imgui.dir\\imgui.pdb /FS -c D:\\Creat\\GAME\\JAVA课程设计\\external\\imgui\\imgui_widgets.cpp",
-  "file": "D:/Creat/GAME/JAVA课程设计/external/imgui/imgui_widgets.cpp",
-  "output": "D:/Creat/GAME/JAVA课程设计/build/CMakeFiles/imgui.dir/external/imgui/imgui_widgets.cpp.obj"
+  "directory": "D:/Creat/GAME/TowerClash_with_CNN/build",
+  "command": "D:\\VisualStudio\\VisualStudio\\VC\\Tools\\MSVC\\14.50.35717\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -ID:\\Creat\\GAME\\TowerClash_with_CNN\\external\\imgui -ID:\\Creat\\GAME\\TowerClash_with_CNN\\external\\imgui\\backends /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /FoCMakeFiles\\imgui.dir\\external\\imgui\\imgui_widgets.cpp.obj /FdCMakeFiles\\imgui.dir\\imgui.pdb /FS -c D:\\Creat\\GAME\\TowerClash_with_CNN\\external\\imgui\\imgui_widgets.cpp",
+  "file": "D:/Creat/GAME/TowerClash_with_CNN/external/imgui/imgui_widgets.cpp",
+  "output": "D:/Creat/GAME/TowerClash_with_CNN/build/CMakeFiles/imgui.dir/external/imgui/imgui_widgets.cpp.obj"
 },
 {
-  "directory": "D:/Creat/GAME/JAVA课程设计/build",
-  "command": "D:\\VisualStudio\\VisualStudio\\VC\\Tools\\MSVC\\14.50.35717\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -ID:\\Creat\\GAME\\JAVA课程设计\\external\\imgui /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /FoCMakeFiles\\imgui.dir\\external\\imgui\\imgui_demo.cpp.obj /FdCMakeFiles\\imgui.dir\\imgui.pdb /FS -c D:\\Creat\\GAME\\JAVA课程设计\\external\\imgui\\imgui_demo.cpp",
-  "file": "D:/Creat/GAME/JAVA课程设计/external/imgui/imgui_demo.cpp",
-  "output": "D:/Creat/GAME/JAVA课程设计/build/CMakeFiles/imgui.dir/external/imgui/imgui_demo.cpp.obj"
+  "directory": "D:/Creat/GAME/TowerClash_with_CNN/build",
+  "command": "D:\\VisualStudio\\VisualStudio\\VC\\Tools\\MSVC\\14.50.35717\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -ID:\\Creat\\GAME\\TowerClash_with_CNN\\external\\imgui -ID:\\Creat\\GAME\\TowerClash_with_CNN\\external\\imgui\\backends /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /FoCMakeFiles\\imgui.dir\\external\\imgui\\imgui_demo.cpp.obj /FdCMakeFiles\\imgui.dir\\imgui.pdb /FS -c D:\\Creat\\GAME\\TowerClash_with_CNN\\external\\imgui\\imgui_demo.cpp",
+  "file": "D:/Creat/GAME/TowerClash_with_CNN/external/imgui/imgui_demo.cpp",
+  "output": "D:/Creat/GAME/TowerClash_with_CNN/build/CMakeFiles/imgui.dir/external/imgui/imgui_demo.cpp.obj"
 },
 {
-  "directory": "D:/Creat/GAME/JAVA课程设计/build",
-  "command": "D:\\VisualStudio\\VisualStudio\\VC\\Tools\\MSVC\\14.50.35717\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -ID:\\Creat\\GAME\\JAVA课程设计\\external\\imgui /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /FoCMakeFiles\\imgui.dir\\external\\imgui\\backends\\imgui_impl_sdl2.cpp.obj /FdCMakeFiles\\imgui.dir\\imgui.pdb /FS -c D:\\Creat\\GAME\\JAVA课程设计\\external\\imgui\\backends\\imgui_impl_sdl2.cpp",
-  "file": "D:/Creat/GAME/JAVA课程设计/external/imgui/backends/imgui_impl_sdl2.cpp",
-  "output": "D:/Creat/GAME/JAVA课程设计/build/CMakeFiles/imgui.dir/external/imgui/backends/imgui_impl_sdl2.cpp.obj"
+  "directory": "D:/Creat/GAME/TowerClash_with_CNN/build",
+  "command": "D:\\VisualStudio\\VisualStudio\\VC\\Tools\\MSVC\\14.50.35717\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -ID:\\Creat\\GAME\\TowerClash_with_CNN\\external\\imgui -ID:\\Creat\\GAME\\TowerClash_with_CNN\\external\\imgui\\backends /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /FoCMakeFiles\\imgui.dir\\external\\imgui\\backends\\imgui_impl_win32.cpp.obj /FdCMakeFiles\\imgui.dir\\imgui.pdb /FS -c D:\\Creat\\GAME\\TowerClash_with_CNN\\external\\imgui\\backends\\imgui_impl_win32.cpp",
+  "file": "D:/Creat/GAME/TowerClash_with_CNN/external/imgui/backends/imgui_impl_win32.cpp",
+  "output": "D:/Creat/GAME/TowerClash_with_CNN/build/CMakeFiles/imgui.dir/external/imgui/backends/imgui_impl_win32.cpp.obj"
 },
 {
-  "directory": "D:/Creat/GAME/JAVA课程设计/build",
-  "command": "D:\\VisualStudio\\VisualStudio\\VC\\Tools\\MSVC\\14.50.35717\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -ID:\\Creat\\GAME\\JAVA课程设计\\external\\imgui /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /FoCMakeFiles\\imgui.dir\\external\\imgui\\backends\\imgui_impl_opengl3.cpp.obj /FdCMakeFiles\\imgui.dir\\imgui.pdb /FS -c D:\\Creat\\GAME\\JAVA课程设计\\external\\imgui\\backends\\imgui_impl_opengl3.cpp",
-  "file": "D:/Creat/GAME/JAVA课程设计/external/imgui/backends/imgui_impl_opengl3.cpp",
-  "output": "D:/Creat/GAME/JAVA课程设计/build/CMakeFiles/imgui.dir/external/imgui/backends/imgui_impl_opengl3.cpp.obj"
+  "directory": "D:/Creat/GAME/TowerClash_with_CNN/build",
+  "command": "D:\\VisualStudio\\VisualStudio\\VC\\Tools\\MSVC\\14.50.35717\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -ID:\\Creat\\GAME\\TowerClash_with_CNN\\external\\imgui -ID:\\Creat\\GAME\\TowerClash_with_CNN\\external\\imgui\\backends /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /FoCMakeFiles\\imgui.dir\\external\\imgui\\backends\\imgui_impl_dx11.cpp.obj /FdCMakeFiles\\imgui.dir\\imgui.pdb /FS -c D:\\Creat\\GAME\\TowerClash_with_CNN\\external\\imgui\\backends\\imgui_impl_dx11.cpp",
+  "file": "D:/Creat/GAME/TowerClash_with_CNN/external/imgui/backends/imgui_impl_dx11.cpp",
+  "output": "D:/Creat/GAME/TowerClash_with_CNN/build/CMakeFiles/imgui.dir/external/imgui/backends/imgui_impl_dx11.cpp.obj"
 },
 {
-  "directory": "D:/Creat/GAME/JAVA课程设计/build",
-  "command": "D:\\VisualStudio\\VisualStudio\\VC\\Tools\\MSVC\\14.50.35717\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -ID:\\Creat\\GAME\\JAVA课程设计\\src -ID:\\Creat\\GAME\\JAVA课程设计\\src\\ui -ID:\\Creat\\GAME\\JAVA课程设计\\external\\imgui -ID:\\Creat\\GAME\\JAVA课程设计\\external\\json /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /W4 /permissive- /bigobj /FoCMakeFiles\\game.dir\\src\\basic_virtual.cpp.obj /FdCMakeFiles\\game.dir\\ /FS -c D:\\Creat\\GAME\\JAVA课程设计\\src\\basic_virtual.cpp",
-  "file": "D:/Creat/GAME/JAVA课程设计/src/basic_virtual.cpp",
-  "output": "D:/Creat/GAME/JAVA课程设计/build/CMakeFiles/game.dir/src/basic_virtual.cpp.obj"
+  "directory": "D:/Creat/GAME/TowerClash_with_CNN/build",
+  "command": "D:\\VisualStudio\\VisualStudio\\VC\\Tools\\MSVC\\14.50.35717\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -ID:\\Creat\\GAME\\TowerClash_with_CNN\\external\\imgui -ID:\\Creat\\GAME\\TowerClash_with_CNN\\external\\imgui\\backends /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /FoCMakeFiles\\imgui.dir\\external\\imgui\\backends\\imgui_impl_sdl2.cpp.obj /FdCMakeFiles\\imgui.dir\\imgui.pdb /FS -c D:\\Creat\\GAME\\TowerClash_with_CNN\\external\\imgui\\backends\\imgui_impl_sdl2.cpp",
+  "file": "D:/Creat/GAME/TowerClash_with_CNN/external/imgui/backends/imgui_impl_sdl2.cpp",
+  "output": "D:/Creat/GAME/TowerClash_with_CNN/build/CMakeFiles/imgui.dir/external/imgui/backends/imgui_impl_sdl2.cpp.obj"
 },
 {
-  "directory": "D:/Creat/GAME/JAVA课程设计/build",
-  "command": "D:\\VisualStudio\\VisualStudio\\VC\\Tools\\MSVC\\14.50.35717\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -ID:\\Creat\\GAME\\JAVA课程设计\\src -ID:\\Creat\\GAME\\JAVA课程设计\\src\\ui -ID:\\Creat\\GAME\\JAVA课程设计\\external\\imgui -ID:\\Creat\\GAME\\JAVA课程设计\\external\\json /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /W4 /permissive- /bigobj /FoCMakeFiles\\game.dir\\src\\ui\\basic_virtual_ui.cpp.obj /FdCMakeFiles\\game.dir\\ /FS -c D:\\Creat\\GAME\\JAVA课程设计\\src\\ui\\basic_virtual_ui.cpp",
-  "file": "D:/Creat/GAME/JAVA课程设计/src/ui/basic_virtual_ui.cpp",
-  "output": "D:/Creat/GAME/JAVA课程设计/build/CMakeFiles/game.dir/src/ui/basic_virtual_ui.cpp.obj"
+  "directory": "D:/Creat/GAME/TowerClash_with_CNN/build",
+  "command": "D:\\VisualStudio\\VisualStudio\\VC\\Tools\\MSVC\\14.50.35717\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -ID:\\Creat\\GAME\\TowerClash_with_CNN\\external\\imgui -ID:\\Creat\\GAME\\TowerClash_with_CNN\\external\\imgui\\backends /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /FoCMakeFiles\\imgui.dir\\external\\imgui\\backends\\imgui_impl_opengl3.cpp.obj /FdCMakeFiles\\imgui.dir\\imgui.pdb /FS -c D:\\Creat\\GAME\\TowerClash_with_CNN\\external\\imgui\\backends\\imgui_impl_opengl3.cpp",
+  "file": "D:/Creat/GAME/TowerClash_with_CNN/external/imgui/backends/imgui_impl_opengl3.cpp",
+  "output": "D:/Creat/GAME/TowerClash_with_CNN/build/CMakeFiles/imgui.dir/external/imgui/backends/imgui_impl_opengl3.cpp.obj"
+},
+{
+  "directory": "D:/Creat/GAME/TowerClash_with_CNN/build",
+  "command": "D:\\VisualStudio\\VisualStudio\\VC\\Tools\\MSVC\\14.50.35717\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -ID:\\Creat\\GAME\\TowerClash_with_CNN\\src -ID:\\Creat\\GAME\\TowerClash_with_CNN\\src\\ui -ID:\\Creat\\GAME\\TowerClash_with_CNN\\external\\imgui -ID:\\Creat\\GAME\\TowerClash_with_CNN\\external\\json -ID:\\Creat\\GAME\\TowerClash_with_CNN\\external\\imgui\\backends /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /W4 /permissive- /bigobj /FoCMakeFiles\\game.dir\\src\\Game.cpp.obj /FdCMakeFiles\\game.dir\\ /FS -c D:\\Creat\\GAME\\TowerClash_with_CNN\\src\\Game.cpp",
+  "file": "D:/Creat/GAME/TowerClash_with_CNN/src/Game.cpp",
+  "output": "D:/Creat/GAME/TowerClash_with_CNN/build/CMakeFiles/game.dir/src/Game.cpp.obj"
+},
+{
+  "directory": "D:/Creat/GAME/TowerClash_with_CNN/build",
+  "command": "D:\\VisualStudio\\VisualStudio\\VC\\Tools\\MSVC\\14.50.35717\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -ID:\\Creat\\GAME\\TowerClash_with_CNN\\src -ID:\\Creat\\GAME\\TowerClash_with_CNN\\src\\ui -ID:\\Creat\\GAME\\TowerClash_with_CNN\\external\\imgui -ID:\\Creat\\GAME\\TowerClash_with_CNN\\external\\json -ID:\\Creat\\GAME\\TowerClash_with_CNN\\external\\imgui\\backends /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /W4 /permissive- /bigobj /FoCMakeFiles\\game.dir\\src\\basic_virtual.cpp.obj /FdCMakeFiles\\game.dir\\ /FS -c D:\\Creat\\GAME\\TowerClash_with_CNN\\src\\basic_virtual.cpp",
+  "file": "D:/Creat/GAME/TowerClash_with_CNN/src/basic_virtual.cpp",
+  "output": "D:/Creat/GAME/TowerClash_with_CNN/build/CMakeFiles/game.dir/src/basic_virtual.cpp.obj"
+},
+{
+  "directory": "D:/Creat/GAME/TowerClash_with_CNN/build",
+  "command": "D:\\VisualStudio\\VisualStudio\\VC\\Tools\\MSVC\\14.50.35717\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -ID:\\Creat\\GAME\\TowerClash_with_CNN\\src -ID:\\Creat\\GAME\\TowerClash_with_CNN\\src\\ui -ID:\\Creat\\GAME\\TowerClash_with_CNN\\external\\imgui -ID:\\Creat\\GAME\\TowerClash_with_CNN\\external\\json -ID:\\Creat\\GAME\\TowerClash_with_CNN\\external\\imgui\\backends /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /W4 /permissive- /bigobj /FoCMakeFiles\\game.dir\\src\\ui\\basic_virtual_ui.cpp.obj /FdCMakeFiles\\game.dir\\ /FS -c D:\\Creat\\GAME\\TowerClash_with_CNN\\src\\ui\\basic_virtual_ui.cpp",
+  "file": "D:/Creat/GAME/TowerClash_with_CNN/src/ui/basic_virtual_ui.cpp",
+  "output": "D:/Creat/GAME/TowerClash_with_CNN/build/CMakeFiles/game.dir/src/ui/basic_virtual_ui.cpp.obj"
 }
 ]

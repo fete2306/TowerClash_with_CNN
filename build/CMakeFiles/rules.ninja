@@ -123,7 +123,7 @@ rule CUSTOM_COMMAND
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = D:\CMake\bin\cmake.exe --regenerate-during-build -SD:\Creat\GAME\JAVA课程设计 -BD:\Creat\GAME\JAVA课程设计\build
+  command = D:\CMake\bin\cmake.exe --regenerate-during-build -SD:\Creat\GAME\TowerClash_with_CNN -BD:\Creat\GAME\TowerClash_with_CNN\build
   description = Re-running CMake...
   generator = 1
 
@@ -132,7 +132,7 @@ rule RERUN_CMAKE
 # Rule for re-checking globbed directories.
 
 rule VERIFY_GLOBS
-  command = D:\CMake\bin\cmake.exe -P D:\Creat\GAME\JAVA课程设计\build\CMakeFiles\VerifyGlobs.cmake
+  command = D:\CMake\bin\cmake.exe -P D:\Creat\GAME\TowerClash_with_CNN\build\CMakeFiles\VerifyGlobs.cmake
   description = Re-checking globbed directories...
   generator = 1
 
