@@ -12,6 +12,7 @@
 #include<unordered_map>
 #include<fstream>
 #include<chrono>
+#include<list>
 
 #include<json.hpp>
 
@@ -22,6 +23,8 @@
 #include <d3d11.h>             // DX11 底层
 #include <windows.h>           // Win32 底层
 
+class IStaticActor;
+class IMobileActor;
 template<typename SubClass>
 class StaticActor;
 template<typename SubClass>
@@ -81,15 +84,33 @@ class SpecialEffect{
     float value;
     float normalData;
     float endTime;
+    //持有施加方的list与迭代器
+    std::list<SpecialEffect*>* apply;
     SpecialEffect(int Id,float value,float normalData,float endTime):Id(Id),value(value),normalData(normalData),endTime(endTime){};
-
+    virtual void check(IStaticActor* actorPtr){};
+    virtual void check(IMobileActor* actorPtr){};
 };
+
+class AttackSlowEffect:public SpecialEffect{
+    public:
+    virtual void check(IStaticActor* actorPtr)override{
+        Game* gamePtr=actorPtr->gamePtr;
+        if(gamePtr->nowTime>endTime){
+            
+        }
+    };
+    virtual void check(IMobileActor* actorPtr)override{
+
+
+    };
+};
+
 class Resist{
     public:
-    ResistList* resistedList;//用于主动解除
-    int index;
+    ResistList* resistedList;
+    std::list<Resist*>::iterator resistIterator;
     bool state;
-    Resist():state(false),index(-1),resistedList(nullptr){};
+    Resist():state(false){};
 
     void removeResist(){
         if(resistedList==nullptr){
@@ -98,16 +119,17 @@ class Resist{
         if(state){
             state=false;
             resistedList->residualResistNum+=1;
-            resistedList->resistList.erase(resistedList->resistList.begin()+index);
+            resistedList->resistList.erase(resistIterator);
             resistedList=nullptr;
-            index=-1;
         }
     }
+
+
 };
 
 class ResistList{
     public:
-    std::vector<Resist*> resistList;
+    std::list<Resist*> resistList;
     int resistNum;
     int residualResistNum;
     ResistList():resistNum(0),residualResistNum(0){};
@@ -117,25 +139,26 @@ class ResistList{
         }
         residualResistNum-=1;
         resist.resistedList=this;
-        resist.index=resistList.size();
         resist.state=true;
-
         resistList.push_back(&resist);
+        resist.resistIterator=std::prev(resistList.end());
     }
 
     void pop(){
         if(resistList.size()==0){
             return;
         }
-        resistList[resistList.size()-1]->removeResist();
+        auto tempResist=*std::prev(resistList.end());
+        tempResist->removeResist();
     }
 
     void clear(){
         if(resistList.size()==0){
             return;
         }
-        for(auto i=resistList.size()-1;i>=0;i--){
-            resistList[i]->removeResist();
+        while(resistList.size()!=0){
+            auto tempResist=*std::prev(resistList.end());
+            tempResist->removeResist();
         }
     }
 };
@@ -278,15 +301,14 @@ class IMobileActor{
 template<typename SubClass>
 class StaticActor:public IStaticActor{//用于实现通用方法的模板类
     public:
-    StaticActor(Game* gamePtr,int owner,float x,float y,SubClass* subclassPtr):gamePtr(gamePtr),owner(owner),x(x),y(y){
+    StaticActor(Game* gamePtr,int owner,float x,float y,SubClass* subclassPtr):gamePtr(gamePtr),owner(owner),x(x),y(y),resistList(){
 
         typeId=TypeId<SubClass>::value;
-        
-        resistList=new std::vector<bool>;
 
         rankNum=0;
         //setRank由子类构造方法调用
-        poolIndex=ActorPool<SubClass>::Pool.size();
+        subclassPoolIndex=ActorPool<SubClass>::Pool.size();
+        poolIndex=gamePtr->staticActorPool.size();
         mapListIndex=gamePtr->staticActorMap[int(y)][int(x)].size();
         aliveListIndex=gamePtr->aliveStaticList[owner].size();
 
@@ -296,10 +318,7 @@ class StaticActor:public IStaticActor{//用于实现通用方法的模板类
     };
 
     virtual ~StaticActor(){
-        for(int i=0;i<resistList->size();i++){
-            resistList->at(i)=false;
-        }
-        delete resistList;
+        resistList.clear();
         for(int i=0;i<effectList.size();i++){
             effectList[i]->endTime=0;
         }
@@ -567,15 +586,13 @@ class MobileActor:public IMobileActor{
     public:
     
 
-    MobileActor(Game* gamePtr,int owner,float x,float y,SubClass* subclassPtr):gamePtr(gamePtr),owner(owner),x(x),y(y){
+    MobileActor(Game* gamePtr,int owner,float x,float y,SubClass* subclassPtr):gamePtr(gamePtr),owner(owner),x(x),y(y),resistState(){
 
         typeId=TypeId<SubClass>::value;
-
-        resistedList=nullptr;
-
         rankNum=0;
 
-        poolIndex=ActorPool<SubClass>::Pool.size();
+        subclassPoolIndex=ActorPool<SubClass>::Pool.size();
+        poolIndex=gamePtr->staticActorPool.size();
         mapListIndex=gamePtr->mobileActorMap[int(y)][int(x)].size();
         aliveListIndex=gamePtr->aliveMobileList[owner].size();
 
@@ -589,6 +606,7 @@ class MobileActor:public IMobileActor{
         for(int i=0;i<effectList.size();i++){
             effectList[i]->endTime=0;
         }
+        this->resistState.removeResist();
     }
     virtual void dead()override{
         this->_dead(static_cast<SubClass*>(this));
@@ -1465,7 +1483,7 @@ class Game{
             }
 
             for(int i=0;i<mobileActorPool.size();i++){
-                mobileActorPool[i]->move();
+                mobileActorPool[i]->followPath();
             }
 
             for(int i=0;i<staticActorPool.size();i++){
