@@ -224,8 +224,9 @@ class IStaticActor{//仅用作基类指针
     float attackSpeed;
     float lastAttackTime;
     int attackType;
-    int cost;
+    float cost;
     float costRate;
+    float totalCost;
 
     int typeId;
 
@@ -240,7 +241,6 @@ class IStaticActor{//仅用作基类指针
     virtual void beHurted(int attackType,float attackNum){};
     virtual void attack(){};
     virtual void move(std::pair<int,int> goalPos){};
-    virtual float getTotalCost(){};
     virtual void skill1(){};
     virtual void skill2(){};
 };
@@ -275,7 +275,7 @@ class IMobileActor{
     float attackSpeed;
     float lastAttackTime;
     int attackType;
-    int cost;
+    float cost;
     float costRate;
 
     int typeId;
@@ -1017,7 +1017,7 @@ class GroupAttackTower:public StaticActor<GroupAttackTower>{//群攻
     float groupAttackScope;
 
     GroupAttackTower(Game* gamePtr,int owner,float x,float y):StaticActor(gamePtr,owner,x,y,this){
-        auto flag=setRank(0);
+        auto flag=setRank(0);//有些成员在基类构造方法中未定义，不能交由子类构造方法
     }
 
     bool setRank(int rankOffest=0) override{
