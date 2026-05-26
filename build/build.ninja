@@ -166,12 +166,13 @@ build imgui.lib: CXX_STATIC_LIBRARY_LINKER__imgui_Debug CMakeFiles\imgui.dir\ext
 #############################################
 # Order-only phony target for game
 
-build cmake_object_order_depends_target_game: phony || cmake_object_order_depends_target_imgui
+build cmake_object_order_depends_target_game: phony || cmake_object_order_depends_target_DirectXTK cmake_object_order_depends_target_imgui
 
 build CMakeFiles\game.dir\src\Game.cpp.obj: CXX_COMPILER__game_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\src\Game.cpp || cmake_object_order_depends_target_game
   CONFIG = Debug
+  DEFINES = -DUSING_XINPUT
   FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /W4 /permissive- /bigobj
-  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\src -ID:\Creat\GAME\TowerClash_with_CNN\src\ui -ID:\Creat\GAME\TowerClash_with_CNN\external\imgui -ID:\Creat\GAME\TowerClash_with_CNN\external\json -ID:\Creat\GAME\TowerClash_with_CNN\external\imgui\backends
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\src -ID:\Creat\GAME\TowerClash_with_CNN\src\ui -ID:\Creat\GAME\TowerClash_with_CNN\external\imgui -ID:\Creat\GAME\TowerClash_with_CNN\external\json -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\imgui\backends
   OBJECT_DIR = CMakeFiles\game.dir
   OBJECT_FILE_DIR = CMakeFiles\game.dir\src
   TARGET_COMPILE_PDB = CMakeFiles\game.dir\
@@ -180,8 +181,9 @@ build CMakeFiles\game.dir\src\Game.cpp.obj: CXX_COMPILER__game_unscanned_Debug D
 
 build CMakeFiles\game.dir\src\basic_virtual.cpp.obj: CXX_COMPILER__game_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\src\basic_virtual.cpp || cmake_object_order_depends_target_game
   CONFIG = Debug
+  DEFINES = -DUSING_XINPUT
   FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /W4 /permissive- /bigobj
-  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\src -ID:\Creat\GAME\TowerClash_with_CNN\src\ui -ID:\Creat\GAME\TowerClash_with_CNN\external\imgui -ID:\Creat\GAME\TowerClash_with_CNN\external\json -ID:\Creat\GAME\TowerClash_with_CNN\external\imgui\backends
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\src -ID:\Creat\GAME\TowerClash_with_CNN\src\ui -ID:\Creat\GAME\TowerClash_with_CNN\external\imgui -ID:\Creat\GAME\TowerClash_with_CNN\external\json -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\imgui\backends
   OBJECT_DIR = CMakeFiles\game.dir
   OBJECT_FILE_DIR = CMakeFiles\game.dir\src
   TARGET_COMPILE_PDB = CMakeFiles\game.dir\
@@ -190,8 +192,9 @@ build CMakeFiles\game.dir\src\basic_virtual.cpp.obj: CXX_COMPILER__game_unscanne
 
 build CMakeFiles\game.dir\src\ui\basic_virtual_ui.cpp.obj: CXX_COMPILER__game_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\src\ui\basic_virtual_ui.cpp || cmake_object_order_depends_target_game
   CONFIG = Debug
+  DEFINES = -DUSING_XINPUT
   FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /W4 /permissive- /bigobj
-  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\src -ID:\Creat\GAME\TowerClash_with_CNN\src\ui -ID:\Creat\GAME\TowerClash_with_CNN\external\imgui -ID:\Creat\GAME\TowerClash_with_CNN\external\json -ID:\Creat\GAME\TowerClash_with_CNN\external\imgui\backends
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\src -ID:\Creat\GAME\TowerClash_with_CNN\src\ui -ID:\Creat\GAME\TowerClash_with_CNN\external\imgui -ID:\Creat\GAME\TowerClash_with_CNN\external\json -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\imgui\backends
   OBJECT_DIR = CMakeFiles\game.dir
   OBJECT_FILE_DIR = CMakeFiles\game.dir\src\ui
   TARGET_COMPILE_PDB = CMakeFiles\game.dir\
@@ -206,11 +209,11 @@ build CMakeFiles\game.dir\src\ui\basic_virtual_ui.cpp.obj: CXX_COMPILER__game_un
 #############################################
 # Link the executable bin\game.exe
 
-build bin\game.exe: CXX_EXECUTABLE_LINKER__game_Debug CMakeFiles\game.dir\src\Game.cpp.obj CMakeFiles\game.dir\src\basic_virtual.cpp.obj CMakeFiles\game.dir\src\ui\basic_virtual_ui.cpp.obj | imgui.lib || imgui.lib
+build bin\game.exe: CXX_EXECUTABLE_LINKER__game_Debug CMakeFiles\game.dir\src\Game.cpp.obj CMakeFiles\game.dir\src\basic_virtual.cpp.obj CMakeFiles\game.dir\src\ui\basic_virtual_ui.cpp.obj | imgui.lib lib\DirectXTK.lib || imgui.lib lib\DirectXTK.lib
   CONFIG = Debug
   FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -MDd
   LINK_FLAGS = /machine:x64 /debug /INCREMENTAL /subsystem:console
-  LINK_LIBRARIES = imgui.lib  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib
+  LINK_LIBRARIES = imgui.lib  lib\DirectXTK.lib  dxgi.lib  d3d11.lib  d3dcompiler.lib  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib
   OBJECT_DIR = CMakeFiles\game.dir
   POST_BUILD = cd .
   PRE_LINK = cd .
@@ -275,7 +278,1091 @@ build CMakeFiles\install\local.util: CUSTOM_COMMAND all
 build install\local: phony CMakeFiles\install\local.util
 
 # =============================================================================
+# Write statements declared in CMakeLists.txt:
+# D:/Creat/GAME/TowerClash_with_CNN/CMakeLists.txt
+# =============================================================================
+
+# =============================================================================
+# Object build statements for STATIC_LIBRARY target DirectXTK
+
+
+#############################################
+# Order-only phony target for DirectXTK
+
+build cmake_object_order_depends_target_DirectXTK: phony || external\DirectXTK-may2026\Shaders\Compiled\SpriteEffect_SpriteVertexShader.inc
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YcD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+
+#############################################
+# Additional output files.
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\.\\cmake_pch.cxx.pch: phony external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.obj
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\AlphaTestEffect.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\AlphaTestEffect.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\BasicEffect.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\BasicEffect.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\BasicPostProcess.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\BasicPostProcess.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\BufferHelpers.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\BufferHelpers.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\CommonStates.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\CommonStates.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\DDSTextureLoader.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\DDSTextureLoader.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\DebugEffect.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\DebugEffect.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\DGSLEffect.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\DGSLEffect.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\DGSLEffectFactory.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\DGSLEffectFactory.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\DirectXHelpers.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\DirectXHelpers.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\DualPostProcess.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\DualPostProcess.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\DualTextureEffect.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\DualTextureEffect.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\EffectCommon.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\EffectCommon.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\EffectFactory.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\EffectFactory.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\EnvironmentMapEffect.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\EnvironmentMapEffect.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\GeometricPrimitive.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\GeometricPrimitive.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\GraphicsMemory.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\GraphicsMemory.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\Model.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\Model.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\ModelLoadCMO.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\ModelLoadCMO.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\ModelLoadSDKMESH.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\ModelLoadSDKMESH.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\ModelLoadVBO.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\ModelLoadVBO.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\NormalMapEffect.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\NormalMapEffect.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\PBREffect.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\PBREffect.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\PBREffectFactory.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\PBREffectFactory.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\PrimitiveBatch.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\PrimitiveBatch.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\ScreenGrab.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\ScreenGrab.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\SkinnedEffect.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\SkinnedEffect.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\SpriteBatch.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\SpriteBatch.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\SpriteFont.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\SpriteFont.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\ToneMapPostProcess.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\ToneMapPostProcess.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\VertexTypes.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\VertexTypes.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\WICTextureLoader.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\WICTextureLoader.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\BinaryReader.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\BinaryReader.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\Geometry.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\Geometry.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\SimpleMath.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\SimpleMath.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\GamePad.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\GamePad.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\Keyboard.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\Keyboard.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\Mouse.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\Mouse.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Audio\AudioEngine.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio\AudioEngine.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Audio
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Audio\DynamicSoundEffectInstance.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio\DynamicSoundEffectInstance.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Audio
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Audio\SoundCommon.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio\SoundCommon.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Audio
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Audio\SoundEffect.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio\SoundEffect.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Audio
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Audio\SoundEffectInstance.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio\SoundEffectInstance.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Audio
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Audio\SoundStreamInstance.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio\SoundStreamInstance.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Audio
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Audio\WaveBank.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio\WaveBank.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Audio
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Audio\WaveBankReader.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio\WaveBankReader.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Audio
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+build external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Audio\WAVFileReader.cpp.obj: CXX_COMPILER__DirectXTK_unscanned_Debug D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio\WAVFileReader.cpp | external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.hxx external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.pch || cmake_object_order_depends_target_DirectXTK
+  CONFIG = Debug
+  DEFINES = -DUNICODE -DUSING_XINPUT -D_UNICODE -D_WIN32_WINNT=0x0603
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd /Wall /EHsc /GR /Gd /GS /Zc:forScope /Zc:inline /Zc:wchar_t /sdl /fp:fast /permissive- /Zc:__cplusplus /JMC- /ZH:SHA_256 /Zc:preprocessor /wd5104 /wd5105 /Zc:lambda /Zc:u8EscapeEncoding /wd5262 /YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\Shaders\Compiled -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Audio
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  OBJECT_FILE_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Audio
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+
+# =============================================================================
+# Link build statements for STATIC_LIBRARY target DirectXTK
+
+
+#############################################
+# Link the static library lib\DirectXTK.lib
+
+build lib\DirectXTK.lib: CXX_STATIC_LIBRARY_LINKER__DirectXTK_Debug external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\cmake_pch.cxx.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\AlphaTestEffect.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\BasicEffect.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\BasicPostProcess.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\BufferHelpers.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\CommonStates.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\DDSTextureLoader.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\DebugEffect.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\DGSLEffect.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\DGSLEffectFactory.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\DirectXHelpers.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\DualPostProcess.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\DualTextureEffect.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\EffectCommon.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\EffectFactory.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\EnvironmentMapEffect.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\GeometricPrimitive.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\GraphicsMemory.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\Model.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\ModelLoadCMO.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\ModelLoadSDKMESH.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\ModelLoadVBO.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\NormalMapEffect.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\PBREffect.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\PBREffectFactory.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\PrimitiveBatch.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\ScreenGrab.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\SkinnedEffect.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\SpriteBatch.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\SpriteFont.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\ToneMapPostProcess.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\VertexTypes.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\WICTextureLoader.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\BinaryReader.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\Geometry.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\SimpleMath.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\GamePad.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\Keyboard.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Src\Mouse.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Audio\AudioEngine.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Audio\DynamicSoundEffectInstance.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Audio\SoundCommon.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Audio\SoundEffect.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Audio\SoundEffectInstance.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Audio\SoundStreamInstance.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Audio\WaveBank.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Audio\WaveBankReader.cpp.obj external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\Audio\WAVFileReader.cpp.obj
+  CONFIG = Debug
+  LANGUAGE_COMPILE_FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -MDd
+  LINK_FLAGS = /machine:x64
+  OBJECT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+  POST_BUILD = cd .
+  PRE_LINK = cd .
+  TARGET_COMPILE_PDB = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir\DirectXTK.pdb
+  TARGET_FILE = lib\DirectXTK.lib
+  TARGET_PDB = lib\DirectXTK.pdb
+  TARGET_SUPPORT_DIR = external\DirectXTK-may2026\CMakeFiles\DirectXTK.dir
+
+
+#############################################
+# Utility command for Experimental
+
+build external\DirectXTK-may2026\Experimental: phony external\DirectXTK-may2026\CMakeFiles\Experimental
+
+
+#############################################
+# Utility command for Nightly
+
+build external\DirectXTK-may2026\Nightly: phony external\DirectXTK-may2026\CMakeFiles\Nightly
+
+
+#############################################
+# Utility command for Continuous
+
+build external\DirectXTK-may2026\Continuous: phony external\DirectXTK-may2026\CMakeFiles\Continuous
+
+
+#############################################
+# Utility command for NightlyMemoryCheck
+
+build external\DirectXTK-may2026\NightlyMemoryCheck: phony external\DirectXTK-may2026\CMakeFiles\NightlyMemoryCheck
+
+
+#############################################
+# Utility command for NightlyStart
+
+build external\DirectXTK-may2026\NightlyStart: phony external\DirectXTK-may2026\CMakeFiles\NightlyStart
+
+
+#############################################
+# Utility command for NightlyUpdate
+
+build external\DirectXTK-may2026\NightlyUpdate: phony external\DirectXTK-may2026\CMakeFiles\NightlyUpdate
+
+
+#############################################
+# Utility command for NightlyConfigure
+
+build external\DirectXTK-may2026\NightlyConfigure: phony external\DirectXTK-may2026\CMakeFiles\NightlyConfigure
+
+
+#############################################
+# Utility command for NightlyBuild
+
+build external\DirectXTK-may2026\NightlyBuild: phony external\DirectXTK-may2026\CMakeFiles\NightlyBuild
+
+
+#############################################
+# Utility command for NightlyTest
+
+build external\DirectXTK-may2026\NightlyTest: phony external\DirectXTK-may2026\CMakeFiles\NightlyTest
+
+
+#############################################
+# Utility command for NightlyCoverage
+
+build external\DirectXTK-may2026\NightlyCoverage: phony external\DirectXTK-may2026\CMakeFiles\NightlyCoverage
+
+
+#############################################
+# Utility command for NightlyMemCheck
+
+build external\DirectXTK-may2026\NightlyMemCheck: phony external\DirectXTK-may2026\CMakeFiles\NightlyMemCheck
+
+
+#############################################
+# Utility command for NightlySubmit
+
+build external\DirectXTK-may2026\NightlySubmit: phony external\DirectXTK-may2026\CMakeFiles\NightlySubmit
+
+
+#############################################
+# Utility command for ExperimentalStart
+
+build external\DirectXTK-may2026\ExperimentalStart: phony external\DirectXTK-may2026\CMakeFiles\ExperimentalStart
+
+
+#############################################
+# Utility command for ExperimentalUpdate
+
+build external\DirectXTK-may2026\ExperimentalUpdate: phony external\DirectXTK-may2026\CMakeFiles\ExperimentalUpdate
+
+
+#############################################
+# Utility command for ExperimentalConfigure
+
+build external\DirectXTK-may2026\ExperimentalConfigure: phony external\DirectXTK-may2026\CMakeFiles\ExperimentalConfigure
+
+
+#############################################
+# Utility command for ExperimentalBuild
+
+build external\DirectXTK-may2026\ExperimentalBuild: phony external\DirectXTK-may2026\CMakeFiles\ExperimentalBuild
+
+
+#############################################
+# Utility command for ExperimentalTest
+
+build external\DirectXTK-may2026\ExperimentalTest: phony external\DirectXTK-may2026\CMakeFiles\ExperimentalTest
+
+
+#############################################
+# Utility command for ExperimentalCoverage
+
+build external\DirectXTK-may2026\ExperimentalCoverage: phony external\DirectXTK-may2026\CMakeFiles\ExperimentalCoverage
+
+
+#############################################
+# Utility command for ExperimentalMemCheck
+
+build external\DirectXTK-may2026\ExperimentalMemCheck: phony external\DirectXTK-may2026\CMakeFiles\ExperimentalMemCheck
+
+
+#############################################
+# Utility command for ExperimentalSubmit
+
+build external\DirectXTK-may2026\ExperimentalSubmit: phony external\DirectXTK-may2026\CMakeFiles\ExperimentalSubmit
+
+
+#############################################
+# Utility command for ContinuousStart
+
+build external\DirectXTK-may2026\ContinuousStart: phony external\DirectXTK-may2026\CMakeFiles\ContinuousStart
+
+
+#############################################
+# Utility command for ContinuousUpdate
+
+build external\DirectXTK-may2026\ContinuousUpdate: phony external\DirectXTK-may2026\CMakeFiles\ContinuousUpdate
+
+
+#############################################
+# Utility command for ContinuousConfigure
+
+build external\DirectXTK-may2026\ContinuousConfigure: phony external\DirectXTK-may2026\CMakeFiles\ContinuousConfigure
+
+
+#############################################
+# Utility command for ContinuousBuild
+
+build external\DirectXTK-may2026\ContinuousBuild: phony external\DirectXTK-may2026\CMakeFiles\ContinuousBuild
+
+
+#############################################
+# Utility command for ContinuousTest
+
+build external\DirectXTK-may2026\ContinuousTest: phony external\DirectXTK-may2026\CMakeFiles\ContinuousTest
+
+
+#############################################
+# Utility command for ContinuousCoverage
+
+build external\DirectXTK-may2026\ContinuousCoverage: phony external\DirectXTK-may2026\CMakeFiles\ContinuousCoverage
+
+
+#############################################
+# Utility command for ContinuousMemCheck
+
+build external\DirectXTK-may2026\ContinuousMemCheck: phony external\DirectXTK-may2026\CMakeFiles\ContinuousMemCheck
+
+
+#############################################
+# Utility command for ContinuousSubmit
+
+build external\DirectXTK-may2026\ContinuousSubmit: phony external\DirectXTK-may2026\CMakeFiles\ContinuousSubmit
+
+
+#############################################
+# Utility command for edit_cache
+
+build external\DirectXTK-may2026\CMakeFiles\edit_cache.util: CUSTOM_COMMAND
+  COMMAND = C:\Windows\system32\cmd.exe /C "cd /D D:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026 && D:\CMake\bin\cmake-gui.exe -SD:\Creat\GAME\TowerClash_with_CNN -BD:\Creat\GAME\TowerClash_with_CNN\build"
+  DESC = Running CMake cache editor...
+  pool = console
+  restat = 1
+
+build external\DirectXTK-may2026\edit_cache: phony external\DirectXTK-may2026\CMakeFiles\edit_cache.util
+
+
+#############################################
+# Utility command for rebuild_cache
+
+build external\DirectXTK-may2026\CMakeFiles\rebuild_cache.util: CUSTOM_COMMAND
+  COMMAND = C:\Windows\system32\cmd.exe /C "cd /D D:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026 && D:\CMake\bin\cmake.exe --regenerate-during-build -SD:\Creat\GAME\TowerClash_with_CNN -BD:\Creat\GAME\TowerClash_with_CNN\build"
+  DESC = Running CMake to regenerate build system...
+  pool = console
+  restat = 1
+
+build external\DirectXTK-may2026\rebuild_cache: phony external\DirectXTK-may2026\CMakeFiles\rebuild_cache.util
+
+
+#############################################
+# Utility command for list_install_components
+
+build external\DirectXTK-may2026\list_install_components: phony
+
+
+#############################################
+# Utility command for install
+
+build external\DirectXTK-may2026\CMakeFiles\install.util: CUSTOM_COMMAND external\DirectXTK-may2026\all
+  COMMAND = C:\Windows\system32\cmd.exe /C "cd /D D:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026 && D:\CMake\bin\cmake.exe -P cmake_install.cmake"
+  DESC = Install the project...
+  pool = console
+  restat = 1
+
+build external\DirectXTK-may2026\install: phony external\DirectXTK-may2026\CMakeFiles\install.util
+
+
+#############################################
+# Utility command for install/local
+
+build external\DirectXTK-may2026\CMakeFiles\install\local.util: CUSTOM_COMMAND external\DirectXTK-may2026\all
+  COMMAND = C:\Windows\system32\cmd.exe /C "cd /D D:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026 && D:\CMake\bin\cmake.exe -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake"
+  DESC = Installing only the local directory...
+  pool = console
+  restat = 1
+
+build external\DirectXTK-may2026\install\local: phony external\DirectXTK-may2026\CMakeFiles\install\local.util
+
+
+#############################################
+# Custom command for external\DirectXTK-may2026\Shaders\Compiled\SpriteEffect_SpriteVertexShader.inc
+
+build external\DirectXTK-may2026\Shaders\Compiled\SpriteEffect_SpriteVertexShader.inc | ${cmake_ninja_workdir}external\DirectXTK-may2026\Shaders\Compiled\SpriteEffect_SpriteVertexShader.inc: CUSTOM_COMMAND D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\Shaders\CompileShaders.cmd D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\Shaders\AlphaTestEffect.fx D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\Shaders\BasicEffect.fx D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\Shaders\DebugEffect.fx D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\Shaders\DGSLEffect.fx D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\Shaders\DGSLLambert.hlsl D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\Shaders\DGSLPhong.hlsl D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\Shaders\DGSLUnlit.hlsl D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\Shaders\DualTextureEffect.fx D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\Shaders\EnvironmentMapEffect.fx D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\Shaders\NormalMapEffect.fx D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\Shaders\PBREffect.fx D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\Shaders\PostProcess.fx D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\Shaders\SkinnedEffect.fx D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\Shaders\SpriteEffect.fx D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\Shaders\ToneMap.fx D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\Shaders\Common.fxh D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\Shaders\Lighting.fxh D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\Shaders\PBRCommon.fxh D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\Shaders\PixelPacking_Velocity.hlsli D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\Shaders\Skinning.fxh D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\Shaders\Structures.fxh D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\Shaders\Utilities.fxh
+  COMMAND = C:\Windows\system32\cmd.exe /C "cd /D D:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Src\Shaders && D:\CMake\bin\cmake.exe -E env CompileShadersOutput="D:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/Shaders/Compiled" "LegacyShaderCompiler=C:/Program Files (x86)/Windows Kits/10/bin/10.0.26100.0/x64/fxc.exe" CompileShaders.cmd > D:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/Shaders/Compiled/compileshaders.log"
+  DESC = Generating HLSL shaders...
+  pool = console
+  restat = 1
+
+
+#############################################
+# Custom command for external\DirectXTK-may2026\CMakeFiles\Experimental
+
+build external\DirectXTK-may2026\CMakeFiles\Experimental | ${cmake_ninja_workdir}external\DirectXTK-may2026\CMakeFiles\Experimental: CUSTOM_COMMAND
+  COMMAND = C:\Windows\system32\cmd.exe /C "cd /D D:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026 && D:\CMake\bin\ctest.exe -DMODEL=Experimental -S CMakeFiles/CTestScript.cmake -V"
+  pool = console
+
+
+#############################################
+# Custom command for external\DirectXTK-may2026\CMakeFiles\Nightly
+
+build external\DirectXTK-may2026\CMakeFiles\Nightly | ${cmake_ninja_workdir}external\DirectXTK-may2026\CMakeFiles\Nightly: CUSTOM_COMMAND
+  COMMAND = C:\Windows\system32\cmd.exe /C "cd /D D:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026 && D:\CMake\bin\ctest.exe -DMODEL=Nightly -S CMakeFiles/CTestScript.cmake -V"
+  pool = console
+
+
+#############################################
+# Custom command for external\DirectXTK-may2026\CMakeFiles\Continuous
+
+build external\DirectXTK-may2026\CMakeFiles\Continuous | ${cmake_ninja_workdir}external\DirectXTK-may2026\CMakeFiles\Continuous: CUSTOM_COMMAND
+  COMMAND = C:\Windows\system32\cmd.exe /C "cd /D D:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026 && D:\CMake\bin\ctest.exe -DMODEL=Continuous -S CMakeFiles/CTestScript.cmake -V"
+  pool = console
+
+
+#############################################
+# Custom command for external\DirectXTK-may2026\CMakeFiles\NightlyMemoryCheck
+
+build external\DirectXTK-may2026\CMakeFiles\NightlyMemoryCheck | ${cmake_ninja_workdir}external\DirectXTK-may2026\CMakeFiles\NightlyMemoryCheck: CUSTOM_COMMAND
+  COMMAND = C:\Windows\system32\cmd.exe /C "cd /D D:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026 && D:\CMake\bin\ctest.exe -DMODEL=NightlyMemoryCheck -S CMakeFiles/CTestScript.cmake -V"
+  pool = console
+
+
+#############################################
+# Custom command for external\DirectXTK-may2026\CMakeFiles\NightlyStart
+
+build external\DirectXTK-may2026\CMakeFiles\NightlyStart | ${cmake_ninja_workdir}external\DirectXTK-may2026\CMakeFiles\NightlyStart: CUSTOM_COMMAND
+  COMMAND = C:\Windows\system32\cmd.exe /C "cd /D D:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026 && D:\CMake\bin\ctest.exe -DMODEL=Nightly -DACTIONS=Start -S CMakeFiles/CTestScript.cmake -V"
+  pool = console
+
+
+#############################################
+# Custom command for external\DirectXTK-may2026\CMakeFiles\NightlyUpdate
+
+build external\DirectXTK-may2026\CMakeFiles\NightlyUpdate | ${cmake_ninja_workdir}external\DirectXTK-may2026\CMakeFiles\NightlyUpdate: CUSTOM_COMMAND
+  COMMAND = C:\Windows\system32\cmd.exe /C "cd /D D:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026 && D:\CMake\bin\ctest.exe -DMODEL=Nightly -DACTIONS=Update -S CMakeFiles/CTestScript.cmake -V"
+  pool = console
+
+
+#############################################
+# Custom command for external\DirectXTK-may2026\CMakeFiles\NightlyConfigure
+
+build external\DirectXTK-may2026\CMakeFiles\NightlyConfigure | ${cmake_ninja_workdir}external\DirectXTK-may2026\CMakeFiles\NightlyConfigure: CUSTOM_COMMAND
+  COMMAND = C:\Windows\system32\cmd.exe /C "cd /D D:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026 && D:\CMake\bin\ctest.exe -DMODEL=Nightly -DACTIONS=Configure -S CMakeFiles/CTestScript.cmake -V"
+  pool = console
+
+
+#############################################
+# Custom command for external\DirectXTK-may2026\CMakeFiles\NightlyBuild
+
+build external\DirectXTK-may2026\CMakeFiles\NightlyBuild | ${cmake_ninja_workdir}external\DirectXTK-may2026\CMakeFiles\NightlyBuild: CUSTOM_COMMAND
+  COMMAND = C:\Windows\system32\cmd.exe /C "cd /D D:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026 && D:\CMake\bin\ctest.exe -DMODEL=Nightly -DACTIONS=Build -S CMakeFiles/CTestScript.cmake -V"
+  pool = console
+
+
+#############################################
+# Custom command for external\DirectXTK-may2026\CMakeFiles\NightlyTest
+
+build external\DirectXTK-may2026\CMakeFiles\NightlyTest | ${cmake_ninja_workdir}external\DirectXTK-may2026\CMakeFiles\NightlyTest: CUSTOM_COMMAND
+  COMMAND = C:\Windows\system32\cmd.exe /C "cd /D D:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026 && D:\CMake\bin\ctest.exe -DMODEL=Nightly -DACTIONS=Test -S CMakeFiles/CTestScript.cmake -V"
+  pool = console
+
+
+#############################################
+# Custom command for external\DirectXTK-may2026\CMakeFiles\NightlyCoverage
+
+build external\DirectXTK-may2026\CMakeFiles\NightlyCoverage | ${cmake_ninja_workdir}external\DirectXTK-may2026\CMakeFiles\NightlyCoverage: CUSTOM_COMMAND
+  COMMAND = C:\Windows\system32\cmd.exe /C "cd /D D:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026 && D:\CMake\bin\ctest.exe -DMODEL=Nightly -DACTIONS=Coverage -S CMakeFiles/CTestScript.cmake -V"
+  pool = console
+
+
+#############################################
+# Custom command for external\DirectXTK-may2026\CMakeFiles\NightlyMemCheck
+
+build external\DirectXTK-may2026\CMakeFiles\NightlyMemCheck | ${cmake_ninja_workdir}external\DirectXTK-may2026\CMakeFiles\NightlyMemCheck: CUSTOM_COMMAND
+  COMMAND = C:\Windows\system32\cmd.exe /C "cd /D D:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026 && D:\CMake\bin\ctest.exe -DMODEL=Nightly -DACTIONS=MemCheck -S CMakeFiles/CTestScript.cmake -V"
+  pool = console
+
+
+#############################################
+# Custom command for external\DirectXTK-may2026\CMakeFiles\NightlySubmit
+
+build external\DirectXTK-may2026\CMakeFiles\NightlySubmit | ${cmake_ninja_workdir}external\DirectXTK-may2026\CMakeFiles\NightlySubmit: CUSTOM_COMMAND
+  COMMAND = C:\Windows\system32\cmd.exe /C "cd /D D:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026 && D:\CMake\bin\ctest.exe -DMODEL=Nightly -DACTIONS=Submit -S CMakeFiles/CTestScript.cmake -V"
+  pool = console
+
+
+#############################################
+# Custom command for external\DirectXTK-may2026\CMakeFiles\ExperimentalStart
+
+build external\DirectXTK-may2026\CMakeFiles\ExperimentalStart | ${cmake_ninja_workdir}external\DirectXTK-may2026\CMakeFiles\ExperimentalStart: CUSTOM_COMMAND
+  COMMAND = C:\Windows\system32\cmd.exe /C "cd /D D:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026 && D:\CMake\bin\ctest.exe -DMODEL=Experimental -DACTIONS=Start -S CMakeFiles/CTestScript.cmake -V"
+  pool = console
+
+
+#############################################
+# Custom command for external\DirectXTK-may2026\CMakeFiles\ExperimentalUpdate
+
+build external\DirectXTK-may2026\CMakeFiles\ExperimentalUpdate | ${cmake_ninja_workdir}external\DirectXTK-may2026\CMakeFiles\ExperimentalUpdate: CUSTOM_COMMAND
+  COMMAND = C:\Windows\system32\cmd.exe /C "cd /D D:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026 && D:\CMake\bin\ctest.exe -DMODEL=Experimental -DACTIONS=Update -S CMakeFiles/CTestScript.cmake -V"
+  pool = console
+
+
+#############################################
+# Custom command for external\DirectXTK-may2026\CMakeFiles\ExperimentalConfigure
+
+build external\DirectXTK-may2026\CMakeFiles\ExperimentalConfigure | ${cmake_ninja_workdir}external\DirectXTK-may2026\CMakeFiles\ExperimentalConfigure: CUSTOM_COMMAND
+  COMMAND = C:\Windows\system32\cmd.exe /C "cd /D D:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026 && D:\CMake\bin\ctest.exe -DMODEL=Experimental -DACTIONS=Configure -S CMakeFiles/CTestScript.cmake -V"
+  pool = console
+
+
+#############################################
+# Custom command for external\DirectXTK-may2026\CMakeFiles\ExperimentalBuild
+
+build external\DirectXTK-may2026\CMakeFiles\ExperimentalBuild | ${cmake_ninja_workdir}external\DirectXTK-may2026\CMakeFiles\ExperimentalBuild: CUSTOM_COMMAND
+  COMMAND = C:\Windows\system32\cmd.exe /C "cd /D D:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026 && D:\CMake\bin\ctest.exe -DMODEL=Experimental -DACTIONS=Build -S CMakeFiles/CTestScript.cmake -V"
+  pool = console
+
+
+#############################################
+# Custom command for external\DirectXTK-may2026\CMakeFiles\ExperimentalTest
+
+build external\DirectXTK-may2026\CMakeFiles\ExperimentalTest | ${cmake_ninja_workdir}external\DirectXTK-may2026\CMakeFiles\ExperimentalTest: CUSTOM_COMMAND
+  COMMAND = C:\Windows\system32\cmd.exe /C "cd /D D:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026 && D:\CMake\bin\ctest.exe -DMODEL=Experimental -DACTIONS=Test -S CMakeFiles/CTestScript.cmake -V"
+  pool = console
+
+
+#############################################
+# Custom command for external\DirectXTK-may2026\CMakeFiles\ExperimentalCoverage
+
+build external\DirectXTK-may2026\CMakeFiles\ExperimentalCoverage | ${cmake_ninja_workdir}external\DirectXTK-may2026\CMakeFiles\ExperimentalCoverage: CUSTOM_COMMAND
+  COMMAND = C:\Windows\system32\cmd.exe /C "cd /D D:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026 && D:\CMake\bin\ctest.exe -DMODEL=Experimental -DACTIONS=Coverage -S CMakeFiles/CTestScript.cmake -V"
+  pool = console
+
+
+#############################################
+# Custom command for external\DirectXTK-may2026\CMakeFiles\ExperimentalMemCheck
+
+build external\DirectXTK-may2026\CMakeFiles\ExperimentalMemCheck | ${cmake_ninja_workdir}external\DirectXTK-may2026\CMakeFiles\ExperimentalMemCheck: CUSTOM_COMMAND
+  COMMAND = C:\Windows\system32\cmd.exe /C "cd /D D:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026 && D:\CMake\bin\ctest.exe -DMODEL=Experimental -DACTIONS=MemCheck -S CMakeFiles/CTestScript.cmake -V"
+  pool = console
+
+
+#############################################
+# Custom command for external\DirectXTK-may2026\CMakeFiles\ExperimentalSubmit
+
+build external\DirectXTK-may2026\CMakeFiles\ExperimentalSubmit | ${cmake_ninja_workdir}external\DirectXTK-may2026\CMakeFiles\ExperimentalSubmit: CUSTOM_COMMAND
+  COMMAND = C:\Windows\system32\cmd.exe /C "cd /D D:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026 && D:\CMake\bin\ctest.exe -DMODEL=Experimental -DACTIONS=Submit -S CMakeFiles/CTestScript.cmake -V"
+  pool = console
+
+
+#############################################
+# Custom command for external\DirectXTK-may2026\CMakeFiles\ContinuousStart
+
+build external\DirectXTK-may2026\CMakeFiles\ContinuousStart | ${cmake_ninja_workdir}external\DirectXTK-may2026\CMakeFiles\ContinuousStart: CUSTOM_COMMAND
+  COMMAND = C:\Windows\system32\cmd.exe /C "cd /D D:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026 && D:\CMake\bin\ctest.exe -DMODEL=Continuous -DACTIONS=Start -S CMakeFiles/CTestScript.cmake -V"
+  pool = console
+
+
+#############################################
+# Custom command for external\DirectXTK-may2026\CMakeFiles\ContinuousUpdate
+
+build external\DirectXTK-may2026\CMakeFiles\ContinuousUpdate | ${cmake_ninja_workdir}external\DirectXTK-may2026\CMakeFiles\ContinuousUpdate: CUSTOM_COMMAND
+  COMMAND = C:\Windows\system32\cmd.exe /C "cd /D D:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026 && D:\CMake\bin\ctest.exe -DMODEL=Continuous -DACTIONS=Update -S CMakeFiles/CTestScript.cmake -V"
+  pool = console
+
+
+#############################################
+# Custom command for external\DirectXTK-may2026\CMakeFiles\ContinuousConfigure
+
+build external\DirectXTK-may2026\CMakeFiles\ContinuousConfigure | ${cmake_ninja_workdir}external\DirectXTK-may2026\CMakeFiles\ContinuousConfigure: CUSTOM_COMMAND
+  COMMAND = C:\Windows\system32\cmd.exe /C "cd /D D:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026 && D:\CMake\bin\ctest.exe -DMODEL=Continuous -DACTIONS=Configure -S CMakeFiles/CTestScript.cmake -V"
+  pool = console
+
+
+#############################################
+# Custom command for external\DirectXTK-may2026\CMakeFiles\ContinuousBuild
+
+build external\DirectXTK-may2026\CMakeFiles\ContinuousBuild | ${cmake_ninja_workdir}external\DirectXTK-may2026\CMakeFiles\ContinuousBuild: CUSTOM_COMMAND
+  COMMAND = C:\Windows\system32\cmd.exe /C "cd /D D:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026 && D:\CMake\bin\ctest.exe -DMODEL=Continuous -DACTIONS=Build -S CMakeFiles/CTestScript.cmake -V"
+  pool = console
+
+
+#############################################
+# Custom command for external\DirectXTK-may2026\CMakeFiles\ContinuousTest
+
+build external\DirectXTK-may2026\CMakeFiles\ContinuousTest | ${cmake_ninja_workdir}external\DirectXTK-may2026\CMakeFiles\ContinuousTest: CUSTOM_COMMAND
+  COMMAND = C:\Windows\system32\cmd.exe /C "cd /D D:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026 && D:\CMake\bin\ctest.exe -DMODEL=Continuous -DACTIONS=Test -S CMakeFiles/CTestScript.cmake -V"
+  pool = console
+
+
+#############################################
+# Custom command for external\DirectXTK-may2026\CMakeFiles\ContinuousCoverage
+
+build external\DirectXTK-may2026\CMakeFiles\ContinuousCoverage | ${cmake_ninja_workdir}external\DirectXTK-may2026\CMakeFiles\ContinuousCoverage: CUSTOM_COMMAND
+  COMMAND = C:\Windows\system32\cmd.exe /C "cd /D D:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026 && D:\CMake\bin\ctest.exe -DMODEL=Continuous -DACTIONS=Coverage -S CMakeFiles/CTestScript.cmake -V"
+  pool = console
+
+
+#############################################
+# Custom command for external\DirectXTK-may2026\CMakeFiles\ContinuousMemCheck
+
+build external\DirectXTK-may2026\CMakeFiles\ContinuousMemCheck | ${cmake_ninja_workdir}external\DirectXTK-may2026\CMakeFiles\ContinuousMemCheck: CUSTOM_COMMAND
+  COMMAND = C:\Windows\system32\cmd.exe /C "cd /D D:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026 && D:\CMake\bin\ctest.exe -DMODEL=Continuous -DACTIONS=MemCheck -S CMakeFiles/CTestScript.cmake -V"
+  pool = console
+
+
+#############################################
+# Custom command for external\DirectXTK-may2026\CMakeFiles\ContinuousSubmit
+
+build external\DirectXTK-may2026\CMakeFiles\ContinuousSubmit | ${cmake_ninja_workdir}external\DirectXTK-may2026\CMakeFiles\ContinuousSubmit: CUSTOM_COMMAND
+  COMMAND = C:\Windows\system32\cmd.exe /C "cd /D D:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026 && D:\CMake\bin\ctest.exe -DMODEL=Continuous -DACTIONS=Submit -S CMakeFiles/CTestScript.cmake -V"
+  pool = console
+
+# =============================================================================
 # Target aliases.
+
+build Continuous: phony external\DirectXTK-may2026\Continuous
+
+build ContinuousBuild: phony external\DirectXTK-may2026\ContinuousBuild
+
+build ContinuousConfigure: phony external\DirectXTK-may2026\ContinuousConfigure
+
+build ContinuousCoverage: phony external\DirectXTK-may2026\ContinuousCoverage
+
+build ContinuousMemCheck: phony external\DirectXTK-may2026\ContinuousMemCheck
+
+build ContinuousStart: phony external\DirectXTK-may2026\ContinuousStart
+
+build ContinuousSubmit: phony external\DirectXTK-may2026\ContinuousSubmit
+
+build ContinuousTest: phony external\DirectXTK-may2026\ContinuousTest
+
+build ContinuousUpdate: phony external\DirectXTK-may2026\ContinuousUpdate
+
+build DirectXTK: phony lib\DirectXTK.lib
+
+build DirectXTK.lib: phony lib\DirectXTK.lib
+
+build Experimental: phony external\DirectXTK-may2026\Experimental
+
+build ExperimentalBuild: phony external\DirectXTK-may2026\ExperimentalBuild
+
+build ExperimentalConfigure: phony external\DirectXTK-may2026\ExperimentalConfigure
+
+build ExperimentalCoverage: phony external\DirectXTK-may2026\ExperimentalCoverage
+
+build ExperimentalMemCheck: phony external\DirectXTK-may2026\ExperimentalMemCheck
+
+build ExperimentalStart: phony external\DirectXTK-may2026\ExperimentalStart
+
+build ExperimentalSubmit: phony external\DirectXTK-may2026\ExperimentalSubmit
+
+build ExperimentalTest: phony external\DirectXTK-may2026\ExperimentalTest
+
+build ExperimentalUpdate: phony external\DirectXTK-may2026\ExperimentalUpdate
+
+build Nightly: phony external\DirectXTK-may2026\Nightly
+
+build NightlyBuild: phony external\DirectXTK-may2026\NightlyBuild
+
+build NightlyConfigure: phony external\DirectXTK-may2026\NightlyConfigure
+
+build NightlyCoverage: phony external\DirectXTK-may2026\NightlyCoverage
+
+build NightlyMemCheck: phony external\DirectXTK-may2026\NightlyMemCheck
+
+build NightlyMemoryCheck: phony external\DirectXTK-may2026\NightlyMemoryCheck
+
+build NightlyStart: phony external\DirectXTK-may2026\NightlyStart
+
+build NightlySubmit: phony external\DirectXTK-may2026\NightlySubmit
+
+build NightlyTest: phony external\DirectXTK-may2026\NightlyTest
+
+build NightlyUpdate: phony external\DirectXTK-may2026\NightlyUpdate
 
 build game: phony bin\game.exe
 
@@ -291,7 +1378,14 @@ build imgui: phony imgui.lib
 #############################################
 # Folder: D:/Creat/GAME/TowerClash_with_CNN/build
 
-build all: phony imgui.lib bin\game.exe
+build all: phony imgui.lib bin\game.exe external\DirectXTK-may2026\all
+
+# =============================================================================
+
+#############################################
+# Folder: D:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026
+
+build external\DirectXTK-may2026\all: phony lib\DirectXTK.lib
 
 # =============================================================================
 # Built-in targets
@@ -314,14 +1408,14 @@ build D$:\Creat\GAME\TowerClash_with_CNN\build\CMakeFiles\cmake.verify_globs: VE
 #############################################
 # Re-run CMake if any of its inputs changed.
 
-build build.ninja D$:\Creat\GAME\TowerClash_with_CNN\build\cmake_install.cmake: RERUN_CMAKE D$:\Creat\GAME\TowerClash_with_CNN\build\CMakeFiles\cmake.verify_globs | CMakeCache.txt CMakeFiles\4.3.2\CMakeCXXCompiler.cmake CMakeFiles\4.3.2\CMakeRCCompiler.cmake CMakeFiles\4.3.2\CMakeSystem.cmake D$:\Creat\GAME\TowerClash_with_CNN\build\CMakeFiles\VerifyGlobs.cmake D$:\CMake\share\cmake-4.3\Modules\CMakeCXXInformation.cmake D$:\CMake\share\cmake-4.3\Modules\CMakeCommonLanguageInclude.cmake D$:\CMake\share\cmake-4.3\Modules\CMakeGenericSystem.cmake D$:\CMake\share\cmake-4.3\Modules\CMakeInitializeConfigs.cmake D$:\CMake\share\cmake-4.3\Modules\CMakeLanguageInformation.cmake D$:\CMake\share\cmake-4.3\Modules\CMakeRCInformation.cmake D$:\CMake\share\cmake-4.3\Modules\CMakeSystemSpecificInformation.cmake D$:\CMake\share\cmake-4.3\Modules\CMakeSystemSpecificInitialize.cmake D$:\CMake\share\cmake-4.3\Modules\Compiler\CMakeCommonCompilerMacros.cmake D$:\CMake\share\cmake-4.3\Modules\Compiler\MSVC-CXX.cmake D$:\CMake\share\cmake-4.3\Modules\Compiler\MSVC.cmake D$:\CMake\share\cmake-4.3\Modules\Internal\CMakeCXXLinkerInformation.cmake D$:\CMake\share\cmake-4.3\Modules\Internal\CMakeCommonLinkerInformation.cmake D$:\CMake\share\cmake-4.3\Modules\Linker\MSVC-CXX.cmake D$:\CMake\share\cmake-4.3\Modules\Linker\MSVC.cmake D$:\CMake\share\cmake-4.3\Modules\Platform\Linker\Windows-MSVC-CXX.cmake D$:\CMake\share\cmake-4.3\Modules\Platform\Linker\Windows-MSVC.cmake D$:\CMake\share\cmake-4.3\Modules\Platform\Windows-Initialize.cmake D$:\CMake\share\cmake-4.3\Modules\Platform\Windows-MSVC-CXX.cmake D$:\CMake\share\cmake-4.3\Modules\Platform\Windows-MSVC.cmake D$:\CMake\share\cmake-4.3\Modules\Platform\Windows.cmake D$:\CMake\share\cmake-4.3\Modules\Platform\WindowsPaths.cmake D$:\Creat\GAME\TowerClash_with_CNN\CMakeLists.txt
+build build.ninja D$:\Creat\GAME\TowerClash_with_CNN\build\cmake_install.cmake D$:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\cmake_install.cmake D$:\Creat\GAME\TowerClash_with_CNN\build\external\DirectXTK-may2026\CTestTestfile.cmake: RERUN_CMAKE D$:\Creat\GAME\TowerClash_with_CNN\build\CMakeFiles\cmake.verify_globs | CMakeCache.txt CMakeFiles\4.3.2\CMakeCXXCompiler.cmake CMakeFiles\4.3.2\CMakeRCCompiler.cmake CMakeFiles\4.3.2\CMakeSystem.cmake D$:\Creat\GAME\TowerClash_with_CNN\build\CMakeFiles\VerifyGlobs.cmake D$:\CMake\share\cmake-4.3\Modules\BasicConfigVersion-AnyNewerVersion.cmake.in D$:\CMake\share\cmake-4.3\Modules\CMakeCXXInformation.cmake D$:\CMake\share\cmake-4.3\Modules\CMakeCommonLanguageInclude.cmake D$:\CMake\share\cmake-4.3\Modules\CMakeGenericSystem.cmake D$:\CMake\share\cmake-4.3\Modules\CMakeInitializeConfigs.cmake D$:\CMake\share\cmake-4.3\Modules\CMakeLanguageInformation.cmake D$:\CMake\share\cmake-4.3\Modules\CMakePackageConfigHelpers.cmake D$:\CMake\share\cmake-4.3\Modules\CMakeRCInformation.cmake D$:\CMake\share\cmake-4.3\Modules\CMakeSystemSpecificInformation.cmake D$:\CMake\share\cmake-4.3\Modules\CMakeSystemSpecificInitialize.cmake D$:\CMake\share\cmake-4.3\Modules\CTest.cmake D$:\CMake\share\cmake-4.3\Modules\CTestTargets.cmake D$:\CMake\share\cmake-4.3\Modules\CTestUseLaunchers.cmake D$:\CMake\share\cmake-4.3\Modules\CheckIncludeFileCXX.cmake D$:\CMake\share\cmake-4.3\Modules\Compiler\CMakeCommonCompilerMacros.cmake D$:\CMake\share\cmake-4.3\Modules\Compiler\MSVC-CXX.cmake D$:\CMake\share\cmake-4.3\Modules\Compiler\MSVC.cmake D$:\CMake\share\cmake-4.3\Modules\DartConfiguration.tcl.in D$:\CMake\share\cmake-4.3\Modules\GNUInstallDirs.cmake D$:\CMake\share\cmake-4.3\Modules\Internal\CMakeCXXLinkerInformation.cmake D$:\CMake\share\cmake-4.3\Modules\Internal\CMakeCommonLinkerInformation.cmake D$:\CMake\share\cmake-4.3\Modules\Linker\MSVC-CXX.cmake D$:\CMake\share\cmake-4.3\Modules\Linker\MSVC.cmake D$:\CMake\share\cmake-4.3\Modules\Platform\Linker\Windows-MSVC-CXX.cmake D$:\CMake\share\cmake-4.3\Modules\Platform\Linker\Windows-MSVC.cmake D$:\CMake\share\cmake-4.3\Modules\Platform\Windows-Initialize.cmake D$:\CMake\share\cmake-4.3\Modules\Platform\Windows-MSVC-CXX.cmake D$:\CMake\share\cmake-4.3\Modules\Platform\Windows-MSVC.cmake D$:\CMake\share\cmake-4.3\Modules\Platform\Windows.cmake D$:\CMake\share\cmake-4.3\Modules\Platform\WindowsPaths.cmake D$:\CMake\share\cmake-4.3\Modules\WriteBasicConfigVersionFile.cmake D$:\CMake\share\cmake-4.3\Templates\CTestScript.cmake.in D$:\Creat\GAME\TowerClash_with_CNN\CMakeLists.txt D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\CMakeLists.txt D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\build\CompilerAndLinker.cmake D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\build\DirectXTK-config.cmake.in D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\build\DirectXTK.pc.in
   pool = console
 
 
 #############################################
 # A missing CMake input file is not an error.
 
-build CMakeCache.txt CMakeFiles\4.3.2\CMakeCXXCompiler.cmake CMakeFiles\4.3.2\CMakeRCCompiler.cmake CMakeFiles\4.3.2\CMakeSystem.cmake D$:\Creat\GAME\TowerClash_with_CNN\build\CMakeFiles\VerifyGlobs.cmake D$:\CMake\share\cmake-4.3\Modules\CMakeCXXInformation.cmake D$:\CMake\share\cmake-4.3\Modules\CMakeCommonLanguageInclude.cmake D$:\CMake\share\cmake-4.3\Modules\CMakeGenericSystem.cmake D$:\CMake\share\cmake-4.3\Modules\CMakeInitializeConfigs.cmake D$:\CMake\share\cmake-4.3\Modules\CMakeLanguageInformation.cmake D$:\CMake\share\cmake-4.3\Modules\CMakeRCInformation.cmake D$:\CMake\share\cmake-4.3\Modules\CMakeSystemSpecificInformation.cmake D$:\CMake\share\cmake-4.3\Modules\CMakeSystemSpecificInitialize.cmake D$:\CMake\share\cmake-4.3\Modules\Compiler\CMakeCommonCompilerMacros.cmake D$:\CMake\share\cmake-4.3\Modules\Compiler\MSVC-CXX.cmake D$:\CMake\share\cmake-4.3\Modules\Compiler\MSVC.cmake D$:\CMake\share\cmake-4.3\Modules\Internal\CMakeCXXLinkerInformation.cmake D$:\CMake\share\cmake-4.3\Modules\Internal\CMakeCommonLinkerInformation.cmake D$:\CMake\share\cmake-4.3\Modules\Linker\MSVC-CXX.cmake D$:\CMake\share\cmake-4.3\Modules\Linker\MSVC.cmake D$:\CMake\share\cmake-4.3\Modules\Platform\Linker\Windows-MSVC-CXX.cmake D$:\CMake\share\cmake-4.3\Modules\Platform\Linker\Windows-MSVC.cmake D$:\CMake\share\cmake-4.3\Modules\Platform\Windows-Initialize.cmake D$:\CMake\share\cmake-4.3\Modules\Platform\Windows-MSVC-CXX.cmake D$:\CMake\share\cmake-4.3\Modules\Platform\Windows-MSVC.cmake D$:\CMake\share\cmake-4.3\Modules\Platform\Windows.cmake D$:\CMake\share\cmake-4.3\Modules\Platform\WindowsPaths.cmake D$:\Creat\GAME\TowerClash_with_CNN\CMakeLists.txt: phony
+build CMakeCache.txt CMakeFiles\4.3.2\CMakeCXXCompiler.cmake CMakeFiles\4.3.2\CMakeRCCompiler.cmake CMakeFiles\4.3.2\CMakeSystem.cmake D$:\Creat\GAME\TowerClash_with_CNN\build\CMakeFiles\VerifyGlobs.cmake D$:\CMake\share\cmake-4.3\Modules\BasicConfigVersion-AnyNewerVersion.cmake.in D$:\CMake\share\cmake-4.3\Modules\CMakeCXXInformation.cmake D$:\CMake\share\cmake-4.3\Modules\CMakeCommonLanguageInclude.cmake D$:\CMake\share\cmake-4.3\Modules\CMakeGenericSystem.cmake D$:\CMake\share\cmake-4.3\Modules\CMakeInitializeConfigs.cmake D$:\CMake\share\cmake-4.3\Modules\CMakeLanguageInformation.cmake D$:\CMake\share\cmake-4.3\Modules\CMakePackageConfigHelpers.cmake D$:\CMake\share\cmake-4.3\Modules\CMakeRCInformation.cmake D$:\CMake\share\cmake-4.3\Modules\CMakeSystemSpecificInformation.cmake D$:\CMake\share\cmake-4.3\Modules\CMakeSystemSpecificInitialize.cmake D$:\CMake\share\cmake-4.3\Modules\CTest.cmake D$:\CMake\share\cmake-4.3\Modules\CTestTargets.cmake D$:\CMake\share\cmake-4.3\Modules\CTestUseLaunchers.cmake D$:\CMake\share\cmake-4.3\Modules\CheckIncludeFileCXX.cmake D$:\CMake\share\cmake-4.3\Modules\Compiler\CMakeCommonCompilerMacros.cmake D$:\CMake\share\cmake-4.3\Modules\Compiler\MSVC-CXX.cmake D$:\CMake\share\cmake-4.3\Modules\Compiler\MSVC.cmake D$:\CMake\share\cmake-4.3\Modules\DartConfiguration.tcl.in D$:\CMake\share\cmake-4.3\Modules\GNUInstallDirs.cmake D$:\CMake\share\cmake-4.3\Modules\Internal\CMakeCXXLinkerInformation.cmake D$:\CMake\share\cmake-4.3\Modules\Internal\CMakeCommonLinkerInformation.cmake D$:\CMake\share\cmake-4.3\Modules\Linker\MSVC-CXX.cmake D$:\CMake\share\cmake-4.3\Modules\Linker\MSVC.cmake D$:\CMake\share\cmake-4.3\Modules\Platform\Linker\Windows-MSVC-CXX.cmake D$:\CMake\share\cmake-4.3\Modules\Platform\Linker\Windows-MSVC.cmake D$:\CMake\share\cmake-4.3\Modules\Platform\Windows-Initialize.cmake D$:\CMake\share\cmake-4.3\Modules\Platform\Windows-MSVC-CXX.cmake D$:\CMake\share\cmake-4.3\Modules\Platform\Windows-MSVC.cmake D$:\CMake\share\cmake-4.3\Modules\Platform\Windows.cmake D$:\CMake\share\cmake-4.3\Modules\Platform\WindowsPaths.cmake D$:\CMake\share\cmake-4.3\Modules\WriteBasicConfigVersionFile.cmake D$:\CMake\share\cmake-4.3\Templates\CTestScript.cmake.in D$:\Creat\GAME\TowerClash_with_CNN\CMakeLists.txt D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\CMakeLists.txt D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\build\CompilerAndLinker.cmake D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\build\DirectXTK-config.cmake.in D$:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\build\DirectXTK.pc.in: phony
 
 
 #############################################

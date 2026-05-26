@@ -1,7 +1,8 @@
 {
 	"InstallScripts" : 
 	[
-		"D:/Creat/GAME/TowerClash_with_CNN/build/cmake_install.cmake"
+		"D:/Creat/GAME/TowerClash_with_CNN/build/cmake_install.cmake",
+		"D:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/cmake_install.cmake"
 	],
 	"Parallel" : false
 }

@@ -1,0 +1,383 @@
+{
+	"configurations" : 
+	[
+		{
+			"abstractTargets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "nlohmann_json::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-nlohmann_json-Debug-96081ac0d84429f99323.json",
+					"name" : "nlohmann_json",
+					"projectIndex" : 0
+				}
+			],
+			"directories" : 
+			[
+				{
+					"abstractTargetIndexes" : 
+					[
+						0
+					],
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-a1bbb5a04c02dbbc1a2a.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						29,
+						30
+					]
+				},
+				{
+					"build" : "external/DirectXTK-may2026",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-external.DirectXTK-may2026-Debug-c73e47b6f0052b12170f.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.21"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 1,
+					"source" : "external/DirectXTK-may2026",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						14,
+						15,
+						16,
+						17,
+						18,
+						19,
+						20,
+						21,
+						22,
+						23,
+						24,
+						25,
+						26,
+						27,
+						28
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"abstractTargetIndexes" : 
+					[
+						0
+					],
+					"childIndexes" : 
+					[
+						1
+					],
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "JAVA_Course_Project",
+					"targetIndexes" : 
+					[
+						29,
+						30
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						1
+					],
+					"name" : "DirectXTK",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						14,
+						15,
+						16,
+						17,
+						18,
+						19,
+						20,
+						21,
+						22,
+						23,
+						24,
+						25,
+						26,
+						27,
+						28
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 1,
+					"id" : "Continuous::@2f5735d51c7bb0c13dd0",
+					"jsonFile" : "target-Continuous-Debug-58ee2e3386803851691c.json",
+					"name" : "Continuous",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "ContinuousBuild::@2f5735d51c7bb0c13dd0",
+					"jsonFile" : "target-ContinuousBuild-Debug-6e726371691f6e8dc985.json",
+					"name" : "ContinuousBuild",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "ContinuousConfigure::@2f5735d51c7bb0c13dd0",
+					"jsonFile" : "target-ContinuousConfigure-Debug-496c89ec1952300c3bab.json",
+					"name" : "ContinuousConfigure",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "ContinuousCoverage::@2f5735d51c7bb0c13dd0",
+					"jsonFile" : "target-ContinuousCoverage-Debug-c327eb30982f0357e3f0.json",
+					"name" : "ContinuousCoverage",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "ContinuousMemCheck::@2f5735d51c7bb0c13dd0",
+					"jsonFile" : "target-ContinuousMemCheck-Debug-f54979ce7725e35fde68.json",
+					"name" : "ContinuousMemCheck",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "ContinuousStart::@2f5735d51c7bb0c13dd0",
+					"jsonFile" : "target-ContinuousStart-Debug-3fbb0389f3a2264497e6.json",
+					"name" : "ContinuousStart",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "ContinuousSubmit::@2f5735d51c7bb0c13dd0",
+					"jsonFile" : "target-ContinuousSubmit-Debug-eac9799c4539252dce76.json",
+					"name" : "ContinuousSubmit",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "ContinuousTest::@2f5735d51c7bb0c13dd0",
+					"jsonFile" : "target-ContinuousTest-Debug-49e288ad8d40425537ef.json",
+					"name" : "ContinuousTest",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "ContinuousUpdate::@2f5735d51c7bb0c13dd0",
+					"jsonFile" : "target-ContinuousUpdate-Debug-7588965f47e5c4b94e7b.json",
+					"name" : "ContinuousUpdate",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "DirectXTK::@2f5735d51c7bb0c13dd0",
+					"jsonFile" : "target-DirectXTK-Debug-26d489691f6bcb8780c2.json",
+					"name" : "DirectXTK",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "Experimental::@2f5735d51c7bb0c13dd0",
+					"jsonFile" : "target-Experimental-Debug-8db213d1313aa577f137.json",
+					"name" : "Experimental",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "ExperimentalBuild::@2f5735d51c7bb0c13dd0",
+					"jsonFile" : "target-ExperimentalBuild-Debug-6a29fe98f39726dbd1da.json",
+					"name" : "ExperimentalBuild",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "ExperimentalConfigure::@2f5735d51c7bb0c13dd0",
+					"jsonFile" : "target-ExperimentalConfigure-Debug-e53bb45faee5a489eb33.json",
+					"name" : "ExperimentalConfigure",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "ExperimentalCoverage::@2f5735d51c7bb0c13dd0",
+					"jsonFile" : "target-ExperimentalCoverage-Debug-507ca49fdba52d943340.json",
+					"name" : "ExperimentalCoverage",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "ExperimentalMemCheck::@2f5735d51c7bb0c13dd0",
+					"jsonFile" : "target-ExperimentalMemCheck-Debug-47db557dd093e27f2401.json",
+					"name" : "ExperimentalMemCheck",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "ExperimentalStart::@2f5735d51c7bb0c13dd0",
+					"jsonFile" : "target-ExperimentalStart-Debug-fc245a26117b1713cd6f.json",
+					"name" : "ExperimentalStart",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "ExperimentalSubmit::@2f5735d51c7bb0c13dd0",
+					"jsonFile" : "target-ExperimentalSubmit-Debug-d061dda9bfd43f747440.json",
+					"name" : "ExperimentalSubmit",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "ExperimentalTest::@2f5735d51c7bb0c13dd0",
+					"jsonFile" : "target-ExperimentalTest-Debug-0b8e5114029575294739.json",
+					"name" : "ExperimentalTest",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "ExperimentalUpdate::@2f5735d51c7bb0c13dd0",
+					"jsonFile" : "target-ExperimentalUpdate-Debug-3e9a5728a3f6a6476759.json",
+					"name" : "ExperimentalUpdate",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "Nightly::@2f5735d51c7bb0c13dd0",
+					"jsonFile" : "target-Nightly-Debug-bc0acfd54c13e8f7cf74.json",
+					"name" : "Nightly",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "NightlyBuild::@2f5735d51c7bb0c13dd0",
+					"jsonFile" : "target-NightlyBuild-Debug-08c2ce13054cd44dc797.json",
+					"name" : "NightlyBuild",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "NightlyConfigure::@2f5735d51c7bb0c13dd0",
+					"jsonFile" : "target-NightlyConfigure-Debug-7dfb846a74920b08f1a8.json",
+					"name" : "NightlyConfigure",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "NightlyCoverage::@2f5735d51c7bb0c13dd0",
+					"jsonFile" : "target-NightlyCoverage-Debug-07b35c42e9140761abc2.json",
+					"name" : "NightlyCoverage",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "NightlyMemCheck::@2f5735d51c7bb0c13dd0",
+					"jsonFile" : "target-NightlyMemCheck-Debug-25a812b8cc6824e7b0de.json",
+					"name" : "NightlyMemCheck",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "NightlyMemoryCheck::@2f5735d51c7bb0c13dd0",
+					"jsonFile" : "target-NightlyMemoryCheck-Debug-437d63be7c929054a659.json",
+					"name" : "NightlyMemoryCheck",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "NightlyStart::@2f5735d51c7bb0c13dd0",
+					"jsonFile" : "target-NightlyStart-Debug-1614dbd41b04a4a15c9e.json",
+					"name" : "NightlyStart",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "NightlySubmit::@2f5735d51c7bb0c13dd0",
+					"jsonFile" : "target-NightlySubmit-Debug-bd474783a94899f0d8ec.json",
+					"name" : "NightlySubmit",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "NightlyTest::@2f5735d51c7bb0c13dd0",
+					"jsonFile" : "target-NightlyTest-Debug-f284dee79c47963c6874.json",
+					"name" : "NightlyTest",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "NightlyUpdate::@2f5735d51c7bb0c13dd0",
+					"jsonFile" : "target-NightlyUpdate-Debug-3afe7503bf0115b21b83.json",
+					"name" : "NightlyUpdate",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "game::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-game-Debug-73c4020c85b89f2b7fe0.json",
+					"name" : "game",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "imgui::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-imgui-Debug-d645891c7a79b955824f.json",
+					"name" : "imgui",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "D:/Creat/GAME/TowerClash_with_CNN/build",
+		"source" : "D:/Creat/GAME/TowerClash_with_CNN"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 10
+	}
+}

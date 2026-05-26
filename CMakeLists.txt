@@ -46,6 +46,12 @@ add_library(nlohmann_json INTERFACE)
 target_include_directories(nlohmann_json INTERFACE ${EXTERNAL_DIR}/json)
 
 # -------------------------
+# 第三方：DirectXTK（DirectX Tool Kit）
+# -------------------------
+set(BUILD_TOOLS OFF CACHE BOOL "Disable building XWBTool" FORCE)
+add_subdirectory(${EXTERNAL_DIR}/DirectXTK-may2026)
+
+# -------------------------
 # 项目源文件
 # -------------------------
 file(GLOB_RECURSE GAME_SOURCES CONFIGURE_DEPENDS
@@ -59,8 +65,9 @@ target_include_directories(game PRIVATE
 	${CMAKE_SOURCE_DIR}/src/ui
 	${EXTERNAL_DIR}/imgui
 	${EXTERNAL_DIR}/json
+	${EXTERNAL_DIR}/DirectXTK-may2026/Inc
 )
-target_link_libraries(game PRIVATE imgui nlohmann_json)
+target_link_libraries(game PRIVATE imgui nlohmann_json DirectXTK dxgi d3d11 d3dcompiler)
 target_compile_features(game PUBLIC cxx_std_20)
 
 # 编译选项

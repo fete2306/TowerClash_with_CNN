@@ -4,6 +4,7 @@
       "name": "windows-msvc-x64",
       "includePath": [
         "D:/VisualStudio/VisualStudio/VC/Tools/MSVC/14.50.35717/include",
+        "${workspaceFolder}/external/DirectXTK-may2026",
         "${workspaceFolder}/external/**",
         "${workspaceFolder}/src/**"
       ],

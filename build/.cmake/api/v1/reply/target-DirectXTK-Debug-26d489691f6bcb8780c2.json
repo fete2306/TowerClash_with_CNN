@@ -1,0 +1,1133 @@
+{
+	"archive" : 
+	{
+		"commandFragments" : 
+		[
+			{
+				"fragment" : "/machine:x64",
+				"role" : "flags"
+			}
+		]
+	},
+	"artifacts" : 
+	[
+		{
+			"path" : "lib/DirectXTK.lib"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library",
+			"install",
+			"target_compile_options",
+			"target_compile_definitions",
+			"target_include_directories",
+			"target_precompile_headers",
+			"target_compile_features",
+			"target_sources"
+		],
+		"files" : 
+		[
+			"external/DirectXTK-may2026/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 280,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 380,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 460,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 473,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 529,
+				"parent" : 0
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 472,
+				"parent" : 0
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 367,
+				"parent" : 0
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 570,
+				"parent" : 0
+			},
+			{
+				"command" : 4,
+				"file" : 0,
+				"line" : 305,
+				"parent" : 0
+			},
+			{
+				"command" : 4,
+				"file" : 0,
+				"line" : 315,
+				"parent" : 0
+			},
+			{
+				"command" : 4,
+				"file" : 0,
+				"line" : 323,
+				"parent" : 0
+			},
+			{
+				"command" : 5,
+				"file" : 0,
+				"line" : 308,
+				"parent" : 0
+			},
+			{
+				"command" : 6,
+				"file" : 0,
+				"line" : 320,
+				"parent" : 0
+			},
+			{
+				"command" : 7,
+				"file" : 0,
+				"line" : 282,
+				"parent" : 0
+			}
+		]
+	},
+	"codemodelVersion" : 
+	{
+		"major" : 2,
+		"minor" : 10
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "/DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd"
+				},
+				{
+					"backtrace" : 3,
+					"fragment" : "/Wall"
+				},
+				{
+					"backtrace" : 3,
+					"fragment" : "/EHsc"
+				},
+				{
+					"backtrace" : 3,
+					"fragment" : "/GR"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "/Gd"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "/GS"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "/Zc:forScope"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "/Zc:inline"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "/Zc:wchar_t"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "/sdl"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "/fp:fast"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "/permissive-"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "/Zc:__cplusplus"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "/JMC-"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "/ZH:SHA_256"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "/Zc:preprocessor"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "/wd5104"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "/wd5105"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "/Zc:lambda"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "/Zc:u8EscapeEncoding"
+				},
+				{
+					"backtrace" : 5,
+					"fragment" : "/wd5262"
+				},
+				{
+					"fragment" : "/YcD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 6,
+					"define" : "UNICODE"
+				},
+				{
+					"backtrace" : 7,
+					"define" : "USING_XINPUT"
+				},
+				{
+					"backtrace" : 6,
+					"define" : "_UNICODE"
+				},
+				{
+					"backtrace" : 8,
+					"define" : "_WIN32_WINNT=0x0603"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 9,
+					"path" : "D:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/Shaders/Compiled"
+				},
+				{
+					"backtrace" : 9,
+					"path" : "D:/Creat/GAME/TowerClash_with_CNN/external/DirectXTK-may2026/Src"
+				},
+				{
+					"backtrace" : 10,
+					"path" : "D:/Creat/GAME/TowerClash_with_CNN/external/DirectXTK-may2026/Inc"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "D:/Creat/GAME/TowerClash_with_CNN/external/DirectXTK-may2026/Audio"
+				}
+			],
+			"language" : "CXX",
+			"languageStandard" : 
+			{
+				"backtraces" : 
+				[
+					13
+				],
+				"standard" : "17"
+			},
+			"precompileHeaders" : 
+			[
+				{
+					"backtrace" : 12,
+					"header" : "D:/Creat/GAME/TowerClash_with_CNN/external/DirectXTK-may2026/Src/pch.h"
+				}
+			],
+			"sourceIndexes" : 
+			[
+				0
+			]
+		},
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "/DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd"
+				},
+				{
+					"backtrace" : 3,
+					"fragment" : "/Wall"
+				},
+				{
+					"backtrace" : 3,
+					"fragment" : "/EHsc"
+				},
+				{
+					"backtrace" : 3,
+					"fragment" : "/GR"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "/Gd"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "/GS"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "/Zc:forScope"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "/Zc:inline"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "/Zc:wchar_t"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "/sdl"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "/fp:fast"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "/permissive-"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "/Zc:__cplusplus"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "/JMC-"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "/ZH:SHA_256"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "/Zc:preprocessor"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "/wd5104"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "/wd5105"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "/Zc:lambda"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "/Zc:u8EscapeEncoding"
+				},
+				{
+					"backtrace" : 5,
+					"fragment" : "/wd5262"
+				},
+				{
+					"fragment" : "/YuD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx /FpD:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/.//cmake_pch.cxx.pch /FID:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 6,
+					"define" : "UNICODE"
+				},
+				{
+					"backtrace" : 7,
+					"define" : "USING_XINPUT"
+				},
+				{
+					"backtrace" : 6,
+					"define" : "_UNICODE"
+				},
+				{
+					"backtrace" : 8,
+					"define" : "_WIN32_WINNT=0x0603"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 9,
+					"path" : "D:/Creat/GAME/TowerClash_with_CNN/build/external/DirectXTK-may2026/Shaders/Compiled"
+				},
+				{
+					"backtrace" : 9,
+					"path" : "D:/Creat/GAME/TowerClash_with_CNN/external/DirectXTK-may2026/Src"
+				},
+				{
+					"backtrace" : 10,
+					"path" : "D:/Creat/GAME/TowerClash_with_CNN/external/DirectXTK-may2026/Inc"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "D:/Creat/GAME/TowerClash_with_CNN/external/DirectXTK-may2026/Audio"
+				}
+			],
+			"language" : "CXX",
+			"languageStandard" : 
+			{
+				"backtraces" : 
+				[
+					13
+				],
+				"standard" : "17"
+			},
+			"precompileHeaders" : 
+			[
+				{
+					"backtrace" : 12,
+					"header" : "D:/Creat/GAME/TowerClash_with_CNN/external/DirectXTK-may2026/Src/pch.h"
+				}
+			],
+			"sourceIndexes" : 
+			[
+				22,
+				23,
+				24,
+				25,
+				27,
+				28,
+				29,
+				30,
+				31,
+				32,
+				33,
+				34,
+				35,
+				37,
+				38,
+				39,
+				40,
+				41,
+				42,
+				43,
+				44,
+				45,
+				46,
+				47,
+				49,
+				50,
+				51,
+				52,
+				53,
+				54,
+				55,
+				56,
+				57,
+				58,
+				59,
+				72,
+				73,
+				74,
+				75,
+				76,
+				77,
+				79,
+				80,
+				81,
+				82,
+				83,
+				85
+			]
+		}
+	],
+	"id" : "DirectXTK::@2f5735d51c7bb0c13dd0",
+	"install" : 
+	{
+		"destinations" : 
+		[
+			{
+				"backtrace" : 2,
+				"path" : "lib"
+			}
+		],
+		"prefix" : 
+		{
+			"path" : "C:/Program Files (x86)/JAVA_Course_Project"
+		}
+	},
+	"name" : "DirectXTK",
+	"nameOnDisk" : "DirectXTK.lib",
+	"paths" : 
+	{
+		"build" : "external/DirectXTK-may2026",
+		"source" : "external/DirectXTK-may2026"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0
+			]
+		},
+		{
+			"name" : "Inc",
+			"sourceIndexes" : 
+			[
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13,
+				14,
+				15,
+				16,
+				17,
+				18,
+				19,
+				20,
+				21
+			]
+		},
+		{
+			"name" : "Src",
+			"sourceIndexes" : 
+			[
+				22,
+				23,
+				24,
+				25,
+				26,
+				27,
+				28,
+				29,
+				30,
+				31,
+				32,
+				33,
+				34,
+				35,
+				36,
+				37,
+				38,
+				39,
+				40,
+				41,
+				42,
+				43,
+				44,
+				45,
+				46,
+				47,
+				48,
+				49,
+				50,
+				51,
+				52,
+				53,
+				54,
+				55,
+				56,
+				57,
+				58,
+				59,
+				60,
+				61,
+				62,
+				63,
+				64,
+				65,
+				66,
+				67,
+				68,
+				69,
+				70,
+				71,
+				72,
+				73,
+				74,
+				89
+			]
+		},
+		{
+			"name" : "Audio",
+			"sourceIndexes" : 
+			[
+				75,
+				76,
+				77,
+				78,
+				79,
+				80,
+				81,
+				82,
+				83,
+				84,
+				85,
+				86
+			]
+		},
+		{
+			"name" : "",
+			"sourceIndexes" : 
+			[
+				87
+			]
+		},
+		{
+			"name" : "Precompile Header File",
+			"sourceIndexes" : 
+			[
+				88
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 0,
+			"compileGroupIndex" : 0,
+			"path" : "build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.cxx",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 14,
+			"path" : "external/DirectXTK-may2026/Inc/BufferHelpers.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 14,
+			"path" : "external/DirectXTK-may2026/Inc/CommonStates.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 14,
+			"path" : "external/DirectXTK-may2026/Inc/DDSTextureLoader.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 14,
+			"path" : "external/DirectXTK-may2026/Inc/DirectXHelpers.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 14,
+			"path" : "external/DirectXTK-may2026/Inc/Effects.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 14,
+			"path" : "external/DirectXTK-may2026/Inc/GeometricPrimitive.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 14,
+			"path" : "external/DirectXTK-may2026/Inc/GraphicsMemory.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 14,
+			"path" : "external/DirectXTK-may2026/Inc/Model.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 14,
+			"path" : "external/DirectXTK-may2026/Inc/PostProcess.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 14,
+			"path" : "external/DirectXTK-may2026/Inc/PrimitiveBatch.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 14,
+			"path" : "external/DirectXTK-may2026/Inc/ScreenGrab.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 14,
+			"path" : "external/DirectXTK-may2026/Inc/SpriteBatch.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 14,
+			"path" : "external/DirectXTK-may2026/Inc/SpriteFont.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 14,
+			"path" : "external/DirectXTK-may2026/Inc/VertexTypes.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 14,
+			"path" : "external/DirectXTK-may2026/Inc/WICTextureLoader.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 14,
+			"path" : "external/DirectXTK-may2026/Inc/SimpleMath.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 14,
+			"path" : "external/DirectXTK-may2026/Inc/SimpleMath.inl",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 14,
+			"path" : "external/DirectXTK-may2026/Inc/GamePad.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 14,
+			"path" : "external/DirectXTK-may2026/Inc/Keyboard.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 14,
+			"path" : "external/DirectXTK-may2026/Inc/Mouse.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 14,
+			"path" : "external/DirectXTK-may2026/Inc/Audio.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Src/AlphaTestEffect.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Src/BasicEffect.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Src/BasicPostProcess.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Src/BufferHelpers.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"path" : "external/DirectXTK-may2026/Src/CMO.h",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Src/CommonStates.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Src/DDSTextureLoader.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Src/DebugEffect.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Src/DGSLEffect.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Src/DGSLEffectFactory.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Src/DirectXHelpers.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Src/DualPostProcess.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Src/DualTextureEffect.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Src/EffectCommon.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"path" : "external/DirectXTK-may2026/Src/EffectCommon.h",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Src/EffectFactory.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Src/EnvironmentMapEffect.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Src/GeometricPrimitive.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Src/GraphicsMemory.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Src/Model.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Src/ModelLoadCMO.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Src/ModelLoadSDKMESH.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Src/ModelLoadVBO.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Src/NormalMapEffect.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Src/PBREffect.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Src/PBREffectFactory.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"path" : "external/DirectXTK-may2026/Src/pch.h",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Src/PrimitiveBatch.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Src/ScreenGrab.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Src/SkinnedEffect.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Src/SpriteBatch.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Src/SpriteFont.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Src/ToneMapPostProcess.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Src/VertexTypes.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Src/WICTextureLoader.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Src/BinaryReader.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Src/Geometry.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Src/SimpleMath.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"path" : "external/DirectXTK-may2026/Src/AlignedNew.h",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"path" : "external/DirectXTK-may2026/Src/Bezier.h",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"path" : "external/DirectXTK-may2026/Src/BinaryReader.h",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"path" : "external/DirectXTK-may2026/Src/DDS.h",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"path" : "external/DirectXTK-may2026/Src/DemandCreate.h",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"path" : "external/DirectXTK-may2026/Src/Geometry.h",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"path" : "external/DirectXTK-may2026/Src/LoaderHelpers.h",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"path" : "external/DirectXTK-may2026/Src/PlatformHelpers.h",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"path" : "external/DirectXTK-may2026/Src/SDKMesh.h",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"path" : "external/DirectXTK-may2026/Src/SharedResourcePool.h",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"path" : "external/DirectXTK-may2026/Src/vbo.h",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"path" : "external/DirectXTK-may2026/Src/TeapotData.inc",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Src/GamePad.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Src/Keyboard.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Src/Mouse.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Audio/AudioEngine.cpp",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Audio/DynamicSoundEffectInstance.cpp",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Audio/SoundCommon.cpp",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 14,
+			"path" : "external/DirectXTK-may2026/Audio/SoundCommon.h",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Audio/SoundEffect.cpp",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Audio/SoundEffectInstance.cpp",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Audio/SoundStreamInstance.cpp",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Audio/WaveBank.cpp",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Audio/WaveBankReader.cpp",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 14,
+			"path" : "external/DirectXTK-may2026/Audio/WaveBankReader.h",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 14,
+			"compileGroupIndex" : 1,
+			"path" : "external/DirectXTK-may2026/Audio/WAVFileReader.cpp",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 14,
+			"path" : "external/DirectXTK-may2026/Audio/WAVFileReader.h",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 14,
+			"isGenerated" : true,
+			"path" : "build/external/DirectXTK-may2026/Shaders/Compiled/SpriteEffect_SpriteVertexShader.inc",
+			"sourceGroupIndex" : 4
+		},
+		{
+			"backtrace" : 0,
+			"path" : "build/external/DirectXTK-may2026/CMakeFiles/DirectXTK.dir/cmake_pch.hxx",
+			"sourceGroupIndex" : 5
+		},
+		{
+			"backtrace" : 0,
+			"path" : "external/DirectXTK-may2026/Src/Shaders/CompileShaders.cmd",
+			"sourceGroupIndex" : 2
+		}
+	],
+	"type" : "STATIC_LIBRARY"
+}

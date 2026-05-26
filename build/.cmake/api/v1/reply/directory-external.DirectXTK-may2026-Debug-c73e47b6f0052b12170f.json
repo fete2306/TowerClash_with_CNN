@@ -1,0 +1,143 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"install"
+		],
+		"files" : 
+		[
+			"external/DirectXTK-may2026/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 380,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 390,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 395,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 398,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 422,
+				"parent" : 0
+			}
+		]
+	},
+	"codemodelVersion" : 
+	{
+		"major" : 2,
+		"minor" : 10
+	},
+	"installers" : 
+	[
+		{
+			"backtrace" : 1,
+			"component" : "Unspecified",
+			"destination" : "lib",
+			"paths" : 
+			[
+				"lib/DirectXTK.lib"
+			],
+			"targetId" : "DirectXTK::@2f5735d51c7bb0c13dd0",
+			"targetIndex" : 9,
+			"type" : "target"
+		},
+		{
+			"backtrace" : 2,
+			"component" : "Unspecified",
+			"destination" : "share/directxtk",
+			"exportName" : "DirectXTK-targets",
+			"exportTargets" : 
+			[
+				{
+					"id" : "DirectXTK::@2f5735d51c7bb0c13dd0",
+					"index" : 9
+				}
+			],
+			"paths" : 
+			[
+				"external/DirectXTK-may2026/CMakeFiles/Export/a11a99d19d8d3c8432b0fa94ef825414/DirectXTK-targets.cmake"
+			],
+			"type" : "export"
+		},
+		{
+			"backtrace" : 3,
+			"component" : "Unspecified",
+			"destination" : "include/directxtk",
+			"paths" : 
+			[
+				"external/DirectXTK-may2026/Inc/BufferHelpers.h",
+				"external/DirectXTK-may2026/Inc/CommonStates.h",
+				"external/DirectXTK-may2026/Inc/DDSTextureLoader.h",
+				"external/DirectXTK-may2026/Inc/DirectXHelpers.h",
+				"external/DirectXTK-may2026/Inc/Effects.h",
+				"external/DirectXTK-may2026/Inc/GeometricPrimitive.h",
+				"external/DirectXTK-may2026/Inc/GraphicsMemory.h",
+				"external/DirectXTK-may2026/Inc/Model.h",
+				"external/DirectXTK-may2026/Inc/PostProcess.h",
+				"external/DirectXTK-may2026/Inc/PrimitiveBatch.h",
+				"external/DirectXTK-may2026/Inc/ScreenGrab.h",
+				"external/DirectXTK-may2026/Inc/SpriteBatch.h",
+				"external/DirectXTK-may2026/Inc/SpriteFont.h",
+				"external/DirectXTK-may2026/Inc/VertexTypes.h",
+				"external/DirectXTK-may2026/Inc/WICTextureLoader.h",
+				"external/DirectXTK-may2026/Inc/SimpleMath.h",
+				"external/DirectXTK-may2026/Inc/SimpleMath.inl",
+				"external/DirectXTK-may2026/Inc/GamePad.h",
+				"external/DirectXTK-may2026/Inc/Keyboard.h",
+				"external/DirectXTK-may2026/Inc/Mouse.h",
+				"external/DirectXTK-may2026/Inc/Audio.h"
+			],
+			"type" : "file"
+		},
+		{
+			"backtrace" : 4,
+			"component" : "Unspecified",
+			"destination" : "share/directxtk",
+			"paths" : 
+			[
+				"build/external/DirectXTK-may2026/directxtk-config.cmake",
+				"build/external/DirectXTK-may2026/directxtk-config-version.cmake"
+			],
+			"type" : "file"
+		},
+		{
+			"backtrace" : 5,
+			"component" : "Unspecified",
+			"destination" : "lib/pkgconfig",
+			"paths" : 
+			[
+				"build/external/DirectXTK-may2026/DirectXTK.pc"
+			],
+			"type" : "file"
+		}
+	],
+	"paths" : 
+	{
+		"build" : "external/DirectXTK-may2026",
+		"source" : "external/DirectXTK-may2026"
+	}
+}

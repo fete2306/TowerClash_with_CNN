@@ -23,6 +23,10 @@
 #include <d3d11.h>             // DX11 底层
 #include <windows.h>           // Win32 底层
 
+#include <wrl/client.h>
+#include "WICTextureLoader.h"
+
+
 class IStaticActor;
 class IMobileActor;
 template<typename SubClass>
@@ -32,6 +36,7 @@ class MobileActor;
 class IStaticActor;
 class IMobileActor;
 class Game;
+class Draw;
 
 class SingleTower;
 class GroupAttackTower;
@@ -1404,12 +1409,13 @@ class Game{
     std::vector<float> returnCostMul;//返回时消耗费用的倍率 
     std::vector<float> moveCostMul;//移动单位消耗费用的倍率
 
+    Draw* mainDrawPtr;
+
     int frameNum=5;
     int mapIndex;
     float nowTime;
     float timeStep=0.1f;
-    float lastFrameTime;
-    float accumLastFrameTime;
+    
 
     bool cnnSwitch;
 
@@ -1601,7 +1607,63 @@ class Game{
         }
 
     void draw(){
+        mainDrawPtr->run();
         
+    }
+
+};
+class Texture2D
+{
+public:
+    Texture2D() = default;
+
+    Texture2D(ID3D11Device* device, const wchar_t* path)
+    {
+        Load(device, path);
+    }
+
+    bool Load(ID3D11Device* device, const wchar_t* path)
+    {
+        HRESULT hr = DirectX::CreateWICTextureFromFile(
+            device,
+            path,
+            nullptr,
+            &m_srv
+        );
+
+        return SUCCEEDED(hr);
+    }
+
+    ID3D11ShaderResourceView* GetSRV() const
+    {
+        return m_srv.Get();
+    }
+
+private:
+    Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_srv;
+};
+
+class Draw{
+    public:
+    Game* gamePtr;
+    float lastFrameTime=0;
+    float accumLastFrameTime=0;
+
+    Draw(Game* gamePtr):gamePtr(gamePtr){
+        auto SingleTowerPngPath="assets/Png/SingleTower.png";
+        auto GroupTowerPngPath="assets/Png/GroupTower.png";
+        auto SlowTowerPngPath="assets/Png/SlowTower.png";
+        auto CenterTowerPngPath="assets/Png/CenterTower.png";
+
+        auto MeleeMobilePngPath="assets/Png/MeleeMobile.png";
+        auto RangedMobilePngPath="assets/Png/RangedMobile.png";
+        auto DefenseMobilePngPath="assets/Png/DefenseMobile.png";
+        auto ExplosionMobilePngPath="assets/Png/ExplosionMobile.png";
+        
+        auto WallPngPath="assets/Png/Wall.png";
+
+    }
+    void run(){
 
 
 
