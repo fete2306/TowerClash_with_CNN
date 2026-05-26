@@ -42,6 +42,12 @@ class MeleeMobile;
 class RangedMobile;
 class DefenseMobile;
 class ExplosionMobile;
+
+class SpecialEffect;
+template<typename ApplyActor,typename ReceiveActor>
+class _SpecialEffect;
+class Effective;
+
 class Resist;
 class ResistList;
 
@@ -78,31 +84,85 @@ void erase_basedSwap(std::deque<T>& vec,size_t index){
     vec.pop_back();
 }
 
-class SpecialEffect{
+enum ModType{
+    add1,
+    mul,
+    add2
+};
+
+class ISpecialEffect{
     public:
-    int Id;//0攻击减速 //1移动减速 //2脆弱
+    int Id;//作用属性id
+    ModType modType;
     float value;
-    float normalData;
     float endTime;
     //持有施加方的list与迭代器
-    std::list<SpecialEffect*>* apply;
-    SpecialEffect(int Id,float value,float normalData,float endTime):Id(Id),value(value),normalData(normalData),endTime(endTime){};
+    std::list<ISpecialEffect*>::iterator applyIterator;
+    std::list<ISpecialEffect*>::iterator receiveIterator;
+    ISpecialEffect(int Id,ModType modType,float value,float endTime):Id(Id),value(value),endTime(endTime){
+        this->Id=Id;
+        this->modType=modType;
+        this->value=value;
+        this->endTime=endTime;
+        
+    };
     virtual void check(IStaticActor* actorPtr){};
     virtual void check(IMobileActor* actorPtr){};
 };
 
-class AttackSlowEffect:public SpecialEffect{
+template<typename ApplyActor,typename ReceiveActor>
+class SpecialEffect:public ISpecialEffect{
     public:
-    virtual void check(IStaticActor* actorPtr)override{
+    ApplyActor* applyActorPtr;
+    ReceiveActor* receiveActorPtr;
+    SpecialEffect(int Id,ModType modType,float value,float endTime,ApplyActor* applyActorPtr,ReceiveActor* receiveActorPtr):SpecialEffect(Id,modType,value,endTime),applyActorPtr(applyActorPtr),receiveActorPtr(receiveActorPtr){
+        applyActorPtr->applyEffectList.push_back(this);
+        receiveActorPtr->receiveEffectList.push_back(this);
+        applyIterator=applyActorPtr->applyEffectList.end();
+        receiveIterator=receiveActorPtr->receiveEffectList.end();
+    };
+
+    virtual void check()override{//接受方进行检测
         Game* gamePtr=actorPtr->gamePtr;
-        if(gamePtr->nowTime>endTime){
-            
+        if(endTime!=-1&&gamePtr->nowTime>endTime){//应当结束状态
+                applyActorPtr->applyEffectList.erase(applyIterator);
+                receiveActorPtr->receiveEffectList.erase(receiveIterator);
+                delete this;
+                return;
+        }
+        auto& tempEffective=receiveActorPtr->effectiveList[this->Id];
+        switch(this->modType){
+            case ModType::add1:
+                tempEffective.add1+=this->value;
+                break;
+            case ModType::mul:
+                tempEffective.mul*=this->value;
+                break;
+            case ModType::add2:
+                tempEffective.add2+=this->value;
+                break;
         }
     };
-    virtual void check(IMobileActor* actorPtr)override{
+};
 
+class Effective{
+    public:
+    float add1;//绝对值
+    float mul;//倍率
+    float add2;//最后加算
+    float value;//最终值
 
-    };
+    Effective(){//直接覆盖?
+        add1=0;
+        mul=1;
+        add2=0;
+        value=0.0;
+    }
+    
+    void updateValue(float normalData){
+        value=(normalData+add1)*mul+add2;
+        //等价y=ax+b 可表述任意一次单变量线性变换
+    }
 };
 
 class Resist{
@@ -277,6 +337,7 @@ class IMobileActor{
     int attackType;
     float cost;
     float costRate;
+    float totalCost;
 
     int typeId;
     virtual ~IMobileActor()=default;
@@ -363,15 +424,17 @@ class StaticActor:public IStaticActor{//用于实现通用方法的模板类
                     costOffest+=attributeList[rankNum-i][9]*gamePtr->returnCostMul[this->owner];
                 }
             }
-            if(gamePtr->nowCost[this->owner]+costOffest<gamePtr->costMin[this->owner]){//内存低于临界
-                throw std::runtime_error(std::format("[StaticActor][setRank]the nowCost={} costOffest={} and rankMax={} the rankMin={}",gamePtr->nowCost[this->owner],costOffest,gamePtr->costMax[this->owner],gamePtr->costMin[this->owner]));
+            if(gamePtr->nowCost[this->owner]+costOffest<gamePtr->costMin[this->owner]){//费用低于临界
+                // throw std::runtime_error(std::format("[StaticActor][setRank]the nowCost={} costOffest={} and rankMax={} the rankMin={}",gamePtr->nowCost[this->owner],costOffest,gamePtr->costMax[this->owner],gamePtr->costMin[this->owner]));
                 return false;
             }
             else{
                 if(gamePtr->nowCost[this->owner]+costOffest>gamePtr->costMax[this->owner]){
                     gamePtr->nowCost[this->owner]=gamePtr->costMax[this->owner];//置为最大值
                 }
-                else{gamePtr->nowCost[this->owner]+=costOffest;}//合法情况
+                else{gamePtr->nowCost[this->owner]+=costOffest;
+                }//合法情况
+            totalCost+=costOffest;
             }
             rankNum+=rankOffest;
         }
@@ -573,10 +636,7 @@ class StaticActor:public IStaticActor{//用于实现通用方法的模板类
         this->mapListIndex=gamePtr->staticActorMap[int(this->y)][int(this->x)].size();
         gamePtr->staticActorMap[int(this->y)][int(this->x)].push_back(poolIndex);
     };
-    virtual float getTotalCost()override{
-        return Attribute<SubClass>::getCost(0,this->rankNum);//rankNum在IStaticActor,不用管
-    };
-    
+
     virtual void skill1()override{};
     virtual void skill2()override{};
 
@@ -647,8 +707,8 @@ class MobileActor:public IMobileActor{
                     costOffest+=attributeList[rankNum-i][9]*gamePtr->returnCostMul[this->owner];
                 }
             }
-            if(gamePtr->nowCost[this->owner]+costOffest<gamePtr->costMin[this->owner]){//内存低于临界
-                throw std::runtime_error(std::format("[StaticActor][setRank]the nowCost={} costOffest={} and rankMax={} the rankMin={}",gamePtr->nowCost[this->owner],costOffest,gamePtr->costMax[this->owner],gamePtr->costMin[this->owner]));
+            if(gamePtr->nowCost[this->owner]+costOffest<gamePtr->costMin[this->owner]){//费用低于临界
+                // throw std::runtime_error(std::format("[StaticActor][setRank]the nowCost={} costOffest={} and rankMax={} the rankMin={}",gamePtr->nowCost[this->owner],costOffest,gamePtr->costMax[this->owner],gamePtr->costMin[this->owner]));
                 return false;
             }
             else{
@@ -656,6 +716,7 @@ class MobileActor:public IMobileActor{
                     gamePtr->nowCost[this->owner]=gamePtr->costMax[this->owner];//置为最大值
                 }
                 else{gamePtr->nowCost[this->owner]+=costOffest;}//合法情况
+            totalCost+=costOffest;
             }
             rankNum+=rankOffest;
         }
@@ -1436,7 +1497,7 @@ class Game{
     void eraseStaticActor(int index){
         eraseStaticActorSet.push_back(index);
         auto actorPtr=staticActorPool[index];
-        nowCost[actorPtr->owner]+=actorPtr->getTotalCost()*returnCostMul[actorPtr->owner];
+        nowCost[actorPtr->owner]+=actorPtr->totalCost*returnCostMul[actorPtr->owner];
         nowCost[actorPtr->owner]=std::min<float>(nowCost[actorPtr->owner],costMax[actorPtr->owner]);
         solveDeadActor();
     }
@@ -1444,7 +1505,7 @@ class Game{
     void eraseMobileActor(int index){
         eraseMobileActorSet.push_back(index);
         auto actorPtr=mobileActorPool[index];
-        nowCost[actorPtr->owner]+=actorPtr->getTotalCost()*returnCostMul[actorPtr->owner];
+        nowCost[actorPtr->owner]+=actorPtr->totalCost*returnCostMul[actorPtr->owner];
         nowCost[actorPtr->owner]=std::min<float>(nowCost[actorPtr->owner],costMax[actorPtr->owner]);
         solveDeadActor();
     }
