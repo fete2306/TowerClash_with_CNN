@@ -43,13 +43,19 @@ class RangedMobile;
 class DefenseMobile;
 class ExplosionMobile;
 
-class SpecialEffect;
+class ISpecialEffect;
 template<typename ApplyActor,typename ReceiveActor>
-class _SpecialEffect;
+class SpecialEffect;
 class Effective;
 
 class Resist;
 class ResistList;
+
+class _AttributeId;
+template<typename SubClass>
+class AttributeId;
+
+
 
 template<typename T>
 class TypeId{
@@ -84,12 +90,86 @@ void erase_basedSwap(std::deque<T>& vec,size_t index){
     vec.pop_back();
 }
 
-enum ModType{
+enum class ModType:uint8_t{
     add1,
     mul,
     add2
 };
 
+enum class AttackType:uint8_t{
+    Phys=0,//物理
+    Magic=1,//魔法
+    Pure=2,//真实
+    Count
+};
+class _AttributeId{
+    public:
+
+    static constexpr uint8_t hp=static_cast<uint8_t>(AttackType::Count);
+    static constexpr uint8_t attackNum=hp+1;
+    static constexpr uint8_t attackScope=hp+2;
+    static constexpr uint8_t attackCount=hp+3;
+    static constexpr uint8_t attackSpeed=hp+4;
+    static constexpr uint8_t attackType=hp+5;
+    static constexpr uint8_t cost=hp+6;
+    static constexpr uint8_t totalCost=hp+7;
+    static constexpr uint8_t costRate=hp+8;
+    static constexpr uint8_t moveSpeed=hp+9;
+    static constexpr uint8_t rasistCount=hp+9;
+};
+
+
+template<typename SubClass>
+class AttributeId:public _AttributeId{};
+
+template<>
+class AttributeId<GroupAttackTower>:public _AttributeId{
+    public:
+    static constexpr uint8_t GroupArrackScope=hp+10;
+};
+template<>
+class AttributeId<SlowTower>:public _AttributeId{
+    public:
+    static constexpr uint8_t attackSlowMul=hp+10;
+    static constexpr uint8_t moveSlowMul=hp+11;
+    static constexpr uint8_t attackSlowTime=hp+12;
+    static constexpr uint8_t moveSlowTime=hp+13;
+};
+template<>
+class AttributeId<ExplosionMobile>:public _AttributeId{
+    public:
+    static constexpr uint8_t explosionNum=hp+10;
+};
+
+
+enum class TimeType:uint8_t{
+    Attack,
+    Move,
+    Skill1,
+    Skill2,
+    Count//计数用
+};
+
+class Timers{
+    public:
+    float timers[static_cast<uint8_t>(TimeType::Count)];
+
+    float get(TimeType timeType){
+        return timers[static_cast<uint8_t>(timeType)];
+    }
+
+    void set(TimeType timeType,float value){
+        timers[static_cast<uint8_t>(timeType)]=value;
+    }
+
+    float& operator[](TimeType timeType){
+        return timers[static_cast<uint8_t>(timeType)];
+    }
+
+    const float& operator[](TimeType timeType)const{
+        return timers[static_cast<uint8_t>(timeType)];
+    }
+};
 class ISpecialEffect{
     public:
     int Id;//作用属性id
@@ -106,8 +186,7 @@ class ISpecialEffect{
         this->endTime=endTime;
         
     };
-    virtual void check(IStaticActor* actorPtr){};
-    virtual void check(IMobileActor* actorPtr){};
+    virtual std::list<ISpecialEffect*>::iterator check(){};
 };
 
 template<typename ApplyActor,typename ReceiveActor>
@@ -120,16 +199,9 @@ class SpecialEffect:public ISpecialEffect{
         receiveActorPtr->receiveEffectList.push_back(this);
         applyIterator=applyActorPtr->applyEffectList.end();
         receiveIterator=receiveActorPtr->receiveEffectList.end();
-    };
 
-    virtual void check()override{//接受方进行检测
-        Game* gamePtr=actorPtr->gamePtr;
-        if(endTime!=-1&&gamePtr->nowTime>endTime){//应当结束状态
-                applyActorPtr->applyEffectList.erase(applyIterator);
-                receiveActorPtr->receiveEffectList.erase(receiveIterator);
-                delete this;
-                return;
-        }
+        receiveActorPtr->nowAttributeList[this->Id];
+
         auto& tempEffective=receiveActorPtr->effectiveList[this->Id];
         switch(this->modType){
             case ModType::add1:
@@ -142,6 +214,53 @@ class SpecialEffect:public ISpecialEffect{
                 tempEffective.add2+=this->value;
                 break;
         }
+        tempEffective.checkFlag=false;
+    };
+    
+    ~SpecialEffect(){
+        auto& tempEffective=receiveActorPtr->effectiveList[this->Id];
+        switch(this->modType){
+            case ModType::add1:
+            tempEffective.add1-=this->value;
+            break;
+            case ModType::mul:
+            tempEffective.mul/=this->value;
+            break;
+            case ModType::add2:
+            tempEffective.add2-=this->value;
+            break;
+        }
+        tempEffective.checkFlag=false;
+    }
+    
+    std::list<ISpecialEffect *>::iterator remove(){//从两边列表中删除 很危险
+        applyActorPtr->applyEffectList.erase(applyIterator);
+        auto tempIterator=receiveActorPtr->receiveEffectList.erase(receiveIterator);
+        delete this;
+        return ++tempIterator;
+    }
+    
+    void removeApply(){
+        applyActorPtr->applyEffectList.erase(applyIterator);
+        delete this;
+    }
+
+    void removeReceive(){
+        receiveActorPtr->receiveEffectList.erase(receiveIterator);
+    }
+    
+    
+    virtual std::list<ISpecialEffect*>::iterator check()override{//接受方进行检测
+        Game* gamePtr=actorPtr->gamePtr;
+        auto& tempIterator;
+        if(endTime!=-1&&gamePtr->nowTime>endTime){//应当结束状态
+                applyActorPtr->applyEffectList.erase(applyIterator);
+                tempIterator=receiveActorPtr->receiveEffectList.erase(receiveIterator);
+                remove();
+                delete this;
+                return tempIterator;
+        }
+        return ++receiveIterator;
     };
 };
 
@@ -151,18 +270,23 @@ class Effective{
     float mul;//倍率
     float add2;//最后加算
     float value;//最终值
+    bool checkFlag;
 
     Effective(){//直接覆盖?
         add1=0;
         mul=1;
         add2=0;
         value=0.0;
+        checkFlag=false;
     }
     
     void updateValue(float normalData){
         value=(normalData+add1)*mul+add2;
+        checkFlag=true;
+
         //等价y=ax+b 可表述任意一次单变量线性变换
     }
+
 };
 
 class Resist{
@@ -251,6 +375,8 @@ class Attribute{
     }
 };
 
+
+
 template<typename T>
 class ActorPool{
     public:
@@ -262,12 +388,15 @@ class IStaticActor{//仅用作基类指针
     
     std::vector<std::array<int,2>> scopeList;//攻击范围覆盖的格子 非直接坐标而是偏移量[dx,dy] 获取真实坐标是x+dx,y+dy
 
-    std::vector<SpecialEffect*> effectedList;//所拥有的特殊状态         对方析构时会将其结束时间置0
-    std::vector<SpecialEffect*> effectList;//所施加的特殊状态           在自身析构时将造成的所有异常状态全部结束
-    
-    Game* gamePtr;
+    std::list<ISpecialEffect*> applyEffectList;//所拥有的特殊状态         对方析构时会将其结束时间置0
+    std::list<ISpecialEffect*> receiveEffectList;//所施加的特殊状态       在自身析构时将造成的所有异常状态全部结束
+
+    std::vector<Effective> nowAttributeList;
     
     ResistList resistList;
+    Game* gamePtr;
+    
+    Timers timeManger;
 
     int subclassPoolIndex;
     int poolIndex;
@@ -278,27 +407,18 @@ class IStaticActor{//仅用作基类指针
     int owner;
     float x,y;
     float hp;
-    float attackNum;
-    float scope;
-    float attackCount;
-    float attackSpeed;
-    float lastAttackTime;
-    int attackType;
-    float cost;
-    float costRate;
-    float totalCost;
 
     int typeId;
-
-    static float basicCost;
     virtual ~IStaticActor()=default;
     virtual void dead(){};
     virtual bool setRank(int rankOffest){};
+    virtual float getValue(int attributeId){};
     virtual void applyEffect(IStaticActor* staticActorPtr){};
     virtual void applyEffect(IMobileActor* mobileActorPtr){};
     virtual void checkEffect(){};
     virtual void setScope(){};
-    virtual void beHurted(int attackType,float attackNum){};
+    virtual void beHurted(AttackType attackType,float attackNum){};
+    virtual void getAttackGoal(std::array<std::priority_queue<std::tuple<float,int>,std::vector<std::tuple<float,int>>,std::greater<std::tuple<float,int>>>,2>& goalList){};
     virtual void attack(){};
     virtual void move(std::pair<int,int> goalPos){};
     virtual void skill1(){};
@@ -311,11 +431,17 @@ class IMobileActor{
     
     std::vector<std::array<int,2>> scopeList;//攻击范围覆盖的格子 非直接坐标而是偏移量[dx,dy] 获取真实坐标是x+dx,y+dy
     
-    std::vector<SpecialEffect*> effectedList;//所拥有的特殊状态         对方析构时会将其结束时间置0
-    std::vector<SpecialEffect*> effectList;//所施加的特殊状态           在自身析构时将造成的所有异常状态全部结束
+    std::list<ISpecialEffect*> applyEffectList;//所拥有的特殊状态         对方析构时会将其结束时间置0
+    std::list<ISpecialEffect*> receiveEffectList;//所施加的特殊状态       在自身析构时将造成的所有异常状态全部结束
+    
+    std::vector<Effective> nowAttributeList;
+
     Game* gamePtr;
 
     Resist resistState;//自身阻挡状态
+
+    Timers timeManger;
+
 
     int subclassPoolIndex;
     int poolIndex;
@@ -323,36 +449,27 @@ class IMobileActor{
     int mapListIndex;
 
     int pathIndex;
-    float moveSpeed;
     int rankNum;
     int owner;
     float x,y;
     float hp;
 
-    float attackNum;
-    float scope;
-    int attackCount;
-    float attackSpeed;
-    float lastAttackTime;
-    int attackType;
-    float cost;
-    float costRate;
-    float totalCost;
 
     int typeId;
     virtual ~IMobileActor()=default;
     virtual void dead(){};
     virtual bool setRank(int rankOffest){};
+    virtual float getValue(int attributeId){};
     virtual void applyEffect(IStaticActor* staticActorPtr){};
     virtual void applyEffect(IMobileActor* mobileActorPtr){};
     virtual void checkEffect(){};
     virtual void setScope(){};
-    virtual void beHurted(int attackType,float attackNum){};
+    virtual void beHurted(AttackType attackType,float attackNum){};
+    virtual void getAttackGoal(std::array<std::priority_queue<std::tuple<float,int>,std::vector<std::tuple<float,int>>,std::greater<std::tuple<float,int>>>,2>& goalList){};
     virtual void attack(){};
     virtual void move(std::pair<int,int> goalPos){};
     virtual void followPath(){};
-    virtual std::vector<std::array<int,2>> getPath(float goalX,float goalY){};
-    virtual float getTotalCost(){};
+    virtual void getPath(float goalX,float goalY,std::vector<std::array<int,2>>& resPath){};
     virtual void skill1(){};
     virtual void skill2(){};
 };
@@ -368,6 +485,8 @@ class StaticActor:public IStaticActor{//用于实现通用方法的模板类
 
         rankNum=0;
         //setRank由子类构造方法调用
+        nowAttributeList.resize(Attribute<SubClass>::attributeList[0].size());
+
         subclassPoolIndex=ActorPool<SubClass>::Pool.size();
         poolIndex=gamePtr->staticActorPool.size();
         mapListIndex=gamePtr->staticActorMap[int(y)][int(x)].size();
@@ -380,9 +499,18 @@ class StaticActor:public IStaticActor{//用于实现通用方法的模板类
 
     virtual ~StaticActor(){
         resistList.clear();
-        for(int i=0;i<effectList.size();i++){
-            effectList[i]->endTime=0;
+        auto start=applyEffectList.begin();
+        while(start!=applyEffectList.end()){
+            auto&temp =*start;
+            temp->endTime=0;//将自身所施加的异常状态置0
+            ++start;
         }
+        start=receiveEffectList.begin();
+        while(start!=receiveEffectList.end()){
+            auto& temp =*start;
+            temp->removeApply();//将自身所受的异常状态从施加方删除
+            ++start;
+        }        
     }
 
     virtual void dead()override{
@@ -407,7 +535,6 @@ class StaticActor:public IStaticActor{//用于实现通用方法的模板类
 
     bool _setRank(SubClass* thisPtr,int rankOffest=0){
         auto& attributeList=Attribute<SubClass>::attributeList;
-
         if(rankOffest!=0){
             if(rankNum+rankOffest>attributeList.size()-1||rankNum+rankOffest<0){
                 throw std::runtime_error(std::format("[StaticActor][setRank]the rankNum={} rankOffest={} and rankMax is {}",rankNum,rankOffest,attributeList.size()));
@@ -434,23 +561,24 @@ class StaticActor:public IStaticActor{//用于实现通用方法的模板类
                 }
                 else{gamePtr->nowCost[this->owner]+=costOffest;
                 }//合法情况
-            totalCost+=costOffest;
             }
             rankNum+=rankOffest;
         }
-        float lastScope=scope;
-        this->hp=attributeList[rankNum][3];
-        this->attackNum=attributeList[rankNum][4];
-        this->scope=attributeList[rankNum][5];
-        this->attackCount=attributeList[rankNum][6];
-        this->attackSpeed=attributeList[rankNum][7];
-        this->attackType=int(attributeList[rankNum][8]);
-        this->cost=attributeList[rankNum][9];
-        this->costRate=attributeList[rankNum][10];
-        this->rasistCount=attributeList[rankNum][11];
-        if(scope!=lastScope)setScope();
+
+        for(auto& tempAttribute:nowAttributeList){
+            tempAttribute.checkFlag=false;
+        }
 
         return true;
+    };
+
+    virtual float getValue(int attributeId)override{
+        auto& tempData=this->nowAttributeList[attributeId];
+        if(!tempData.checkFlag){
+            tempData.updateValue(attributeList[rankNum][attributeId]);
+            if(attributeId==AttributeId<SubClass>::attackScope)this->setScope();
+        }
+        return tempData.value;
     };
 
     virtual void applyEffect(IStaticActor* staticActorPtr)override{
@@ -462,56 +590,17 @@ class StaticActor:public IStaticActor{//用于实现通用方法的模板类
     };
 
     virtual void checkEffect()override{
-        std::vector<int> eraseList;
-        for(int i=0;i<effectedList.size();i++){
-            auto& effect=effectedList[i];
-            if(effect==nullptr){
-                eraseList.push_back(i);
-                continue;
-            }
-            if(effect->endTime<=gamePtr->nowTime){
-                switch(effect->Id){
-                    case 0:
-                        this->attackSpeed=effect->normalData;
-                        break;
-                    case 1:
-                        throw std::runtime_error(std::format("[ERROR][StaticActor] the effect Id is {}",effect->Id));
-                        break;
-                    case 2:
-                        break;
-                    default:
-                        throw std::runtime_error(std::format("[ERROR][StaticActor] the effect Id is {}",effect->Id));
-                }
-                
-                
-                delete effect;
-                effect=nullptr;
-                eraseList.push_back(i);
-            }
-            else{
-                switch(effect->Id){
-                    case 0:
-                        this->attackSpeed=attributeList[rankNum][7];
-                        effect->normalData=this->attackSpeed;
-                        this->attackSpeed*=(1-effect->value);
-                        break;
-                    case 1:
-                        throw std::runtime_error(std::format("[ERROR][StaticActor] the effect Id is {}",effect->Id));
-                        break;
-                    case 2:
-                        break;
-                    default:
-                        throw std::runtime_error(std::format("[ERROR][StaticActor] the effect Id is {}",effect->Id));
-                }
-            }
-        }
-        for(int i=eraseList.size()-1;i>=0;i--){
-            erase_basedSwap(effectedList,eraseList[i]);
+        auto start=this->receiveEffectList.begin();
+
+        while(start!=this->receiveEffectList.end()){
+            auto& effect=*start;
+            start=effect->check();//检测/析构
         }
     }
 
     virtual void setScope()override{//静态,有超出边界不加入
         scopeList.clear();
+        auto scope=this->getValue(AttributeId<SubClass>::attackScope);
         int r=int(scope);
         for(int dx=-r;dx<=r;dx++){
             int dy_max=int(sqrt(scope*scope-dx*dx));
@@ -524,17 +613,17 @@ class StaticActor:public IStaticActor{//用于实现通用方法的模板类
         }
     }
 
-    virtual void beHurted(int attackType,float attackNum)override{
+    virtual void beHurted(AttackType attackType,float attackNum)override{
         switch(attackType){
-            case 0:
+            case AttackType::Phys:
                 attackNum=attackNum-attributeList[rankNum][0];
-                attackNum=std::max(attackNum,0.0f);
+                attackNum=std::max<float>(attackNum,0.0f);
                 break;
-            case 1:
+            case AttackType::Magic:
                 attackNum=attackNum*(1-attributeList[rankNum][1]);
-                attackNum=std::max(attackNum,0.0f);
+                attackNum=std::max<float>(attackNum,0.0f);
                 break;
-            case 2:
+            case AttackType::Pure:
                 break;
             default:
                 throw std::runtime_error(std::format("[ERROR][StaticActor] the attackType is {}",attackType));
@@ -542,19 +631,14 @@ class StaticActor:public IStaticActor{//用于实现通用方法的模板类
         this->hp-=attackNum;
     }
 
-    virtual void attack()override{
-        int attackCount=int(this->attackCount);//取整
+    virtual void getAttackGoal(std::array<std::priority_queue<std::tuple<float,int>,std::vector<std::tuple<float,int>>,std::greater<std::tuple<float,int>>>,2>& goalList)override{
+        auto&  mobileAttackQueue=goalList[1];
         
-        auto& nowTime=gamePtr->nowTime;
+        auto attackSpeed=this->getValue(AttributeId<SubClass>::attackSpeed);
+        auto attackScope=this->getValue(AttributeId<SubClass>::attackScope);
+        auto attackCount=this->getValue(AttributeId<SubClass>::attackCount);
         
-        if(nowTime-lastAttackTime<1/attackSpeed){
-            return;
-        }
-
         auto& mobileActorMap=gamePtr->mobileActorMap;
-        auto& eraseMobileActorSet=gamePtr->eraseMobileActorSet;
-
-        std::priority_queue<std::tuple<float,int>,std::vector<std::tuple<float,int>>,std::greater<std::tuple<float,int>>>attackQueue;//距离,索引
         
         for(auto [x,y]:scopeList){
             for(auto index:mobileActorMap[int(this->y+y)][int(this->x+x)]){
@@ -563,19 +647,62 @@ class StaticActor:public IStaticActor{//用于实现通用方法的模板类
                     continue;
                 }
                 float d2=abs(this->x-actor->x)*abs(this->x-actor->x)+abs(this->y-actor->y)*abs(this->y-actor->y);
-                if(d2<scope*scope){
-                    attackQueue.emplace(d2,index);
-                    while(attackQueue.size()>attackCount){
-                        attackQueue.pop();
+                if(d2<attackScope*attackScope){
+                    mobileAttackQueue.emplace(d2,index);
+                    while(mobileAttackQueue.size()>attackCount){
+                        mobileAttackQueue.pop();
                     }
                 }
             }
         }
         
         int residualAttackCount=attackCount-int64_t(attackQueue.size());
-        while(attackQueue.size()>0){//优先级为 先攻击移动单位，再攻击固定单位 其次，优先攻击最近
-            auto [d,index]=attackQueue.top();
-            attackQueue.pop();
+        if(residualAttackCount==0){//攻击数量足够
+            return;
+        }
+        
+        auto&  staticAttackQueue=goalList[0];
+        auto& staticActorMap=gamePtr->staticActorMap;
+        
+        for(auto [x,y]:scopeList){
+            for(auto index:staticActorMap[int(this->y+y)][int(this->x+x)]){
+                auto& actor=gamePtr->staticActorPool[index];
+                if(actor->owner==owner){
+                    continue;
+                }
+                float d2=abs(this->x-actor->x)*abs(this->x-actor->x)+abs(this->y-actor->y)*abs(this->y-actor->y);
+                if(d2<attackScope*attackScope){
+                    staticAttackQueue.emplace(d2,index);
+                    while(staticAttackQueue.size()>residualAttackCount){
+                        staticAttackQueue.pop();
+                    }
+                }
+            }
+        }
+    };
+
+
+    virtual void attack()override{
+
+        auto& nowTime=gamePtr->nowTime;
+        auto attackSpeed=this->getValue(AttributeId<SubClass>::attackSpeed);
+        
+        auto& lastAttackTime=this->timeManger[TimeType::Attack];
+        
+        if(nowTime-lastAttackTime<1/attackSpeed){
+            return;
+        }
+        auto attackNum=this->getValue(AttributeId<SubClass>::attackNum);
+        auto attackType=static_cast<AttackType>(this->getValue(AttributeId<SubClass>::attackType));
+
+        auto& eraseMobileActorSet=gamePtr->eraseMobileActorSet;
+        auto& eraseStaticActorSet=gamePtr->eraseStaticActorSet;
+        std::array<std::priority_queue<std::tuple<float,int>,std::vector<std::tuple<float,int>>,std::greater<std::tuple<float,int>>>,2> goalList;
+        getAttackGoal(goalList);//距离,索引
+        
+        while(goalList[1].size()>0){//优先级为 先攻击移动单位，再攻击固定单位 其次，优先攻击最近
+            auto [d,index]=goalList[1].top();
+            goalList[1].pop();
             auto& actor=gamePtr->mobileActorPool[index];
             if(actor->hp<=0){
                 continue;
@@ -586,32 +713,10 @@ class StaticActor:public IStaticActor{//用于实现通用方法的模板类
                 eraseMobileActorSet.push_back(index);
             }
         }
-        if(residualAttackCount<=0){//攻击数量足够
-            return;
-        }
 
-;
-        auto& staticActorMap=gamePtr->staticActorMap;
-        auto& eraseStaticActorSet=gamePtr->eraseStaticActorSet;
-        
-        for(auto [x,y]:scopeList){
-            for(auto index:staticActorMap[int(this->y+y)][int(this->x+x)]){
-                auto& actor=gamePtr->staticActorPool[index];
-                if(actor->owner==owner){
-                    continue;
-                }
-                float d2=abs(this->x-actor->x)*abs(this->x-actor->x)+abs(this->y-actor->y)*abs(this->y-actor->y);
-                if(d2<scope*scope){
-                    attackQueue.emplace(d2,index);
-                    while(attackQueue.size()>residualAttackCount){
-                        attackQueue.pop();
-                    }
-                }
-            }
-        }
-        while(attackQueue.size()>0){
-            auto [d,index]=attackQueue.top();
-            attackQueue.pop();
+        while(goalList[0].size()>0){
+            auto [d,index]=goalList[0].top();
+            goalList[0].pop();
             auto& actor=gamePtr->staticActorPool[index];
             if(actor->hp<=0){
                 continue;
@@ -622,8 +727,8 @@ class StaticActor:public IStaticActor{//用于实现通用方法的模板类
                 eraseStaticActorSet.push_back(index);
             }
         }
-        lastAttackTime=nowTime;
-
+        
+        this->timeManger[TimeType::Attack]=nowTime;
     }
 
 
@@ -650,6 +755,7 @@ class MobileActor:public IMobileActor{
 
         typeId=TypeId<SubClass>::value;
         rankNum=0;
+        nowAttributeList.resize(Attribute<SubClass>::attributeList[0].size());
 
         subclassPoolIndex=ActorPool<SubClass>::Pool.size();
         poolIndex=gamePtr->staticActorPool.size();
@@ -662,9 +768,18 @@ class MobileActor:public IMobileActor{
     }
     
     virtual ~MobileActor(){
-
-        for(int i=0;i<effectList.size();i++){
-            effectList[i]->endTime=0;
+        resistList.clear();
+        auto start=applyEffectList.begin();
+        while(start!=applyEffectList.end()){
+            auto&temp =*start;
+            temp->endTime=0;//将自身所施加的异常状态置0
+            ++start;
+        }
+        start=receiveEffectList.begin();
+        while(start!=receiveEffectList.end()){
+            auto& temp =*start;
+            temp->removeApply();//将自身所受的异常状态从施加方删除
+            ++start;
         }
         this->resistState.removeResist();
     }
@@ -690,7 +805,6 @@ class MobileActor:public IMobileActor{
 
     bool _setRank(SubClass* thisPtr,int rankOffest=0){
         auto& attributeList=Attribute<SubClass>::attributeList;
-
         if(rankOffest!=0){
             if(rankNum+rankOffest>attributeList.size()-1||rankNum+rankOffest<0){
                 throw std::runtime_error(std::format("[StaticActor][setRank]the rankNum={} rankOffest={} and rankMax is {}",rankNum,rankOffest,attributeList.size()));
@@ -716,23 +830,24 @@ class MobileActor:public IMobileActor{
                     gamePtr->nowCost[this->owner]=gamePtr->costMax[this->owner];//置为最大值
                 }
                 else{gamePtr->nowCost[this->owner]+=costOffest;}//合法情况
-            totalCost+=costOffest;
             }
             rankNum+=rankOffest;
         }
-        float lastScope=scope;
-        this->hp=attributeList[rankNum][3];
-        this->attackNum=attributeList[rankNum][4];
-        this->scope=attributeList[rankNum][5];
-        this->attackCount=attributeList[rankNum][6];
-        this->attackSpeed=attributeList[rankNum][7];
-        this->attackType=int(attributeList[rankNum][8]);
-        this->cost=int(attributeList[rankNum][9]);
-        this->costRate=attributeList[rankNum][10];
-        this->moveSpeed=attributeList[rankNum][11];
-        if(scope!=lastScope)setScope();
+
+        for(auto& tempAttribute:nowAttributeList){
+            tempAttribute.checkFlag=false;
+        }
 
         return true;
+    };
+
+    virtual float getValue(int attributeId)override{
+        auto& tempData=this->nowAttributeList[attributeId];
+        if(!tempData.checkFlag){
+            tempData.updateValue(attributeList[rankNum][attributeId]);
+            if(attributeId==AttributeId<SubClass>::attackScope)this->setScope();
+        }
+        return tempData.value;
     };
 
     virtual void applyEffect(IStaticActor* staticActorPtr)override{
@@ -744,57 +859,17 @@ class MobileActor:public IMobileActor{
     };
 
     virtual void checkEffect()override{
-        std::vector<int> eraseList;
-        for(int i=0;i<effectedList.size();i++){
-            auto& effect=effectedList[i];
-            if(effect==nullptr){
-                eraseList.push_back(i);
-                continue;
-            }
-            if(effect->endTime<=gamePtr->nowTime){//已经结束
-                switch(effect->Id){
-                    case 0:
-                        this->attackSpeed=effect->normalData;
-                        break;
-                    case 1:
-                        this->moveSpeed=effect->normalData;
-                        break;
-                    case 2:
-                        break;
-                    default:
-                        throw std::runtime_error(std::format("[ERROR][StaticActor] the effect Id is {}",effect->Id));
-                }
-                delete effect;
-                effect=nullptr;
-                eraseList.push_back(i);
-            }
-            else{
-                switch(effect->Id){
-                    case 0:
-                        this->attackSpeed=attributeList[rankNum][7];
-                        effect->normalData=this->attackSpeed;
-                        this->attackSpeed*=(1-effect->value);
-                        break;
-                    case 1:
-                        this->moveSpeed=attributeList[rankNum][11];
-                        effect->normalData=this->moveSpeed;
-                        this->moveSpeed*=(1-effect->value);
-                        break;
-                    case 2:
-                        break;
-                    default:
-                        throw std::runtime_error(std::format("[ERROR][StaticActor] the effect Id is {}",effect->Id));
-                }
-            }
+       auto start=this->receiveEffectList.begin();
+
+        while(start!=this->receiveEffectList.end()){
+            auto& effect=*start;
+            start=effect->check();//检测/析构
         }
-        for(int i=eraseList.size()-1;i>=0;i--){
-            erase_basedSwap(effectedList,eraseList[i]);
-        }
-        
     }
 
     virtual void setScope()override{//动态,在调用时检测边界
         scopeList.clear();
+        auto scope=this->getValue(AttributeId<SubClass>::attackScope);
         int r=int(scope);
         for(int dx=-r;dx<=r;dx++){
             int dy_max=int(sqrt(scope*scope-dx*dx));
@@ -804,38 +879,33 @@ class MobileActor:public IMobileActor{
         }
     }
 
-    virtual void beHurted(int attackType,float attackNum)override{
+    virtual void beHurted(AttackType attackType,float attackNum)override{
         switch(attackType){
-            case 0:
+            case AttackType::Phys:
                 attackNum=attackNum-attributeList[rankNum][0];
-                attackNum=std::max(attackNum,0.0f);
+                attackNum=std::max<float>(attackNum,0.0f);
                 break;
-            case 1:
+            case AttackType::Magic:
                 attackNum=attackNum*(1-attributeList[rankNum][1]);
-                attackNum=std::max(attackNum,0.0f);
+                attackNum=std::max<float>(attackNum,0.0f);
                 break;
-            case 2:
+            case AttackType::Pure:
                 break;
             default:
-                throw std::runtime_error(std::format("[ERROR][MobileActor] the attackType is {}",attackType));
+                throw std::runtime_error(std::format("[ERROR][StaticActor] the attackType is {}",attackType));
         }
         this->hp-=attackNum;
     }
 
-    virtual void attack()override{
-        int attackCount=int(this->attackCount);//取整
+    virtual void getAttackGoal(std::array<std::priority_queue<std::tuple<float,int>,std::vector<std::tuple<float,int>>,std::greater<std::tuple<float,int>>>,2>& goalList)override{
+        auto&  mobileAttackQueue=goalList[1];
         
-        auto& nowTime=gamePtr->nowTime;
+        auto attackSpeed=this->getValue(AttributeId<SubClass>::attackSpeed);
+        auto attackScope=this->getValue(AttributeId<SubClass>::attackScope);
+        auto attackCount=this->getValue(AttributeId<SubClass>::attackCount);
         
-        if(nowTime-lastAttackTime<1/attackSpeed){
-            return;
-        }
-
         auto& mobileActorMap=gamePtr->mobileActorMap;
-        auto& eraseMobileActorSet=gamePtr->eraseMobileActorSet;
-
-        std::priority_queue<std::tuple<float,int>,std::vector<std::tuple<float,int>>,std::greater<std::tuple<float,int>>>attackQueue;//距离,索引
-
+        
         std::vector<std::array<int,2>> scopeList;//存真实攻击范围
         for(auto [x,y]:this->scopeList){//动态获取实时攻击范围
             if(this->x+x<0||this->x+x>=gamePtr->basicMap[0].size()||this->y+y<0||this->y+y>=gamePtr->basicMap.size()){
@@ -851,19 +921,62 @@ class MobileActor:public IMobileActor{
                     continue;
                 }
                 float d2=abs(this->x-actor->x)*abs(this->x-actor->x)+abs(this->y-actor->y)*abs(this->y-actor->y);
-                if(d2<scope*scope){
-                    attackQueue.emplace(d2,index);
-                    while(attackQueue.size()>attackCount){
-                        attackQueue.pop();
+                if(d2<attackScope*attackScope){
+                    mobileAttackQueue.emplace(d2,index);
+                    while(mobileAttackQueue.size()>attackCount){
+                        mobileAttackQueue.pop();
                     }
                 }
             }
         }
         
         int residualAttackCount=attackCount-int64_t(attackQueue.size());
-        while(attackQueue.size()>0){//优先级为 先攻击移动单位，再攻击固定单位 其次，优先攻击最近
-            auto [d,index]=attackQueue.top();
-            attackQueue.pop();
+        if(residualAttackCount==0){//攻击数量足够
+            return;
+        }
+        
+        auto&  staticAttackQueue=goalList[0];
+        auto& staticActorMap=gamePtr->staticActorMap;
+        
+        for(auto [x,y]:scopeList){
+            for(auto index:staticActorMap[int(this->y+y)][int(this->x+x)]){
+                auto& actor=gamePtr->staticActorPool[index];
+                if(actor->owner==owner){
+                    continue;
+                }
+                float d2=abs(this->x-actor->x)*abs(this->x-actor->x)+abs(this->y-actor->y)*abs(this->y-actor->y);
+                if(d2<attackScope*attackScope){
+                    staticAttackQueue.emplace(d2,index);
+                    while(staticAttackQueue.size()>residualAttackCount){
+                        staticAttackQueue.pop();
+                    }
+                }
+            }
+        }
+    };
+
+    virtual void attack()override{
+        int attackCount=int(this->attackCount);//取整
+        
+        auto& nowTime=gamePtr->nowTime;
+        auto attackSpeed=this->getValue(AttributeId<SubClass>::attackSpeed);
+        
+        auto& lastAttackTime=this->timeManger[TimeType::Attack];
+        
+        if(nowTime-lastAttackTime<1/attackSpeed){
+            return;
+        }
+        auto attackNum=this->getValue(AttributeId<SubClass>::attackNum);
+        auto attackType=static_cast<AttackType>(this->getValue(AttributeId<SubClass>::attackType));
+
+        auto& mobileActorMap=gamePtr->mobileActorMap;
+        auto& eraseMobileActorSet=gamePtr->eraseMobileActorSet;
+        std::array<std::priority_queue<std::tuple<float,int>,std::vector<std::tuple<float,int>>,std::greater<std::tuple<float,int>>>,2> goalList;
+        getAttackGoal(goalList);//距离,索引
+        
+        while(goalList[1].size()>0){//优先级为 先攻击移动单位，再攻击固定单位 其次，优先攻击最近
+            auto [d,index]=goalList[1].top();
+            goalList[1].pop();
             auto& actor=gamePtr->mobileActorPool[index];
             if(actor->hp<=0){
                 continue;
@@ -874,32 +987,10 @@ class MobileActor:public IMobileActor{
                 eraseMobileActorSet.push_back(index);
             }
         }
-        if(residualAttackCount<=0){//攻击数量足够
-            return;
-        }
 
-;
-        auto& staticActorMap=gamePtr->staticActorMap;
-        auto& eraseStaticActorSet=gamePtr->eraseStaticActorSet;
-        
-        for(auto [x,y]:scopeList){
-            for(auto index:staticActorMap[int(this->y+y)][int(this->x+x)]){
-                auto& actor=gamePtr->staticActorPool[index];
-                if(actor->owner==owner){
-                    continue;
-                }
-                float d2=abs(this->x-actor->x)*abs(this->x-actor->x)+abs(this->y-actor->y)*abs(this->y-actor->y);
-                if(d2<scope*scope){
-                    attackQueue.emplace(d2,index);
-                    while(attackQueue.size()>residualAttackCount){
-                        attackQueue.pop();
-                    }
-                }
-            }
-        }
-        while(attackQueue.size()>0){
-            auto [d,index]=attackQueue.top();
-            attackQueue.pop();
+        while(goalList[0].size()>0){
+            auto [d,index]=goalList[0].top();
+            goalList[0].pop();
             auto& actor=gamePtr->staticActorPool[index];
             if(actor->hp<=0){
                 continue;
@@ -910,13 +1001,31 @@ class MobileActor:public IMobileActor{
                 eraseStaticActorSet.push_back(index);
             }
         }
-        lastAttackTime=nowTime;
+        
+        this->timeManger[TimeType::Attack]=nowTime;
 
     }
 
     virtual void move(std::pair<int,int> goalPos)override{
         this->path.clear();
-
+        gamePtr->mobileActorPool[gamePtr->mobileActorMap[int(this->y)][int(this->x)][gamePtr->mobileActorMap[int(this->y)][int(this->x)].size()-1]]->mapListIndex=this->mapListIndex;
+        erase_basedSwap(gamePtr->mobileActorMap[int(this->y)][int(this->x)],this->mapListIndex);
+        this->x=goalPos.first;
+        this->y=goalPos.second;
+        this->setScope();
+        this->mapListIndex=gamePtr->mobileActorMap[int(this->y)][int(this->x)].size();
+        gamePtr->mobileActorMap[int(this->y)][int(this->x)].push_back(poolIndex);
+        this->resistState.removeResist();
+        for(auto index:gamePtr->staticActorMap[int(this->y)][int(this->x)]){//阻挡相关
+                if(this->resistState.state==true){
+                    break;
+                }
+                auto& actor=gamePtr->staticActorPool[index];
+                if(actor->owner!=this->owner){
+                    actor->resistList.push(this->resistState);
+                    break;
+                }
+            }
     }
 
     virtual void followPath()override{//移动以0.1s为单位
@@ -957,15 +1066,13 @@ class MobileActor:public IMobileActor{
         }
     }
 
-    virtual std::vector<std::array<int,2>> getPath(float goalX,float goalY)override{
+    virtual void getPath(float goalX,float goalY,std::vector<std::array<int,2>>&resPath)override{
         erase_basedSwap(*this->resistedList,this->resistListIndex);//主动清除被阻挡状态
         this->resistedList=nullptr;
         this->resistListIndex=-1;
-        std::vector<std::array<int,2>> resPath;
         // this->getPath_dfs(goalX,goalY,resPath);
         this->aStar(goalX,goalY,resPath);
         this->pathIndex=0;
-        return resPath;
     }
     
     void aStar(float goalX,float goalY,std::vector<std::array<int,2>>& resPath){
@@ -1056,9 +1163,6 @@ class MobileActor:public IMobileActor{
          }
         visited[nowY][nowX]=false;
     }
-    virtual float getTotalCost()override{
-        return Attribute<SubClass>::getCost(0,this->rankNum);
-    };
 
     virtual void skill1()override{};
     virtual void skill2()override{};
@@ -1068,30 +1172,21 @@ class MobileActor:public IMobileActor{
 class SingleTower:public StaticActor<SingleTower>{//单体攻击
     public:
     SingleTower(Game* gamePtr,int owner,float x,float y):StaticActor(gamePtr,owner,x,y,this){
-       auto flag=setRank(0);
-    }
 
+    }
 };
+
 class GroupAttackTower:public StaticActor<GroupAttackTower>{//群攻
     public:
     std::vector<std::array<int,2>> groupAttackArea;//溅射攻击范围
-    float groupAttackScope;
 
     GroupAttackTower(Game* gamePtr,int owner,float x,float y):StaticActor(gamePtr,owner,x,y,this){
-        auto flag=setRank(0);//有些成员在基类构造方法中未定义，不能交由子类构造方法
-    }
 
-    bool setRank(int rankOffest=0) override{
-        auto flag= _setRank(this,rankOffest);
-        if(!flag){
-            return false;
-        }
-        this->groupAttackScope=Attribute<GroupAttackTower>::attributeList[rankNum][12];
-        return true;
     }
 
     void set_groupAttackArea(){
         groupAttackArea.clear();
+        auto groupAttackScope=this->getValue(AttributeId<GroupAttackTower>::GroupArrackScope);
         int r=int(groupAttackScope);
         for(int dx=-r;dx<=r;dx++){
             int dy_max=int(sqrt(groupAttackScope*groupAttackScope-dx*dx));
@@ -1100,56 +1195,31 @@ class GroupAttackTower:public StaticActor<GroupAttackTower>{//群攻
             }
         }
     }
+    virtual void attack()override{
 
-    void attack() override{
-        int attackCount=int(this->attackCount);//取整
-        
         auto& nowTime=gamePtr->nowTime;
+        auto attackSpeed=this->getValue(AttributeId<GroupAttackTower>::attackSpeed);
+        auto groupAttackScope=this->getValue(AttributeId<GroupAttackTower>::GroupArrackScope);
+
+
+        auto& lastAttackTime=this->timeManger[TimeType::Attack];
         
         if(nowTime-lastAttackTime<1/attackSpeed){
             return;
         }
+        auto attackNum=this->getValue(AttributeId<GroupAttackTower>::attackNum);
+        auto attackType=static_cast<AttackType>(this->getValue(AttributeId<GroupAttackTower>::attackType));
 
-        auto& mobileActorMap=gamePtr->mobileActorMap;
         auto& eraseMobileActorSet=gamePtr->eraseMobileActorSet;
+        auto& eraseStaticActorSet=gamePtr->eraseStaticActorSet;
+        std::array<std::priority_queue<std::tuple<float,int>,std::vector<std::tuple<float,int>>,std::greater<std::tuple<float,int>>>,2> goalList;
+        getAttackGoal(goalList);//距离,索引
+        
+        std::vector<int> mobileGroupAttackList;
+        std::vector<int> staticGroupAttackList;
 
-        std::priority_queue<std::tuple<float,int>,std::vector<std::tuple<float,int>>,std::greater<std::tuple<float,int>>>attackQueue;//距离,索引
-        
-        for(auto [x,y]:this->scopeList){
-            for(auto index:mobileActorMap[int(this->y+y)][int(this->x+x)]){
-                auto& actor=gamePtr->mobileActorPool[index];
-                if(actor->owner==owner){
-                    continue;
-                }
-                float d2=abs(this->x-actor->x)*abs(this->x-actor->x)+abs(this->y-actor->y)*abs(this->y-actor->y);
-                if(d2<scope*scope){
-                    attackQueue.emplace(d2,index);
-                    while(attackQueue.size()>attackCount){
-                        attackQueue.pop();
-                    }
-                }
-            }
-        }
-        
-        int residualAttackCount=attackCount-int64_t(attackQueue.size());
-        std::vector<int> tempGropAttackList;
-        while(attackQueue.size()>0){//优先级为 先攻击移动单位，再攻击固定单位 其次，优先攻击最近
-            auto [d,index]=attackQueue.top();
-            tempGropAttackList.push_back(index);
-            attackQueue.pop();
-            auto& actor=gamePtr->mobileActorPool[index];
-            if(actor->hp<=0){
-                continue;
-            }
-            actor->beHurted(attackType,attackNum);
-            this->applyEffect(actor);
-            if(actor->hp<=0){
-                eraseMobileActorSet.push_back(index);
-            }
-        }
-        
-        std::vector<int> tempAttackList;
-        for(auto& index:tempGropAttackList){
+        while(goalList[1].size()>0){
+            auto [d,index]=goalList[1].top();
             auto& mainActor=gamePtr->mobileActorPool[index];
             for(auto& [x,y]:groupAttackArea){
                 if(mainActor->x+x<0||mainActor->x+x>=gamePtr->basicMap[0].size()||mainActor->y+y<0||mainActor->y+y>=gamePtr->basicMap.size()){
@@ -1162,63 +1232,14 @@ class GroupAttackTower:public StaticActor<GroupAttackTower>{//群攻
                     }
                     float d2=abs(mainActor->x+x-actor->x)*abs(mainActor->x+x-actor->x)+abs(mainActor->y+y-actor->y)*abs(mainActor->y+y-actor->y);
                     if(d2<groupAttackScope*groupAttackScope){
-                        tempAttackList.push_back(index_map);
+                        staticGroupAttackList.push_back(index_map);
                     }
                 }
             }
+            goalList[1].pop();
         }
-        for(auto& index:tempAttackList){
-            auto& actor=gamePtr->mobileActorPool[index];
-            if(actor->hp<=0){
-                continue;
-            }
-            actor->beHurted(attackType,attackNum);
-            this->applyEffect(actor);
-            if(actor->hp<=0){
-                eraseMobileActorSet.push_back(index);
-            }
-        }
-
-        if(residualAttackCount<=0){//攻击数量足够
-            return;
-        }
-        tempGropAttackList.clear();
-        tempAttackList.clear();
-
-        auto& staticActorMap=gamePtr->staticActorMap;
-        auto& eraseStaticActorSet=gamePtr->eraseStaticActorSet;
-        
-        for(auto [x,y]:this->scopeList){
-            for(auto index:staticActorMap[int(this->y+y)][int(this->x+x)]){
-                auto& actor=gamePtr->staticActorPool[index];
-                if(actor->owner==owner){
-                    continue;
-                }
-                float d2=abs(this->x-actor->x)*abs(this->x-actor->x)+abs(this->y-actor->y)*abs(this->y-actor->y);
-                if(d2<scope*scope){
-                    attackQueue.emplace(d2,index);
-                    while(attackQueue.size()-residualAttackCount>0){
-                        attackQueue.pop();
-                    }
-                }
-            }
-        }
-        while(attackQueue.size()>0){
-            auto [d,index]=attackQueue.top();
-            attackQueue.pop();
-            tempGropAttackList.push_back(index);
-            auto& actor=gamePtr->staticActorPool[index];
-            if(actor->hp<=0){
-                continue;
-            }
-            actor->beHurted(attackType,attackNum);
-            this->applyEffect(actor);
-            if(actor->hp<=0){
-                eraseStaticActorSet.push_back(index);
-            }
-        }
-        
-        for(auto& index:tempGropAttackList){
+        while(goalList[0].size()>0){
+            auto [d,index]=goalList[0].top();
             auto& mainActor=gamePtr->staticActorPool[index];
             for(auto& [x,y]:groupAttackArea){
                 if(mainActor->x+x<0||mainActor->x+x>=gamePtr->basicMap[0].size()||mainActor->y+y<0||mainActor->y+y>=gamePtr->basicMap.size()){
@@ -1229,14 +1250,35 @@ class GroupAttackTower:public StaticActor<GroupAttackTower>{//群攻
                     if(actor->owner==owner){
                         continue;
                     }
-                    float d2=abs(mainActor->x-actor->x)*abs(mainActor->x-actor->x)+abs(mainActor->y-actor->y)*abs(mainActor->y-actor->y);
+                    float d2=abs(mainActor->x+x-actor->x)*abs(mainActor->x+x-actor->x)+abs(mainActor->y+y-actor->y)*abs(mainActor->y+y-actor->y);
                     if(d2<groupAttackScope*groupAttackScope){
-                        tempAttackList.push_back(index_map);
+                        staticGroupAttackList.push_back(index_map);
                     }
                 }
             }
+            goalList[0].pop();
         }
-        for(auto& index:tempAttackList){
+        // std::sort(mobileGroupAttackList.begin(),mobileGroupAttackList.end());
+        // mobileGroupAttackList.erase(std::unique(mobileGroupAttackList.begin(),mobileGroupAttackList.end()),mobileGroupAttackList.end());
+        // std::sort(staticGroupAttackList.begin(),staticGroupAttackList.end());
+        // staticGroupAttackList.erase(std::unique(staticGroupAttackList.begin(),staticGroupAttackList.end()),staticGroupAttackList.end());
+        //不去重 交集算受到两次溅射伤害
+
+
+        for(auto i=0ULL;i<mobileGroupAttackList.size();i++){
+            auto index=mobileGroupAttackList[i];
+            auto& actor=gamePtr->mobileActorPool[index];
+            if(actor->hp<=0){
+                continue;
+            }
+            actor->beHurted(attackType,attackNum);
+            this->applyEffect(actor);
+            if(actor->hp<=0){
+                eraseMobileActorSet.push_back(index);
+            }
+        }
+        for(auto i=0ULL;i<staticGroupAttackList.size();i++){
+            auto index=staticGroupAttackList[i];
             auto& actor=gamePtr->staticActorPool[index];
             if(actor->hp<=0){
                 continue;
@@ -1247,41 +1289,30 @@ class GroupAttackTower:public StaticActor<GroupAttackTower>{//群攻
                 eraseStaticActorSet.push_back(index);
             }
         }
-        
-        lastAttackTime=nowTime;
     }
+
 };
 class SlowTower:public StaticActor<SlowTower>{//减速
     public:
-    float attackSlowMul;
-    float attackSlowTime;
-    float moveSlowMul;
-    float moveSlowTime;
-
     SlowTower(Game* gamePtr,int owner,float x,float y):StaticActor(gamePtr,owner,x,y,this){
-        setRank(0);
     }
     
-    bool setRank(int rankOffest){
-        auto flag= _setRank(this,rankOffest);
-        if(!flag){
-            return false;
-        }
-        this->attackSlowMul=Attribute<SlowTower>::attributeList[rankNum][12];
-        this->moveSlowMul=Attribute<SlowTower>::attributeList[rankNum][13];
-        this->attackSlowTime=Attribute<SlowTower>::attributeList[rankNum][14];
-        this->moveSlowTime=Attribute<SlowTower>::attributeList[rankNum][15];
-        return true;
-    }
-
     virtual void applyEffect(IStaticActor* staticActorPtr) override{
-        staticActorPtr->effectedList.push_back(new SpecialEffect{0,attackSlowMul,staticActorPtr->attackSpeed,gamePtr->nowTime+attackSlowTime});
+        auto attackSlowMul=this->getValue(AttributeId<SlowTower>::attackSlowMul);
+        auto attackSlowTime=this->getValue(AttributeId<SlowTower>::attackSlowTime);
+        auto moveSlowMul=this->getValue(AttributeId<SlowTower>::moveSlowMul);
+        auto moveSlowTime=this->getValue(AttributeId<SlowTower>::moveSlowTime);
+        auto ptr=new SpecialEffect{7,ModType::mul,attackSlowMul,gamePtr->nowTime+attackSlowTime,this,staticActorPtr};
         return;
     };
 
     virtual void applyEffect(IMobileActor* mobileActorPtr)override{
-        mobileActorPtr->effectedList.push_back(new SpecialEffect{0,attackSlowMul,mobileActorPtr->attackSpeed,gamePtr->nowTime+attackSlowTime});
-        mobileActorPtr->effectedList.push_back(new SpecialEffect{1,moveSlowMul,mobileActorPtr->moveSpeed,gamePtr->nowTime+moveSlowTime});
+        auto attackSlowMul=this->getValue(AttributeId<SlowTower>::attackSlowMul);
+        auto attackSlowTime=this->getValue(AttributeId<SlowTower>::attackSlowTime);
+        auto moveSlowMul=this->getValue(AttributeId<SlowTower>::moveSlowMul);
+        auto moveSlowTime=this->getValue(AttributeId<SlowTower>::moveSlowTime);
+        auto ptr=new SpecialEffect{7,ModType::mul,attackSlowMul,gamePtr->nowTime+attackSlowTime,this,mobileActorPtr};
+        auto ptr1=new SpecialEffect{7,ModType::mul,moveSlowMul,gamePtr->nowTime+moveSlowTime,this,mobileActorPtr};
         return;
     };
 
@@ -1289,6 +1320,7 @@ class SlowTower:public StaticActor<SlowTower>{//减速
 class CenterTower:public StaticActor<CenterTower>{//枢纽
     public:
     CenterTower(Game* gamePtr,int owner,float x,float y):StaticActor(gamePtr,owner,x,y,this){
+
     }
 
     void attack() override{
@@ -1301,6 +1333,7 @@ class CenterTower:public StaticActor<CenterTower>{//枢纽
 class MeleeMobile:public MobileActor<MeleeMobile>{//近战
     public:
     MeleeMobile(Game* gamePtr,int owner,float x,float y):MobileActor(gamePtr,owner,x,y,this){
+
     }
 
 };
@@ -1323,23 +1356,21 @@ class ExplosionMobile:public MobileActor<ExplosionMobile>{//自爆
     ExplosionMobile(Game* gamePtr,int owner,float x,float y):MobileActor(gamePtr,owner,x,y,this){
     }
 
-    bool setRank(int rankOffest=0) override{
-        auto flag= _setRank(this,rankOffest);
-        if(!flag){
-            return false;
-        }
-        this->explosionNum=Attribute<ExplosionMobile>::attributeList[rankNum][13];
-        return true;
-    }
     
-    void beHurted(int attackType,float attackNum) override{
+    void beHurted(AttackType attackType,float attackNum) override{
         MobileActor::beHurted(attackType,attackNum);
+        auto explosionNum=this->getValue(AttributeId<ExplosionMobile>::explosionNum);
         if(this->hp<=0){
-            this->attackNum=this->explosionNum;
-            this->lastAttackTime=-1000.0f;
-            this->scope=3.0f;
-            this->attackCount=1000.0f;//懒得重载范围攻击了
-            setScope();
+            this->nowAttributeList[AttributeId<ExplosionMobile>::explosionNum].add2=this->getValue(AttributeId<ExplosionMobile>::explosionNum)-this->getValue(AttributeId<ExplosionMobile>::attackNum);
+            this->nowAttributeList[AttributeId<ExplosionMobile>::explosionNum].checkFlag=false;
+            this->timeManger[TimeType::Attack]=-1000.0f;
+            
+            this->nowAttributeList[AttributeId<ExplosionMobile>::attackScope].mul=3;
+            this->nowAttributeList[AttributeId<ExplosionMobile>::attackScope].checkFlag=false;
+
+            this->nowAttributeList[AttributeId<ExplosionMobile>::attackCount].add1=997;
+            this->nowAttributeList[AttributeId<ExplosionMobile>::attackCount].checkFlag=false;
+
             this->attack();
         }
     }
@@ -1497,7 +1528,7 @@ class Game{
     void eraseStaticActor(int index){
         eraseStaticActorSet.push_back(index);
         auto actorPtr=staticActorPool[index];
-        nowCost[actorPtr->owner]+=actorPtr->totalCost*returnCostMul[actorPtr->owner];
+        nowCost[actorPtr->owner]+=actorPtr->getValue(11)*returnCostMul[actorPtr->owner];
         nowCost[actorPtr->owner]=std::min<float>(nowCost[actorPtr->owner],costMax[actorPtr->owner]);
         solveDeadActor();
     }
@@ -1505,7 +1536,7 @@ class Game{
     void eraseMobileActor(int index){
         eraseMobileActorSet.push_back(index);
         auto actorPtr=mobileActorPool[index];
-        nowCost[actorPtr->owner]+=actorPtr->totalCost*returnCostMul[actorPtr->owner];
+        nowCost[actorPtr->owner]+=actorPtr->getValue(11)*returnCostMul[actorPtr->owner];
         nowCost[actorPtr->owner]=std::min<float>(nowCost[actorPtr->owner],costMax[actorPtr->owner]);
         solveDeadActor();
     }
@@ -1559,7 +1590,7 @@ class Game{
             
             costSpeed=std::vector<float>(costSpeed.size(),timeStep);//每0.1s产生的费用
             for(auto actor:ActorPool<CenterTower>::Pool){
-                costSpeed[actor.owner]+=actor.costRate;  
+                costSpeed[actor.owner]+=actor.getValue(AttributeId<CenterTower>::costRate);  
             }
 
             for(int i=0;i<nowCost.size();i++){
