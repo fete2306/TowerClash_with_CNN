@@ -147,15 +147,6 @@ rule RERUN_CMAKE
 
 
 #############################################
-# Rule for re-checking globbed directories.
-
-rule VERIFY_GLOBS
-  command = D:\CMake\bin\cmake.exe -P D:\Creat\GAME\TowerClash_with_CNN\build\CMakeFiles\VerifyGlobs.cmake
-  description = Re-checking globbed directories...
-  generator = 1
-
-
-#############################################
 # Rule for cleaning all built files.
 
 rule CLEAN

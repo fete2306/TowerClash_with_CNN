@@ -1,8 +1,6 @@
 #include "../imgui/imgui.h"
 #include "basic_virtual_ui.h"
 
-BasicVirtualDebugState GetBasicVirtualDebugState(Game* game);
-
 void RenderBasicVirtualUI(Game* game, bool* p_open)
 {
     if (!game)

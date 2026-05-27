@@ -32,12 +32,6 @@ target_include_directories(imgui PUBLIC
 
 
 # 可选地把后端源码加入到 imgui 库（如果存在）
-if(EXISTS ${EXTERNAL_DIR}/imgui/backends/imgui_impl_sdl2.cpp)
-	target_sources(imgui PRIVATE ${EXTERNAL_DIR}/imgui/backends/imgui_impl_sdl2.cpp)
-endif()
-if(EXISTS ${EXTERNAL_DIR}/imgui/backends/imgui_impl_opengl3.cpp)
-	target_sources(imgui PRIVATE ${EXTERNAL_DIR}/imgui/backends/imgui_impl_opengl3.cpp)
-endif()
 
 # -------------------------
 # 第三方：nlohmann/json（头文件库）
@@ -54,12 +48,13 @@ add_subdirectory(${EXTERNAL_DIR}/DirectXTK-may2026)
 # -------------------------
 # 项目源文件
 # -------------------------
-file(GLOB_RECURSE GAME_SOURCES CONFIGURE_DEPENDS
+file(GLOB_RECURSE GAME_SOURCES
 	${CMAKE_SOURCE_DIR}/src/*.cpp
 	${CMAKE_SOURCE_DIR}/src/**/*.cpp
 )
+list(FILTER GAME_SOURCES EXCLUDE REGEX "basic_virtual\\.cpp$")
 
-add_executable(game ${GAME_SOURCES})
+add_executable(game WIN32 ${GAME_SOURCES})
 target_include_directories(game PRIVATE
 	${CMAKE_SOURCE_DIR}/src
 	${CMAKE_SOURCE_DIR}/src/ui
@@ -72,7 +67,7 @@ target_compile_features(game PUBLIC cxx_std_20)
 
 # 编译选项
 if (MSVC)
-	target_compile_options(game PRIVATE /W4 /permissive- /bigobj)
+	target_compile_options(game PRIVATE /W4 /permissive- /bigobj /utf-8)
 else()
 	target_compile_options(game PRIVATE -Wall -Wextra -Wpedantic)
 endif()
