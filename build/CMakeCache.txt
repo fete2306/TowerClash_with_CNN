@@ -51,7 +51,7 @@ CMAKE_AR:FILEPATH=D:/VisualStudio/VisualStudio/VC/Tools/MSVC/14.50.35717/bin/Hos
 CMAKE_BUILD_TYPE:STRING=Debug
 
 //CXX compiler
-CMAKE_CXX_COMPILER:STRING=D:/VisualStudio/VisualStudio/VC/Tools/MSVC/14.50.35717/bin/Hostx64/x64/cl.exe
+CMAKE_CXX_COMPILER:FILEPATH=D:/VisualStudio/VisualStudio/VC/Tools/MSVC/14.50.35717/bin/Hostx64/x64/cl.exe
 
 //Flags used by the CXX compiler during all build types.
 CMAKE_CXX_FLAGS:STRING=/DWIN32 /D_WINDOWS /GR /EHsc
@@ -276,9 +276,6 @@ CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO:STRING=
 // Studio IDE projects all commands are done without /nologo.
 CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 
-//No help, variable specified on the command line.
-COMPILED_SHADERS:UNINITIALIZED=D:\Creat\GAME\TowerClash_with_CNN\build/external/DirectXTK-may2026/Shaders/Compiled
-
 //Path to the coverage program that CTest uses for performing coverage
 // inspection
 COVERAGE_COMMAND:FILEPATH=COVERAGE_COMMAND-NOTFOUND
@@ -348,7 +345,7 @@ NO_WCHAR_T:BOOL=OFF
 SITE:STRING=LAPTOP-FIH8GPGF
 
 //Use externally built HLSL shaders
-USE_PREBUILT_SHADERS:BOOL=ON
+USE_PREBUILT_SHADERS:BOOL=OFF
 
 //The directory containing a CMake configuration file for directxmath.
 directxmath_DIR:PATH=directxmath_DIR-NOTFOUND

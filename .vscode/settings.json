@@ -57,5 +57,8 @@
   "C_Cpp_Runner.useLinkTimeOptimization": false,
   "C_Cpp_Runner.msvcSecureNoWarnings": false,
   "C_Cpp.default.compilerPath": "cl.exe",
-  "Codegeex.RepoIndex": true
+  "Codegeex.RepoIndex": true,
+  "cmake.debugConfig": {
+    "cwd":"${workspaceFolder}"    
+  }
 }

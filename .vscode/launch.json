@@ -8,7 +8,7 @@
       "request": "launch",
       "args": [],
       "stopAtEntry": false,
-      "cwd": "${fileDirname}",
+      "cwd": "${workspaceFolder}",
       "program": "${fileDirname}\\exe\\${fileBasenameNoExtension}.exe",
       "environment": []
     }

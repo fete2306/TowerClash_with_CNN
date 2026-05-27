@@ -488,8 +488,8 @@ class IMobileActor{
 
 class Game{
     public:
-    std::vector<std::vector<bool>> basicMap;//0为障碍物 1为空地
-    std::unordered_map<std::string,std::vector<std::vector<bool>>> mapTable;//存地图列表
+    std::vector<std::vector<uint8_t>> basicMap;//0为障碍物 1为空地
+    std::unordered_map<std::string,std::vector<std::vector<uint8_t>>> mapTable;//存地图列表
     std::vector<std::vector<std::vector<int>>> staticActorMap;//存每个格子的固定单位索引列表
     std::vector<std::vector<std::vector<int>>> mobileActorMap;//存每个格子的移动单位索引列表
 
@@ -526,13 +526,18 @@ class Game{
     Game(std::string mapJsonPath="assets/MapData/Map.json",int mapIndex=0,std::string staticActorJsonPath="assets/ActorAttribute/StaticActor.json",std::string mobileActorJsonPath="assets/ActorAttribute/MobileActor.json",int ownerCount=2){//初始地图,仅01
         using json = nlohmann::json;
         std::ifstream mapFile(mapJsonPath);
-        this->mapTable=json::parse(mapFile);
+        auto openFlag=mapFile.is_open();
+        if(!openFlag){
+            throw std::runtime_error("Failed to open the mapJsonPath");
+        }
+        this->mapTable=json::parse(mapFile).get<std::unordered_map<std::string, std::vector<std::vector<uint8_t>>>>();;
+
         this->basicMap=this->mapTable[std::to_string(mapIndex)];
 
         setBaseAttribute(staticActorJsonPath,mobileActorJsonPath);
 
-        int h=basicMap.size();
-        int w=basicMap[0].size();
+        int h=int(basicMap.size());
+        int w=int(basicMap[0].size());
         staticActorMap.resize(h,std::vector<std::vector<int>>(w));
         mobileActorMap.resize(h,std::vector<std::vector<int>>(w));
 
@@ -1849,7 +1854,7 @@ void Game::tick(){
                 costSpeed[actor.owner]+=actor.getValue(AttributeId<CenterTower>::costRate);
             }
 
-            for(int i=0;i<nowCost.size();i++){
+            for(auto i=0;i<nowCost.size();i++){
                 nowCost[i]+=costSpeed[i];
             }
 
