@@ -211,8 +211,8 @@ class SpecialEffect:public ISpecialEffect{
     SpecialEffect(int Id,ModType modType,float value,float endTime,ApplyActor* applyActorPtr,ReceiveActor* receiveActorPtr):ISpecialEffect(Id,modType,value,endTime),applyActorPtr(applyActorPtr),receiveActorPtr(receiveActorPtr){
         applyActorPtr->applyEffectList.push_back(this);
         receiveActorPtr->receiveEffectList.push_back(this);
-        applyIterator=applyActorPtr->applyEffectList.end();
-        receiveIterator=receiveActorPtr->receiveEffectList.end();
+        applyIterator=std::prev(applyActorPtr->applyEffectList.end());
+        receiveIterator=std::prev(receiveActorPtr->receiveEffectList.end());
 
         receiveActorPtr->nowAttributeList[this->Id];
 
@@ -250,26 +250,30 @@ class SpecialEffect:public ISpecialEffect{
     std::list<ISpecialEffect *>::iterator remove(){//从两边列表中删除 很危险
         applyActorPtr->applyEffectList.erase(applyIterator);
         auto tempIterator=receiveActorPtr->receiveEffectList.erase(receiveIterator);
-        delete this;
         return tempIterator;
     }
 
-    void removeApply(){
+    void removeApply(){//接受方析构时调用
         applyActorPtr->applyEffectList.erase(applyIterator);
         delete this;
     }
 
-    void removeReceive(){
+    void removeReceive(){//施加方析构时调用
         receiveActorPtr->receiveEffectList.erase(receiveIterator);
+        delete this;
     }
 
 
     virtual std::list<ISpecialEffect*>::iterator check()override{//接受方进行检测
         Game* gamePtr=receiveActorPtr->gamePtr;
         if(endTime!=-1&&gamePtr->nowTime>endTime){//应当结束状态
-            return remove();
+            auto tempIterator=remove();
+            delete this;
+            return tempIterator;
         }
-        return ++receiveIterator;
+        auto temp=receiveIterator;
+        ++temp;
+        return temp;
     };
 };
 
@@ -462,7 +466,7 @@ class IMobileActor{
     int aliveListIndex;
     int mapListIndex;
 
-    int pathIndex;
+    int pathIndex=0;
     int rankNum;
     int owner;
     float x,y;
@@ -867,6 +871,9 @@ class StaticActor:public IStaticActor{//用于实现通用方法的模板类
         auto attackNum=this->getValue(AttributeId<SubClass>::attackNum);
         auto attackType=static_cast<AttackType>(this->getValue(AttributeId<SubClass>::attackType));
 
+        applyEffectList=std::list<ISpecialEffect*>{};
+        receiveEffectList=std::list<ISpecialEffect*>{};
+
         auto& eraseMobileActorSet=gamePtr->eraseMobileActorSet;
         auto& eraseStaticActorSet=gamePtr->eraseStaticActorSet;
         std::array<std::priority_queue<std::tuple<float,int>,std::vector<std::tuple<float,int>>,std::greater<std::tuple<float,int>>>,2> goalList;
@@ -935,6 +942,9 @@ class MobileActor:public IMobileActor{
         typeId=TypeId<SubClass>::value;
         rankNum=0;
         nowAttributeList.resize(Attribute<SubClass>::attributeList[0].size());
+
+        applyEffectList=std::list<ISpecialEffect*>{};
+        receiveEffectList=std::list<ISpecialEffect*>{};
 
         subclassPoolIndex=ActorPool<SubClass>::Pool.size();
         poolIndex=gamePtr->mobileActorPool.size();
@@ -1040,6 +1050,7 @@ class MobileActor:public IMobileActor{
 
     virtual void checkEffect()override{
        auto start=this->receiveEffectList.begin();
+       auto end=this->receiveEffectList.end();
 
         while(start!=this->receiveEffectList.end()){
             auto& effect=*start;
@@ -1748,6 +1759,12 @@ public:
 
         spriteBatch->End();
 
+        float logicTimeStep = gamePtr->timeStep;
+        while (accumLastFrameTime >= logicTimeStep) {
+            gamePtr->tick();
+            accumLastFrameTime -= logicTimeStep;
+        }
+
         RenderBasicVirtualUI();
         ImGui::Render();
         ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
@@ -1851,16 +1868,16 @@ void RenderBasicVirtualUI(bool* p_open = nullptr){
                     if(ImGui::TreeNode("setRank()")){
                         ImGui::InputFloat("setRankInput",&setRankMobileActorInput);
                         if(ImGui::Button("setRankClick")){
-                            actor->setRank(setRankStaticActorInput);
-                            setRankStaticActorInput=0;
+                            auto tempFlag=actor->setRank(setRankMobileActorInput);
+                            setRankMobileActorInput=0;
                         }
                         ImGui::TreePop();
                     }
                     if(ImGui::TreeNode("move()")){
-                        ImGui::InputFloat2("moveInput",&moveStaticActorInput[0]);
+                        ImGui::InputFloat2("moveInput",&moveMobileActorInput[0]);
                         if(ImGui::Button("moveClick")){
-                            actor->move({moveStaticActorInput[0],moveStaticActorInput[1]});
-                            moveStaticActorInput.fill(0);
+                            actor->move({moveMobileActorInput[0],moveMobileActorInput[1]});
+                            moveMobileActorInput.fill(0);
                         }
                         ImGui::TreePop();
                     }
