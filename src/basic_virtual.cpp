@@ -28,7 +28,6 @@
 #include "SpriteBatch.h"
 #include "CommonStates.h"
 #include <dxgi.h>
-#include "basic_virtual_ui.h"
 
 
 class IStaticActor;
@@ -162,6 +161,10 @@ enum class TimeType:uint8_t{
 class Timers{
     public:
     float timers[static_cast<uint8_t>(TimeType::Count)];
+
+    Timers(){
+        memset(timers,0,sizeof(timers));
+    }
 
     float get(TimeType timeType){
         return timers[static_cast<uint8_t>(timeType)];
@@ -431,7 +434,7 @@ class IStaticActor{//仅用作基类指针
     virtual void beHurted(AttackType attackType,float attackNum){};
     virtual void getAttackGoal(std::array<std::priority_queue<std::tuple<float,int>,std::vector<std::tuple<float,int>>,std::greater<std::tuple<float,int>>>,2>& goalList){};
     virtual void attack(){};
-    virtual void move(std::pair<int,int> goalPos){};
+    virtual void move(std::pair<float,float> goalPos){};
     virtual void skill1(){};
     virtual void skill2(){};
 };
@@ -478,7 +481,7 @@ class IMobileActor{
     virtual void beHurted(AttackType attackType,float attackNum){};
     virtual void getAttackGoal(std::array<std::priority_queue<std::tuple<float,int>,std::vector<std::tuple<float,int>>,std::greater<std::tuple<float,int>>>,2>& goalList){};
     virtual void attack(){};
-    virtual void move(std::pair<int,int> goalPos){};
+    virtual void move(std::pair<float,float> goalPos){};
     virtual void followPath(){};
     virtual void getPath(float goalX,float goalY,std::vector<std::array<int,2>>& resPath){};
     virtual void skill1(){};
@@ -513,7 +516,8 @@ class Game{
     std::vector<float> moveCostMul;//移动单位消耗费用的倍率
 
     Draw* mainDrawPtr;
-
+    
+    int ownerCount;
     int frameNum=5;
     int mapIndex;
     float nowTime;
@@ -541,12 +545,13 @@ class Game{
         staticActorMap.resize(h,std::vector<std::vector<int>>(w));
         mobileActorMap.resize(h,std::vector<std::vector<int>>(w));
 
+        this->ownerCount=ownerCount;
         nowCost.resize(ownerCount,0.0f);
-        costMax.resize(ownerCount,100.0f);
+        costMax.resize(ownerCount,1000.0f);
         costMin.resize(ownerCount,0.0f);
-        costSpeed.resize(ownerCount,timeStep);
+        costSpeed.resize(ownerCount,0.01);
         returnCostMul.resize(ownerCount,0.5f);
-        moveCostMul.resize(ownerCount,1.0f);
+        moveCostMul.resize(ownerCount,0.7f);
         aliveStaticList.resize(ownerCount);
         aliveMobileList.resize(ownerCount);
 
@@ -585,9 +590,9 @@ class Game{
         //对每个阵营 需要存储 当前费用(标量) 当前费用速率(标量) 当前操作类型(标量) 当前操作 静态和动态单位的布局 平均剩余生命值 平均攻击力 平均攻击范围 平均攻击速度
     }
 
-    bool creatStaticActor(int x,int y,int owner,int StaticActorType);
+    bool creatStaticActor(float x,float y,int owner,int StaticActorType);
 
-    bool creatMobileActor(int x,int y,int owner,int MobileActorType);
+    bool creatMobileActor(float x,float y,int owner,int MobileActorType);
 
 
     void eraseStaticActor(int index){
@@ -645,6 +650,7 @@ class StaticActor:public IStaticActor{//用于实现通用方法的模板类
         this->owner=owner;
         this->x=x;
         this->y=y;
+        this->hp=Attribute<SubClass>::attributeList[0][AttributeId<SubClass>::hp];
 
         typeId=TypeId<SubClass>::value;
 
@@ -729,6 +735,7 @@ class StaticActor:public IStaticActor{//用于实现通用方法的模板类
             }
             rankNum+=rankOffest;
         }
+        this->hp=Attribute<SubClass>::attributeList[rankNum][AttributeId<SubClass>::hp];
 
         for(auto& tempAttribute:nowAttributeList){
             tempAttribute.checkFlag=false;
@@ -897,7 +904,7 @@ class StaticActor:public IStaticActor{//用于实现通用方法的模板类
     }
 
 
-    virtual void move(std::pair<int,int> goalPos)override{
+    virtual void move(std::pair<float,float> goalPos)override{
         gamePtr->staticActorPool[gamePtr->staticActorMap[int(this->y)][int(this->x)][gamePtr->staticActorMap[int(this->y)][int(this->x)].size()-1]]->mapListIndex=this->mapListIndex;
         erase_basedSwap(gamePtr->staticActorMap[int(this->y)][int(this->x)],this->mapListIndex);
         this->x=goalPos.first;
@@ -922,6 +929,8 @@ class MobileActor:public IMobileActor{
         this->owner=owner;
         this->x=x;
         this->y=y;
+
+        this->hp=Attribute<SubClass>::attributeList[0][AttributeId<SubClass>::hp];
 
         typeId=TypeId<SubClass>::value;
         rankNum=0;
@@ -1003,6 +1012,7 @@ class MobileActor:public IMobileActor{
             }
             rankNum+=rankOffest;
         }
+        this->hp=Attribute<SubClass>::attributeList[rankNum][AttributeId<SubClass>::hp];
 
         for(auto& tempAttribute:nowAttributeList){
             tempAttribute.checkFlag=false;
@@ -1176,7 +1186,7 @@ class MobileActor:public IMobileActor{
 
     }
 
-    virtual void move(std::pair<int,int> goalPos)override{
+    virtual void move(std::pair<float,float> goalPos)override{
         this->path.clear();
         gamePtr->mobileActorPool[gamePtr->mobileActorMap[int(this->y)][int(this->x)][gamePtr->mobileActorMap[int(this->y)][int(this->x)].size()-1]]->mapListIndex=this->mapListIndex;
         erase_basedSwap(gamePtr->mobileActorMap[int(this->y)][int(this->x)],this->mapListIndex);
@@ -1592,6 +1602,7 @@ public:
     std::unique_ptr<DirectX::SpriteBatch> spriteBatch;
     std::unique_ptr<DirectX::CommonStates> commonStates;
 
+    Texture2D emptyTex;
     Texture2D wallTex;
     Texture2D singleTowerTex;
     Texture2D groupAttackTowerTex;
@@ -1607,10 +1618,22 @@ public:
     float lastFrameTime=0;
     float accumLastFrameTime=0;
 
+    //输入缓存
+    std::array<float,4> creatStaticActorInput{};
+    std::array<float,4> creatMobileActorInput{};
+    std::array<float,2> moveStaticActorInput{};
+    std::array<float,2> moveMobileActorInput{};
+    std::array<float,2> getPathInput{};
+    float setRankStaticActorInput=0;
+    float setRankMobileActorInput=0;
+
+
+
     Draw(Game* gamePtr,ID3D11Device* device,ID3D11DeviceContext* context,IDXGISwapChain* swapChain,HWND hwnd,int windowWidth,int windowHeight):gamePtr(gamePtr),device(device),context(context),swapChain(swapChain),hwnd(hwnd),windowWidth(windowWidth),windowHeight(windowHeight){
         spriteBatch=std::make_unique<DirectX::SpriteBatch>(context);
         commonStates=std::make_unique<DirectX::CommonStates>(device);
 
+        emptyTex=Texture2D(device,L"assets/Png/Empty.png");
         wallTex=Texture2D(device,L"assets/Png/Wall.png");
         singleTowerTex=Texture2D(device,L"assets/Png/SingleTower.png");
         groupAttackTowerTex=Texture2D(device,L"assets/Png/GroupAttackTower.png");
@@ -1620,6 +1643,7 @@ public:
         rangedMobileTex=Texture2D(device,L"assets/Png/RangedMobile.png");
         defenseMobileTex=Texture2D(device,L"assets/Png/DefenseMobile.png");
         explosionMobileTex=Texture2D(device,L"assets/Png/ExplosionMobile.png");
+
 
         createRTV();
 
@@ -1675,19 +1699,22 @@ public:
                 if(bm[y][x]==0){
                     spriteBatch->Draw(wallTex.GetSRV(),DirectX::XMFLOAT2(float(x)*cellSize,float(y)*cellSize),nullptr,DirectX::Colors::White,0.0f,DirectX::XMFLOAT2(0,0),spriteScale);
                 }
+                else{
+                     spriteBatch->Draw(emptyTex.GetSRV(),DirectX::XMFLOAT2(float(x)*cellSize,float(y)*cellSize),nullptr,DirectX::Colors::White,0.0f,DirectX::XMFLOAT2(0,0),spriteScale);
+                }
             }
         }
     }
 
     void renderActors(){
-        for(auto* actor:gamePtr->staticActorPool){
+        for(auto actor:gamePtr->staticActorPool){
             if(actor->hp<=0)continue;
             auto* tex=getTextureForType(actor->typeId,true);
             if(tex){
                 spriteBatch->Draw(tex->GetSRV(),DirectX::XMFLOAT2(actor->x*cellSize,actor->y*cellSize),nullptr,DirectX::Colors::White,0.0f,DirectX::XMFLOAT2(0,0),spriteScale);
             }
         }
-        for(auto* actor:gamePtr->mobileActorPool){
+        for(auto actor:gamePtr->mobileActorPool){
             if(actor->hp<=0)continue;
             auto* tex=getTextureForType(actor->typeId,false);
             if(tex){
@@ -1706,7 +1733,8 @@ public:
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
 
-        float clearColor[4]={0.15f,0.15f,0.2f,1.0f};
+        // float clearColor[4]={0.15f,0.15f,0.2f,1.0f};
+        float clearColor[4]={255.0f,255.0f,255.0f,1.0f};
         context->ClearRenderTargetView(rtv.Get(),clearColor);
 
         D3D11_VIEWPORT vp={0,0,(float)windowWidth,(float)windowHeight,0,1};
@@ -1717,42 +1745,154 @@ public:
         spriteBatch->Begin(DirectX::SpriteSortMode_Deferred,commonStates->NonPremultiplied());
         renderMap();
         renderActors();
+
         spriteBatch->End();
 
-        RenderBasicVirtualUI(gamePtr);
+        RenderBasicVirtualUI();
         ImGui::Render();
         ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
         swapChain->Present(1,0);
     }
 
+void RenderBasicVirtualUI(bool* p_open = nullptr){
+    if (!gamePtr)
+        return;
+
+    if (!ImGui::Begin("Basic Virtual Game Control", p_open, ImGuiWindowFlags_AlwaysAutoResize))
+    {
+        ImGui::End();
+        return;
+    }
+
+    
+
+    ImGui::Text("Game Runtime Overview");
+    ImGui::Separator();
+
+    ImGui::Text("Time: %.1f", gamePtr->nowTime);
+    ImGui::Text("CNN Switch: %s", gamePtr->cnnSwitch ? "On" : "Off");
+
+    bool& cnnEnabled = gamePtr->cnnSwitch;
+    if (ImGui::Checkbox("Enable CNN Switch", &cnnEnabled))
+    {
+        cnnEnabled=true;
+    }
+
+    ImGui::Separator();
+    ImGui::Text("Map Size: %dx%d", gamePtr->basicMap[0].size(), gamePtr->basicMap.size());
+    ImGui::Text("Static Actors: %d", gamePtr->staticActorPool.size());
+    ImGui::Text("Mobile Actors: %d", gamePtr->mobileActorPool.size());
+
+    if (ImGui::TreeNode("Resource Flow"))
+    {
+        for (int i = 0; i <gamePtr->ownerCount; ++i)
+        {
+            ImGui::BulletText("Owner %d: Cost = %.1f, Speed = %.2f", i,gamePtr->nowCost[i], gamePtr->costSpeed[i]);
+        }
+        ImGui::TreePop();
+    }
+
+    
+
+    ImGui::InputFloat4("creatStaticActorInput",&creatStaticActorInput[0]);
+    ImGui::Text(gamePtr->basicMap[creatStaticActorInput[1]][creatStaticActorInput[0]]?"empty":"wall");
+    bool creatStaticActorFlag=false;
+    auto clickFlag=ImGui::Button("Create Static Actor");
+    if(clickFlag){
+        creatStaticActorFlag=gamePtr->creatStaticActor(creatStaticActorInput[0],creatStaticActorInput[1],creatStaticActorInput[2],creatStaticActorInput[3]);
+        creatStaticActorInput.fill(0);
+    }
+
+    ImGui::Dummy(ImVec2(0,10));
+    ImGui::InputFloat4("creatMobileActorInput",&creatMobileActorInput[0]);
+    ImGui::Text(gamePtr->basicMap[creatMobileActorInput[1]][creatMobileActorInput[0]]?"empty":"wall");
+    bool creatMobileActorFlag=false;
+    if(ImGui::Button("Create Mobile Actor")){
+        creatMobileActorFlag=gamePtr->creatMobileActor(creatMobileActorInput[0],creatMobileActorInput[1],creatMobileActorInput[2],creatMobileActorInput[3]);
+        creatMobileActorInput.fill(0);
+    }
+
+    ImGui::Separator();
+    ImGui::TextWrapped("This UI panel is built with Dear ImGui to inspect basic_virtual.cpp runtime state, following the README style of fast iteration and tool-oriented tools.");
+    
+
+    if (ImGui::TreeNode("ownerActor")){
+        for(int i=0;i<gamePtr->ownerCount;i++){
+            for(auto index:gamePtr->aliveStaticList[i]){
+                auto& actor=gamePtr->staticActorPool[index];
+                void* tempId=static_cast<void*>(&actor);
+                if(ImGui::TreeNode(std::format("actorData&func##actor{}",tempId).c_str())){
+                    ImGui::Text("typeId:%d hp:%f rankNum:%d timer:Attack%f Move%f %f %f %f %f",actor->typeId,actor->hp,actor->rankNum,actor->timeManger[TimeType::Attack],actor->timeManger[TimeType::Move],actor->timeManger[TimeType::Skill1],actor->timeManger[TimeType::Skill2]);
+                    if(ImGui::TreeNode("setRank()")){
+                        ImGui::InputFloat("setRankInput",&setRankStaticActorInput);
+                        if(ImGui::Button("setRankClick")){
+                            actor->setRank(setRankStaticActorInput);
+                            setRankStaticActorInput=0;
+                        }
+                        ImGui::TreePop();
+                    }
+                    if(ImGui::TreeNode("move()")){
+                        ImGui::InputFloat2("moveInput",&moveStaticActorInput[0]);
+                        if(ImGui::Button("moveClick")){
+                            actor->move({moveStaticActorInput[0],moveStaticActorInput[1]});
+                            moveStaticActorInput.fill(0);
+                        }
+                        ImGui::TreePop();
+                    }
+                    ImGui::TreePop();
+                }
+            }
+            for(auto index:gamePtr->aliveMobileList[i]){
+                auto& actor=gamePtr->mobileActorPool[index];
+                void* tempId=static_cast<void*>(&actor);
+                if(ImGui::TreeNode(std::format("actorData&func##actor{}",tempId).c_str())){
+                    ImGui::Text("typeId:%d hp:%f rankNum:%d timer:Attack%f Move%f %f %f %f %f",actor->typeId,actor->hp,actor->rankNum,actor->timeManger[TimeType::Attack],actor->timeManger[TimeType::Move],actor->timeManger[TimeType::Skill1],actor->timeManger[TimeType::Skill2]);
+                    if(ImGui::TreeNode("setRank()")){
+                        ImGui::InputFloat("setRankInput",&setRankMobileActorInput);
+                        if(ImGui::Button("setRankClick")){
+                            actor->setRank(setRankStaticActorInput);
+                            setRankStaticActorInput=0;
+                        }
+                        ImGui::TreePop();
+                    }
+                    if(ImGui::TreeNode("move()")){
+                        ImGui::InputFloat2("moveInput",&moveStaticActorInput[0]);
+                        if(ImGui::Button("moveClick")){
+                            actor->move({moveStaticActorInput[0],moveStaticActorInput[1]});
+                            moveStaticActorInput.fill(0);
+                        }
+                        ImGui::TreePop();
+                    }
+                    if(ImGui::TreeNode("getPath()")){
+                        ImGui::InputFloat2("getPathInput",&getPathInput[0]);
+                        if(ImGui::Button("getPathClick")){
+                            actor->getPath(getPathInput[0],getPathInput[1],actor->path);
+                            getPathInput.fill(0);
+                        }
+                        ImGui::TreePop();
+                    }
+                    ImGui::TreePop();
+                }
+            }
+        }
+        ImGui::TreePop();
+    }
+    ImGui::End();
+    }
+
 };
 
 
-BasicVirtualDebugState GetBasicVirtualDebugState(Game* game){
-    BasicVirtualDebugState state;
-    if(!game)return state;
-    state.nowTime=game->nowTime;
-    state.cnnSwitch=game->cnnSwitch;
-    if(!game->basicMap.empty()){
-        state.mapWidth=(int)game->basicMap[0].size();
-        state.mapHeight=(int)game->basicMap.size();
-    }
-    state.staticActorCount=(int)game->staticActorPool.size();
-    state.mobileActorCount=(int)game->mobileActorPool.size();
-    state.nowCost=game->nowCost;
-    state.costSpeed=game->costSpeed;
-    return state;
-}
 
-void SetGameCnnSwitch(Game* game,bool enabled){
-    if(game)game->cnnSwitch=enabled;
+void SetGameCnnSwitch(Game* gamePtr,bool enabled){
+    if(gamePtr)gamePtr->cnnSwitch=enabled;
 }
 
 
 // Out-of-line Game method definitions (moved for dependency ordering)
 
-bool Game::creatStaticActor(int x,int y,int owner,int StaticActorType){
+bool Game::creatStaticActor(float x,float y,int owner,int StaticActorType){
         if(!basicMap[y][x])return false;
         switch(StaticActorType){
             // case 0:
@@ -1788,7 +1928,7 @@ bool Game::creatStaticActor(int x,int y,int owner,int StaticActorType){
         return true;
     }
 
-bool Game::creatMobileActor(int x,int y,int owner,int MobileActorType){
+bool Game::creatMobileActor(float x,float y,int owner,int MobileActorType){
         if(!basicMap[y][x])return false;
         switch(MobileActorType){
             // case 0:
@@ -1856,6 +1996,9 @@ void Game::tick(){
 
             for(auto i=0;i<nowCost.size();i++){
                 nowCost[i]+=costSpeed[i];
+                if(nowCost[i]>costMax[i]){
+                    nowCost[i]=costMax[i];
+                }
             }
 
             nowTime+=timeStep;

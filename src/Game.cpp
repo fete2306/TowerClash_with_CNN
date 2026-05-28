@@ -13,6 +13,12 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd,UINT msg,
 Draw* g_pDraw=nullptr;
 
 LRESULT WINAPI WndProc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam){
+    extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(
+    HWND hWnd,
+    UINT msg,
+    WPARAM wParam,
+    LPARAM lParam
+);
     if(ImGui_ImplWin32_WndProcHandler(hWnd,msg,wParam,lParam))
         return true;
     switch(msg){
