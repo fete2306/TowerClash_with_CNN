@@ -1859,8 +1859,8 @@ events:
     checks:
       - "Detecting CXX compiler ABI info"
     directories:
-      source: "D:/Creat/GAME/TowerClash_with_CNN/build/CMakeFiles/CMakeScratch/TryCompile-9flsrr"
-      binary: "D:/Creat/GAME/TowerClash_with_CNN/build/CMakeFiles/CMakeScratch/TryCompile-9flsrr"
+      source: "D:/Creat/GAME/TowerClash_with_CNN/build/CMakeFiles/CMakeScratch/TryCompile-8975tw"
+      binary: "D:/Creat/GAME/TowerClash_with_CNN/build/CMakeFiles/CMakeScratch/TryCompile-8975tw"
     cmakeVariables:
       CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /GR /EHsc"
       CMAKE_CXX_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
@@ -1871,11 +1871,11 @@ events:
       variable: "CMAKE_CXX_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: 'D:/Creat/GAME/TowerClash_with_CNN/build/CMakeFiles/CMakeScratch/TryCompile-9flsrr'
+        Change Dir: 'D:/Creat/GAME/TowerClash_with_CNN/build/CMakeFiles/CMakeScratch/TryCompile-8975tw'
         
-        Run Build Command(s): D:/VisualStudio/VisualStudio/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe -v cmTC_ddfc7
-        [1/2] D:\\VisualStudio\\VisualStudio\\VC\\Tools\\MSVC\\14.50.35717\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -D_MBCS  /DWIN32 /D_WINDOWS /GR /EHsc  /Zi /Ob0 /Od /RTC1 -MDd /showIncludes /FoCMakeFiles\\cmTC_ddfc7.dir\\CMakeCXXCompilerABI.cpp.obj /FdCMakeFiles\\cmTC_ddfc7.dir\\ /FS -c D:\\CMake\\share\\cmake-4.3\\Modules\\CMakeCXXCompilerABI.cpp
-        [2/2] C:\\Windows\\system32\\cmd.exe /C "cd . && D:\\CMake\\bin\\cmake.exe -E vs_link_exe --msvc-ver=1950 --intdir=CMakeFiles\\cmTC_ddfc7.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\mt.exe --manifests  -- D:\\VisualStudio\\VisualStudio\\VC\\Tools\\MSVC\\14.50.35717\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_ddfc7.dir\\CMakeCXXCompilerABI.cpp.obj  /out:cmTC_ddfc7.exe /implib:cmTC_ddfc7.lib /pdb:cmTC_ddfc7.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+        Run Build Command(s): D:/VisualStudio/VisualStudio/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe -v cmTC_f3257
+        [1/2] D:\\VisualStudio\\VisualStudio\\VC\\Tools\\MSVC\\14.50.35717\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -D_MBCS  /DWIN32 /D_WINDOWS /GR /EHsc  /Zi /Ob0 /Od /RTC1 -MDd /showIncludes /FoCMakeFiles\\cmTC_f3257.dir\\CMakeCXXCompilerABI.cpp.obj /FdCMakeFiles\\cmTC_f3257.dir\\ /FS -c D:\\CMake\\share\\cmake-4.3\\Modules\\CMakeCXXCompilerABI.cpp
+        [2/2] C:\\Windows\\system32\\cmd.exe /C "cd . && D:\\CMake\\bin\\cmake.exe -E vs_link_exe --msvc-ver=1950 --intdir=CMakeFiles\\cmTC_f3257.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\mt.exe --manifests  -- D:\\VisualStudio\\VisualStudio\\VC\\Tools\\MSVC\\14.50.35717\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_f3257.dir\\CMakeCXXCompilerABI.cpp.obj  /out:cmTC_f3257.exe /implib:cmTC_f3257.lib /pdb:cmTC_f3257.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
         
       exitCode: 0
   -

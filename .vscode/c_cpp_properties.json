@@ -8,7 +8,7 @@
         "${workspaceFolder}/external/**",
         "${workspaceFolder}/src/**"
       ],
-      "compilerPath": "D:/VisualStudio/VisualStudio/VC/Tools/MSVC/14.50.35717/bin/Hostx86/x86/cl.exe",
+      "compilerPath": "D:/VisualStudio/VisualStudio/VC/Tools/MSVC/14.50.35717/bin/Hostx64/x64/cl.exe",
       "compileCommands": "${workspaceFolder}/build/compile_commands.json",
       "cStandard": "c17",
       "cppStandard": "c++20",

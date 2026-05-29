@@ -63,7 +63,8 @@ class _AttributeId;
 template<typename SubClass>
 class AttributeId;
 
-
+static int tempInt=0;
+static float tempfloat=0.0f;
 
 template<typename T>
 class TypeId{
@@ -123,7 +124,7 @@ class _AttributeId{
     static constexpr uint8_t totalCost=hp+7;
     static constexpr uint8_t costRate=hp+8;
     static constexpr uint8_t moveSpeed=hp+9;
-    static constexpr uint8_t rasistCount=hp+9;
+    static constexpr uint8_t resistCount=hp+9;
 };
 
 
@@ -214,8 +215,6 @@ class SpecialEffect:public ISpecialEffect{
         applyIterator=std::prev(applyActorPtr->applyEffectList.end());
         receiveIterator=std::prev(receiveActorPtr->receiveEffectList.end());
 
-        receiveActorPtr->nowAttributeList[this->Id];
-
         auto& tempEffective=receiveActorPtr->nowAttributeList[this->Id];
         switch(this->modType){
             case ModType::add1:
@@ -230,6 +229,34 @@ class SpecialEffect:public ISpecialEffect{
         }
         tempEffective.checkFlag=false;
     };
+
+    SpecialEffect(const SpecialEffect& other):ISpecialEffect(other.Id,other.modType,other.value,other.endTime),applyActorPtr(other.applyActorPtr),receiveActorPtr(other.receiveActorPtr){
+        applyIterator=other.applyIterator;
+        receiveIterator=other.receiveIterator;
+
+        auto& tempEffective=receiveActorPtr->nowAttributeList[this->Id];
+        switch(this->modType){
+            case ModType::add1:
+                tempEffective.add1+=this->value;
+                break;
+            case ModType::mul:
+                tempEffective.mul*=this->value;
+                break;
+            case ModType::add2:
+                tempEffective.add2+=this->value;
+                break;
+        }
+        tempEffective.checkFlag=false;
+    }
+    SpecialEffect& operator=(const SpecialEffect& other){
+        std::swap(applyIterator,other.applyIterator);
+        std::swap(receiveIterator=other.receiveIterator);
+        std::swap(Id,other.Id);
+        std::swap(modType,other.modType);
+        std::swap(value,other.value);
+        std::swap(endTime,other.endTime);
+        return *this;
+    }
 
     ~SpecialEffect(){
         auto& tempEffective=receiveActorPtr->nowAttributeList[this->Id];
@@ -248,6 +275,9 @@ class SpecialEffect:public ISpecialEffect{
     }
 
     std::list<ISpecialEffect *>::iterator remove(){//从两边列表中删除 很危险
+        auto r1=*applyIterator;
+        auto r2=*receiveIterator;
+
         applyActorPtr->applyEffectList.erase(applyIterator);
         auto tempIterator=receiveActorPtr->receiveEffectList.erase(receiveIterator);
         return tempIterator;
@@ -285,7 +315,7 @@ class Effective{
     float value;//最终值
     bool checkFlag;
 
-    Effective(){//直接覆盖?
+    Effective(){
         add1=0;
         mul=1;
         add2=0;
@@ -317,14 +347,16 @@ class Resist{
 class ResistList{
     public:
     std::list<Resist*> resistList;
-    int resistNum;
-    int residualResistNum;
-    ResistList():resistNum(0),residualResistNum(0){};
+    IStaticActor* staticActorPtr;
+    int residualResistCount;
+    ResistList():staticActorPtr(nullptr),residualResistCount(0){};
+    ResistList(IStaticActor* staticActorPtr);
+    void update();
     void push(Resist& resist){
-        if(residualResistNum<=0){
+        if(residualResistCount<=0){
             return;
         }
-        residualResistNum-=1;
+        residualResistCount-=1;
         resist.resistedList=this;
         resist.state=true;
         resistList.push_back(&resist);
@@ -344,10 +376,12 @@ class ResistList{
             return;
         }
         while(resistList.size()!=0){
-            auto tempResist=*std::prev(resistList.end());
+            auto ttt=std::prev(resistList.end());
+            auto tempResist=*ttt;
             tempResist->removeResist();
         }
     }
+
 };
 
 void Resist::removeResist(){
@@ -356,7 +390,7 @@ void Resist::removeResist(){
     }
     if(state){
         state=false;
-        resistedList->residualResistNum+=1;
+        resistedList->residualResistCount+=1;
         resistedList->resistList.erase(resistIterator);
         resistedList=nullptr;
     }
@@ -431,6 +465,7 @@ class IStaticActor{//仅用作基类指针
     virtual void dead(){};
     virtual bool setRank(int rankOffest){return true;};
     virtual float getValue(int attributeId){ return 0.0f; };
+    virtual float& getfValue(int attributeId){ static float dummy = 0.0f; return dummy; };
     virtual void applyEffect(IStaticActor* staticActorPtr){};
     virtual void applyEffect(IMobileActor* mobileActorPtr){};
     virtual void checkEffect(){};
@@ -446,38 +481,28 @@ class IStaticActor{//仅用作基类指针
 class IMobileActor{
     public:
     std::vector<std::array<int,2>> path;
-
     std::vector<std::array<int,2>> scopeList;//攻击范围覆盖的格子 非直接坐标而是偏移量[dx,dy] 获取真实坐标是x+dx,y+dy
-
     std::list<ISpecialEffect*> applyEffectList;//所拥有的特殊状态         对方析构时会将其结束时间置0
     std::list<ISpecialEffect*> receiveEffectList;//所施加的特殊状态       在自身析构时将造成的所有异常状态全部结束
-
     std::vector<Effective> nowAttributeList;
-
     Game* gamePtr;
-
     Resist resistState;//自身阻挡状态
-
     Timers timeManger;
-
-
     int subclassPoolIndex;
     int poolIndex;
     int aliveListIndex;
     int mapListIndex;
-
-    int pathIndex=0;
+    int pathIndex;
     int rankNum;
     int owner;
     float x,y;
     float hp;
-
-
     int typeId;
     virtual ~IMobileActor()=default;
     virtual void dead(){};
     virtual bool setRank(int rankOffest){return true;};
     virtual float getValue(int attributeId){ return 0.0f; };
+    virtual float& getfValue(int attributeId){ static float dummy = 0.0f; return dummy; };
     virtual void applyEffect(IStaticActor* staticActorPtr){};
     virtual void applyEffect(IMobileActor* mobileActorPtr){};
     virtual void checkEffect(){};
@@ -553,7 +578,7 @@ class Game{
         nowCost.resize(ownerCount,0.0f);
         costMax.resize(ownerCount,1000.0f);
         costMin.resize(ownerCount,0.0f);
-        costSpeed.resize(ownerCount,0.01);
+        costSpeed.resize(ownerCount,0.01f);
         returnCostMul.resize(ownerCount,0.5f);
         moveCostMul.resize(ownerCount,0.7f);
         aliveStaticList.resize(ownerCount);
@@ -627,9 +652,8 @@ class Game{
         std::sort(eraseMobileActorSet.begin(),eraseMobileActorSet.end(),std::greater<int>());
         eraseMobileActorSet.erase(std::unique(eraseMobileActorSet.begin(),eraseMobileActorSet.end()),eraseMobileActorSet.end());//去重
 
-        for(auto index:eraseMobileActorSet){
+        for(auto index:eraseMobileActorSet){            
             mobileActorPool[index]->dead();
-
         }
         eraseMobileActorSet.clear();
 
@@ -643,7 +667,14 @@ class Game{
 
 };
 
-
+ResistList::ResistList(IStaticActor* staticActorPtr):staticActorPtr(staticActorPtr){
+        this->residualResistCount=staticActorPtr->getValue(_AttributeId::resistCount);
+    };
+void ResistList::update(){
+        if(residualResistCount+resistList.size()!=staticActorPtr->getValue(_AttributeId::resistCount)){
+            residualResistCount=staticActorPtr->getValue(_AttributeId::resistCount)-resistList.size();
+        }
+    }
 
 template<typename SubClass>
 class StaticActor:public IStaticActor{//用于实现通用方法的模板类
@@ -655,12 +686,16 @@ class StaticActor:public IStaticActor{//用于实现通用方法的模板类
         this->x=x;
         this->y=y;
         this->hp=Attribute<SubClass>::attributeList[0][AttributeId<SubClass>::hp];
-
+        
+        
         typeId=TypeId<SubClass>::value;
-
+        
         rankNum=0;
         //setRank由子类构造方法调用
         nowAttributeList.resize(Attribute<SubClass>::attributeList[0].size());
+        // this->nowAttributeList[AttributeId<SubClass>::resistCount].updateValue(Attribute<SubClass>::attributeList[0][AttributeId<SubClass>::resistCount]);
+        auto tempData=this->getValue(AttributeId<SubClass>::resistCount);
+        this->resistList=ResistList(this);
 
         subclassPoolIndex=ActorPool<SubClass>::Pool.size();
         poolIndex=gamePtr->staticActorPool.size();
@@ -693,14 +728,28 @@ class StaticActor:public IStaticActor{//用于实现通用方法的模板类
     };
 
     void _dead(SubClass* subclassPtr){
-        //删除在staticActorMap[y][x]中的索引
-        gamePtr->staticActorPool[gamePtr->staticActorMap[int(this->y)][int(this->x)][gamePtr->staticActorMap[int(this->y)][int(this->x)].size()-1]]->mapListIndex=this->mapListIndex;
-        erase_basedSwap(gamePtr->staticActorMap[int(this->y)][int(this->x)],this->mapListIndex);
+        auto poolEndIndex=gamePtr->staticActorPool.size()-1;
+        auto& poolEndActor=gamePtr->staticActorPool[poolEndIndex];
+        poolEndActor->poolIndex=this->poolIndex;
+        gamePtr->aliveStaticList[poolEndActor->owner][poolEndActor->aliveListIndex]=this->poolIndex;//只改存储的索引
+        gamePtr->staticActorMap[int(poolEndActor->y)][int(poolEndActor->x)][poolEndActor->mapListIndex]=this->poolIndex;
 
+        //删除在staticActorMap[y][x]中的索引
+        auto mapEndIndex=gamePtr->staticActorMap[int(this->y)][int(this->x)][gamePtr->staticActorMap[int(this->y)][int(this->x)].size()-1];
+        auto& mapEndActor=gamePtr->staticActorPool[mapEndIndex];
+        mapEndActor->mapListIndex=this->mapListIndex;
+        erase_basedSwap(gamePtr->staticActorMap[int(this->y)][int(this->x)],this->mapListIndex);
+        
         //删除在aliveActorPool[owner]中的索引
-        gamePtr->staticActorPool[gamePtr->aliveStaticList[owner][gamePtr->aliveStaticList[owner].size()-1]]->aliveListIndex=this->aliveListIndex;
+        auto aliveEndIndex=gamePtr->aliveStaticList[owner][gamePtr->aliveStaticList[owner].size()-1];
+        auto& aliveEndActor=gamePtr->staticActorPool[aliveEndIndex];
+        aliveEndActor->aliveListIndex=this->aliveListIndex;
         erase_basedSwap(gamePtr->aliveStaticList[owner],this->aliveListIndex);
+        
+        
         //删除对象本身(函数中有对该数组的引用作为参数，所以pop不会有空引用问题)
+        erase_basedSwap(gamePtr->staticActorPool,poolIndex);
+        this->poolIndex=-1;//标记死亡
         erase_basedSwap(ActorPool<SubClass>::Pool,subclassPoolIndex);
     }
 
@@ -740,6 +789,7 @@ class StaticActor:public IStaticActor{//用于实现通用方法的模板类
             rankNum+=rankOffest;
         }
         this->hp=Attribute<SubClass>::attributeList[rankNum][AttributeId<SubClass>::hp];
+        this->resistList.update();
 
         for(auto& tempAttribute:nowAttributeList){
             tempAttribute.checkFlag=false;
@@ -749,6 +799,15 @@ class StaticActor:public IStaticActor{//用于实现通用方法的模板类
     };
 
     virtual float getValue(int attributeId)override{
+        auto& tempData=this->nowAttributeList[attributeId];
+        if(!tempData.checkFlag){
+            tempData.updateValue(Attribute<SubClass>::attributeList[rankNum][attributeId]);
+            if(attributeId==AttributeId<SubClass>::attackScope)this->setScope();
+        }
+        return tempData.value;
+    };
+
+    virtual float& getfValue(int attributeId)override{
         auto& tempData=this->nowAttributeList[attributeId];
         if(!tempData.checkFlag){
             tempData.updateValue(Attribute<SubClass>::attributeList[rankNum][attributeId]);
@@ -912,6 +971,7 @@ class StaticActor:public IStaticActor{//用于实现通用方法的模板类
 
 
     virtual void move(std::pair<float,float> goalPos)override{
+        this->resistList.clear();
         gamePtr->staticActorPool[gamePtr->staticActorMap[int(this->y)][int(this->x)][gamePtr->staticActorMap[int(this->y)][int(this->x)].size()-1]]->mapListIndex=this->mapListIndex;
         erase_basedSwap(gamePtr->staticActorMap[int(this->y)][int(this->x)],this->mapListIndex);
         this->x=goalPos.first;
@@ -941,6 +1001,7 @@ class MobileActor:public IMobileActor{
 
         typeId=TypeId<SubClass>::value;
         rankNum=0;
+        this->pathIndex=0;
         nowAttributeList.resize(Attribute<SubClass>::attributeList[0].size());
 
         applyEffectList=std::list<ISpecialEffect*>{};
@@ -970,21 +1031,33 @@ class MobileActor:public IMobileActor{
             temp->removeApply();//将自身所受的异常状态从施加方删除
             ++start;
         }
-        this->resistState.removeResist();
     }
     virtual void dead()override{
         this->_dead(static_cast<SubClass*>(this));
     };
 
     void _dead(SubClass* subclassPtr){
-        //删除在staticActorMap[y][x]中的索引
-        gamePtr->mobileActorPool[gamePtr->mobileActorMap[int(this->y)][int(this->x)][gamePtr->mobileActorMap[int(this->y)][int(this->x)].size()-1]]->mapListIndex=this->mapListIndex;
-        erase_basedSwap(gamePtr->mobileActorMap[int(this->y)][int(this->x)],this->mapListIndex);
+        auto poolEndIndex=gamePtr->mobileActorPool.size()-1;
+        auto& poolEndActor=gamePtr->mobileActorPool[poolEndIndex];
+        poolEndActor->poolIndex=this->poolIndex;
+        gamePtr->aliveMobileList[poolEndActor->owner][poolEndActor->aliveListIndex]=this->poolIndex;//只改存储的索引
+        gamePtr->mobileActorMap[int(poolEndActor->y)][int(poolEndActor->x)][poolEndActor->mapListIndex]=this->poolIndex;
 
+        //删除在mobileActorMap[y][x]中的索引
+        auto mapEndIndex=gamePtr->mobileActorMap[int(this->y)][int(this->x)][gamePtr->mobileActorMap[int(this->y)][int(this->x)].size()-1];
+        auto& mapEndActor=gamePtr->mobileActorPool[mapEndIndex];
+        mapEndActor->mapListIndex=this->mapListIndex;
+        erase_basedSwap(gamePtr->mobileActorMap[int(this->y)][int(this->x)],this->mapListIndex);
+        
         //删除在aliveActorPool[owner]中的索引
-        gamePtr->mobileActorPool[gamePtr->aliveMobileList[owner][gamePtr->aliveMobileList[owner].size()-1]]->aliveListIndex=this->aliveListIndex;
+        auto aliveEndIndex=gamePtr->aliveMobileList[owner][gamePtr->aliveMobileList[owner].size()-1];
+        auto& aliveEndActor=gamePtr->mobileActorPool[aliveEndIndex];
+        aliveEndActor->aliveListIndex=this->aliveListIndex;
         erase_basedSwap(gamePtr->aliveMobileList[owner],this->aliveListIndex);
+        
         //删除对象本身(函数中有对该数组的引用作为参数，所以pop不会有空引用问题)
+        erase_basedSwap(gamePtr->mobileActorPool,poolIndex);
+        this->poolIndex=-1;//用作标记已经死亡
         erase_basedSwap(ActorPool<SubClass>::Pool,subclassPoolIndex);
     }
 
@@ -1040,6 +1113,14 @@ class MobileActor:public IMobileActor{
         return tempData.value;
     };
 
+    virtual float& getfValue(int attributeId)override{
+        auto& tempData=this->nowAttributeList[attributeId];
+        if(!tempData.checkFlag){
+            tempData.updateValue(Attribute<SubClass>::attributeList[rankNum][attributeId]);
+            if(attributeId==AttributeId<SubClass>::attackScope)this->setScope();
+        }
+        return tempData.value;
+    };
     virtual void applyEffect(IStaticActor* staticActorPtr)override{
         return;
     };
@@ -1220,7 +1301,7 @@ class MobileActor:public IMobileActor{
     }
 
     virtual void followPath()override{//移动以0.1s为单位
-        if(path.size()!=0&&pathIndex<path.size()-1&&resistState.state==false){//有路&&未走完&&未阻挡
+        if(path.size()!=0&&pathIndex<path.size()&&resistState.state==false){//有路&&未走完&&未阻挡
             float dx=path[pathIndex][0]-this->x;
             float dy=path[pathIndex][1]-this->y;
             float d=sqrt(dx*dx+dy*dy);
