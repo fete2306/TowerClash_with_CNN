@@ -520,7 +520,7 @@ class IMobileActor{
 template<typename AttackActor,typename BeAttackActor>
 class AttackList{
     public:
-    static std::vector<std::array<int,3>> attackList;
+    inline static std::vector<std::array<int,3>> attackList{};
     
     static void push_back(int attackActorIndex,int beAttackActorIndex,AttackType attackType){
         attackList.push_back({attackActorIndex,beAttackActorIndex,int(attackType)});
@@ -531,7 +531,6 @@ class AttackList{
     }
 
 };
-
 
 class Game{
     public:
@@ -1847,14 +1846,12 @@ public:
         }
     }
     void addMapButton(){
-        ImGui::Begin("MapButtonWindow");
         ImGui::SetCursorScreenPos(ImVec2(globalOffsetX,globalOffsetY));
         this->mapButtonClick=ImGui::InvisibleButton("MapButton",ImVec2(cellCountW*cellSize,cellCountH*cellSize));
         if(mapButtonClick){
             auto pos=ImGui::GetMousePos();
             this->mapButtonInput=this->getLocalPos(pos);
         }
-        ImGui::End();
     }
     void renderPlaceAbleMap(){
         auto& bm=gamePtr->basicMap;
@@ -1868,7 +1865,6 @@ public:
     }
 
     void renderActors(){
-        ImGui::Begin("ActorButton");
         for(auto actor:gamePtr->staticActorPool){
             if(actor->hp<=0){
                 this->actorButtonFlag.erase(static_cast<void*>(actor));
@@ -1970,10 +1966,10 @@ public:
                 }
             }
         }
+
     }
 
     void renderBeHurtedActor(){
-        ImGui::Begin("BeHurtedActor");
         for(auto actorArray:gamePtr->beHurtedStaticActorList){
             auto [poolIndex,hurtNum]=actorArray;
             auto actor=gamePtr->staticActorPool[int(poolIndex)];
@@ -2000,7 +1996,6 @@ public:
                 ImGui::Text("%d##MobileHurted%d",hurtNum,&actor);
             }
         }
-        ImGui::End();
     }
     
     void setOffest(){
@@ -2046,6 +2041,8 @@ public:
         spriteBatch->Begin(DirectX::SpriteSortMode_Deferred,commonStates->NonPremultiplied());
         ImGui::Begin("GameWindow");
         //start
+        setOffest();
+
         renderMap();
         addMapButton();
         renderActors();

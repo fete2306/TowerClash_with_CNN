@@ -45,6 +45,10 @@ target_include_directories(directxmath INTERFACE ${EXTERNAL_DIR}/DirectXMath-may
 # 第三方：DirectXTK（DirectX Tool Kit）
 # -------------------------
 set(BUILD_TOOLS OFF CACHE BOOL "Disable building XWBTool" FORCE)
+# 使用预编译着色器
+set(USE_PREBUILT_SHADERS ON CACHE BOOL "Use prebuilt shaders" FORCE)
+set(COMPILED_SHADERS "${EXTERNAL_DIR}/DirectXTK-may2026/Src/Shaders/Compiled" CACHE PATH "Path to compiled shaders" FORCE)
+
 add_subdirectory(${EXTERNAL_DIR}/DirectXTK-may2026)
 
 # -------------------------
