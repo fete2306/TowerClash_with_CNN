@@ -86,6 +86,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE,LPSTR,int nCmdShow){
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io=ImGui::GetIO();
+    io.Fonts->AddFontFromFileTTF("assets/TTC/Roboto/static/Roboto-Regular.ttf");
     io.ConfigFlags|=ImGuiConfigFlags_NavEnableKeyboard;
 
     ImGui::StyleColorsDark();

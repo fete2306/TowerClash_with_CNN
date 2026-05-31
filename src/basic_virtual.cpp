@@ -517,6 +517,21 @@ class IMobileActor{
     virtual void skill2(){};
 };
 
+template<typename AttackActor,typename BeAttackActor>
+class AttackList{
+    public:
+    static std::vector<std::array<int,3>> attackList;
+    
+    static void push_back(int attackActorIndex,int beAttackActorIndex,AttackType attackType){
+        attackList.push_back({attackActorIndex,beAttackActorIndex,attackType});
+    }
+
+    static void clear(){
+        attackList.clear();
+    }
+
+};
+
 
 class Game{
     public:
@@ -544,6 +559,9 @@ class Game{
     std::vector<float> returnCostMul;//返回时消耗费用的倍率
     std::vector<float> moveCostMul;//移动单位消耗费用的倍率
 
+    std::vector<std::array<int,2>> beHurtedStaticActorList;//id,hp-
+    std::vector<std::array<int,2>> beHurtedMobileActorList;
+
     Draw* mainDrawPtr;
     
     int ownerCount;
@@ -552,8 +570,9 @@ class Game{
     float nowTime;
     float timeStep=0.1f;
 
-
+    bool running=true;
     bool cnnSwitch;
+    bool stopFlag=false;
 
 
     Game(std::string mapJsonPath="assets/MapData/Map.json",int mapIndex=0,std::string staticActorJsonPath="assets/ActorAttribute/StaticActor.json",std::string mobileActorJsonPath="assets/ActorAttribute/MobileActor.json",int ownerCount=2){//初始地图,仅01
@@ -864,6 +883,7 @@ class StaticActor:public IStaticActor{//用于实现通用方法的模板类
                 throw std::runtime_error(std::format("[ERROR][StaticActor] the attackType is {}",static_cast<int>(attackType)));
         }
         this->hp-=attackNum;
+        gamePtr->beHurtedStaticActorList.push_back({this->poolIndex,attackNum});
     }
 
     virtual void getAttackGoal(std::array<std::priority_queue<std::tuple<float,int>,std::vector<std::tuple<float,int>>,std::greater<std::tuple<float,int>>>,2>& goalList)override{
@@ -950,6 +970,7 @@ class StaticActor:public IStaticActor{//用于实现通用方法的模板类
             if(actor->hp<=0){
                 eraseMobileActorSet.push_back(index);
             }
+            AttackList<IStaticActor,IMobileActor>::push_back(this->poolIndex,actor->poolIndex,attackType);
         }
 
         while(goalList[0].size()>0){
@@ -964,6 +985,7 @@ class StaticActor:public IStaticActor{//用于实现通用方法的模板类
             if(actor->hp<=0){
                 eraseStaticActorSet.push_back(index);
             }
+            AttackList<IStaticActor,IStaticActor>::push_back(this->poolIndex,actor->poolIndex,attackType);
         }
 
         this->timeManger[TimeType::Attack]=nowTime;
@@ -1167,6 +1189,7 @@ class MobileActor:public IMobileActor{
                 throw std::runtime_error(std::format("[ERROR][StaticActor] the attackType is {}",static_cast<int>(attackType)));
         }
         this->hp-=attackNum;
+        gamePtr->beHurtedMobileActorList.push_back({this->poolIndex,attackNum});
     }
 
     virtual void getAttackGoal(std::array<std::priority_queue<std::tuple<float,int>,std::vector<std::tuple<float,int>>,std::greater<std::tuple<float,int>>>,2>& goalList)override{
@@ -1258,6 +1281,7 @@ class MobileActor:public IMobileActor{
             if(actor->hp<=0){
                 eraseMobileActorSet.push_back(index);
             }
+            AttackList<IMobileActor,IMobileActor>::push_back(this->poolIndex,actor->poolIndex,attackType);
         }
 
         while(goalList[0].size()>0){
@@ -1272,6 +1296,7 @@ class MobileActor:public IMobileActor{
             if(actor->hp<=0){
                 gamePtr->eraseStaticActorSet.push_back(index);
             }
+            AttackList<IMobileActor,IStaticActor>::push_back(this->poolIndex,actor->poolIndex,attackType);
         }
 
         this->timeManger[TimeType::Attack]=nowTime;
@@ -1533,6 +1558,7 @@ class GroupAttackTower:public StaticActor<GroupAttackTower>{//群攻
         // std::sort(staticGroupAttackList.begin(),staticGroupAttackList.end());
         // staticGroupAttackList.erase(std::unique(staticGroupAttackList.begin(),staticGroupAttackList.end()),staticGroupAttackList.end());
         //不去重 交集算受到两次溅射伤害
+        //用模板记录攻击与受击
 
 
         for(auto i=0ULL;i<mobileGroupAttackList.size();i++){
@@ -1546,6 +1572,7 @@ class GroupAttackTower:public StaticActor<GroupAttackTower>{//群攻
             if(actor->hp<=0){
                 eraseMobileActorSet.push_back(index);
             }
+            AttackList<IStaticActor,IMobileActor>::push_back(this->poolIndex,actor->poolIndex,attackType);
         }
         for(auto i=0ULL;i<staticGroupAttackList.size();i++){
             auto index=staticGroupAttackList[i];
@@ -1558,6 +1585,7 @@ class GroupAttackTower:public StaticActor<GroupAttackTower>{//群攻
             if(actor->hp<=0){
                 eraseStaticActorSet.push_back(index);
             }
+            AttackList<IStaticActor,IStaticActor>::push_back(this->poolIndex,actor->poolIndex,attackType);
         }
     }
 
@@ -1705,26 +1733,47 @@ public:
     Texture2D defenseMobileTex;
     Texture2D explosionMobileTex;
 
+    
     float cellSize=64.0f;
     float spriteScale=1.0f;
     float lastFrameTime=0;
     float accumLastFrameTime=0;
 
+    float globalOffsetX=0;
+    float globalOffsetY=0;
+    float cellCountW=0;
+    float cellCountH=0;
+    
+    float Layer_Map=0.0f;
+    float Layer_Map_special=0.1f;
+    
+    float Layer_Actor=0.5f;
+    float Layer_Actor_special=0.6f;
+    
+    float Layer_UI=0.8f;
+    
     //输入缓存
     std::array<float,4> creatStaticActorInput{};
     std::array<float,4> creatMobileActorInput{};
     std::array<float,2> moveStaticActorInput{};
     std::array<float,2> moveMobileActorInput{};
     std::array<float,2> getPathInput{};
+
+    std::unordered_map<void*,bool> actorButtonFlag;
+
+    ImVec2 mapButtonInput{};
     float setRankStaticActorInput=0;
     float setRankMobileActorInput=0;
-
-
-
+    bool creatStaticActorFlag=false;
+    bool creatMobileActorFlag=false;
+    bool mapButtonClick=false;
+    
+    
+    
     Draw(Game* gamePtr,ID3D11Device* device,ID3D11DeviceContext* context,IDXGISwapChain* swapChain,HWND hwnd,int windowWidth,int windowHeight):gamePtr(gamePtr),device(device),context(context),swapChain(swapChain),hwnd(hwnd),windowWidth(windowWidth),windowHeight(windowHeight){
         spriteBatch=std::make_unique<DirectX::SpriteBatch>(context);
         commonStates=std::make_unique<DirectX::CommonStates>(device);
-
+        
         emptyTex=Texture2D(device,L"assets/Png/Empty.png");
         wallTex=Texture2D(device,L"assets/Png/Wall.png");
         singleTowerTex=Texture2D(device,L"assets/Png/SingleTower.png");
@@ -1735,14 +1784,14 @@ public:
         rangedMobileTex=Texture2D(device,L"assets/Png/RangedMobile.png");
         defenseMobileTex=Texture2D(device,L"assets/Png/DefenseMobile.png");
         explosionMobileTex=Texture2D(device,L"assets/Png/ExplosionMobile.png");
-
-
+        
+        
         createRTV();
-
+        
         auto[tw,th]=getTextureSize(wallTex);
         if(tw>0) spriteScale=cellSize/tw;
     }
-
+    
     std::pair<float,float> getTextureSize(Texture2D& tex){
         Microsoft::WRL::ComPtr<ID3D11Resource> resource;
         tex.GetSRV()->GetResource(&resource);
@@ -1752,14 +1801,14 @@ public:
         tex2D->GetDesc(&desc);
         return {float(desc.Width),float(desc.Height)};
     }
-
+    
     void createRTV(){
         rtv.Reset();
         Microsoft::WRL::ComPtr<ID3D11Texture2D> backBuffer;
         swapChain->GetBuffer(0,__uuidof(ID3D11Texture2D),&backBuffer);
         device->CreateRenderTargetView(backBuffer.Get(),nullptr,&rtv);
     }
-
+    
     void resizeRTV(int newWidth,int newHeight){
         windowWidth=newWidth;
         windowHeight=newHeight;
@@ -1768,7 +1817,7 @@ public:
         swapChain->ResizeBuffers(0,newWidth,newHeight,DXGI_FORMAT_UNKNOWN,0);
         createRTV();
     }
-
+    
     Texture2D* getTextureForType(int typeId,bool isStatic){
         if(isStatic){
             if(typeId==1)return &singleTowerTex;
@@ -1783,36 +1832,241 @@ public:
         }
         return nullptr;
     }
-
+    
     void renderMap(){
         auto& bm=gamePtr->basicMap;
         for(size_t y=0;y<bm.size();y++){
             for(size_t x=0;x<bm[y].size();x++){
                 if(bm[y][x]==0){
-                    spriteBatch->Draw(wallTex.GetSRV(),DirectX::XMFLOAT2(float(x)*cellSize,float(y)*cellSize),nullptr,DirectX::Colors::White,0.0f,DirectX::XMFLOAT2(0,0),spriteScale);
+                    spriteBatch->Draw(wallTex.GetSRV(),DirectX::XMFLOAT2(float(x)*cellSize+this->globalOffsetX,float(y)*cellSize+this->globalOffsetY),nullptr,DirectX::Colors::White,0.0f,DirectX::XMFLOAT2(0,0),spriteScale,DirectX::SpriteEffects_None, Layer_Map);
                 }
                 else{
-                     spriteBatch->Draw(emptyTex.GetSRV(),DirectX::XMFLOAT2(float(x)*cellSize,float(y)*cellSize),nullptr,DirectX::Colors::White,0.0f,DirectX::XMFLOAT2(0,0),spriteScale);
+                    spriteBatch->Draw(emptyTex.GetSRV(),DirectX::XMFLOAT2(float(x)*cellSize+this->globalOffsetX,float(y)*cellSize+this->globalOffsetY),nullptr,DirectX::Colors::White,0.0f,DirectX::XMFLOAT2(0,0),spriteScale,DirectX::SpriteEffects_None, Layer_Map);
+                }
+            }
+        }
+    }
+    void addMapButton(){
+        ImGui::Begin("MapButtonWindow");
+        ImGui::SetCursorScreenPos(ImVec2(globalOffsetX,globalOffsetY));
+        this->mapButtonClick=ImGui::InvisibleButton("MapButton",ImVec2(cellCountW*cellSize,cellCountH*cellSize));
+        if(mapButtonClick){
+            auto pos=ImGui::GetMousePos();
+            this->mapButtonInput=this->getLocalPos(pos);
+        }
+        ImGui::End();
+    }
+    void renderPlaceAbleMap(){
+        auto& bm=gamePtr->basicMap;
+        for(size_t y=0;y<bm.size();y++){
+            for(size_t x=0;x<bm[y].size();x++){
+                if(bm[y][x]){
+                    spriteBatch->Draw(emptyTex.GetSRV(),DirectX::XMFLOAT2(float(x)*cellSize+this->globalOffsetX,float(y)*cellSize+this->globalOffsetY),nullptr,DirectX::Colors::Green,0.0f,DirectX::XMFLOAT2(0,0),spriteScale,DirectX::SpriteEffects_None, Layer_Map_special);
                 }
             }
         }
     }
 
     void renderActors(){
+        ImGui::Begin("ActorButton");
         for(auto actor:gamePtr->staticActorPool){
-            if(actor->hp<=0)continue;
-            auto* tex=getTextureForType(actor->typeId,true);
-            if(tex){
-                spriteBatch->Draw(tex->GetSRV(),DirectX::XMFLOAT2(actor->x*cellSize,actor->y*cellSize),nullptr,DirectX::Colors::White,0.0f,DirectX::XMFLOAT2(0,0),spriteScale);
+            if(actor->hp<=0){
+                this->actorButtonFlag.erase(static_cast<void*>(actor));
+                continue;
             }
+            auto* tex=getTextureForType(actor->typeId,true);
+            auto texX=actor->x*cellSize+this->globalOffsetX;
+            auto texY=actor->y*cellSize+this->globalOffsetY;
+            auto [texW,texH]=getTextureSize(*tex);
+            if(tex){
+                spriteBatch->Draw(tex->GetSRV(),DirectX::XMFLOAT2(texX,texY),nullptr,DirectX::Colors::White,0.0f,DirectX::XMFLOAT2(0,0),spriteScale,DirectX::SpriteEffects_None, Layer_Actor);
+            }
+            auto hpMax=actor->getValue(_AttributeId::hp);
+            
+            auto drawList=ImGui::GetWindowDrawList();
+            drawList->AddRect(ImVec2(texX,texY),ImVec2((texX+texW)*(actor->hp/hpMax),texY+texH-texH/10),ImColor(0,0.5,0,255));//绘制血量(百分比) 宽度为纹理的1/10
+
+            ImGui::SetCursorScreenPos(ImVec2(texX,texY));
+            auto buttonId=std::format("ActorButton##{}",&actor).c_str();
+            if(ImGui::InvisibleButton(buttonId,ImVec2(texW,texH))){
+                if(this->actorButtonFlag.find(static_cast<void*>(actor))==this->actorButtonFlag.end())this->actorButtonFlag[static_cast<void*>(actor)]=true;
+                this->actorButtonFlag[static_cast<void*>(actor)]=!this->actorButtonFlag[static_cast<void*>(actor)];
+            }
+            //如何清除失效的？ 读取eraseSet?
+            if(this->actorButtonFlag[static_cast<void*>(actor)]){
+                ImGui::SetCursorScreenPos(ImVec2(texX+texW,texY));
+                auto buttonId_setRank=std::format("setRank()##setRank{}",&actor).c_str();
+                if(ImGui::TreeNode(buttonId_setRank)){
+                    ImGui::InputFloat("setRankInput",&setRankStaticActorInput);
+                    if(ImGui::Button("setRankClick")){
+                        actor->setRank(setRankStaticActorInput);
+                        setRankStaticActorInput=0;
+                    }
+                    ImGui::TreePop();
+                }
+                auto buttonId_move=std::format("move()##move{}",&actor).c_str();
+                if(ImGui::TreeNode(buttonId_move)){
+                    if(ImGui::Button("moveClick")){
+                        if(this->mapButtonClick){
+                            actor->move({mapButtonInput.x,mapButtonInput.y});
+                        }
+                    }
+                    ImGui::TreePop();
+                }
+            }
+
         }
         for(auto actor:gamePtr->mobileActorPool){
-            if(actor->hp<=0)continue;
-            auto* tex=getTextureForType(actor->typeId,false);
+            if(actor->hp<=0){
+                this->actorButtonFlag.erase(static_cast<void*>(actor));
+                continue;
+            }
+            auto* tex=getTextureForType(actor->typeId,true);
+            auto texX=actor->x*cellSize+this->globalOffsetX;
+            auto texY=actor->y*cellSize+this->globalOffsetY;
+            auto [texW,texH]=getTextureSize(*tex);
             if(tex){
-                spriteBatch->Draw(tex->GetSRV(),DirectX::XMFLOAT2(actor->x*cellSize,actor->y*cellSize),nullptr,DirectX::Colors::White,0.0f,DirectX::XMFLOAT2(0,0),spriteScale);
+                spriteBatch->Draw(tex->GetSRV(),DirectX::XMFLOAT2(texX,texY),nullptr,DirectX::Colors::White,0.0f,DirectX::XMFLOAT2(0,0),spriteScale,DirectX::SpriteEffects_None, Layer_Actor);
+            }
+            auto hpMax=actor->getValue(_AttributeId::hp);
+            
+            auto drawList=ImGui::GetWindowDrawList();
+            drawList->AddRect(ImVec2(texX,texY),ImVec2((texX+texW)*(actor->hp/hpMax),texY+texH-texH/10),ImColor(0,0.5,0,255));//绘制血量(百分比) 宽度为纹理的1/10
+
+            ImGui::SetCursorScreenPos(ImVec2(texX,texY));
+            auto buttonId=std::format("ActorButton##{}",&actor).c_str();
+            if(ImGui::InvisibleButton(buttonId,ImVec2(texW,texH))){
+                if(this->actorButtonFlag.find(static_cast<void*>(actor))==this->actorButtonFlag.end())this->actorButtonFlag[static_cast<void*>(actor)]=true;
+                this->actorButtonFlag[static_cast<void*>(actor)]=!this->actorButtonFlag[static_cast<void*>(actor)];
+            }
+            if(this->actorButtonFlag[static_cast<void*>(actor)]){
+                ImGui::SetCursorScreenPos(ImVec2(texX+texW,texY));
+                auto buttonId_setRank=std::format("setRank()##setRank{}",&actor).c_str();
+                if(ImGui::TreeNode(buttonId_setRank)){
+                    ImGui::InputFloat("setRankInput",&setRankMobileActorInput);
+                    if(ImGui::Button("setRankClick")){
+                        actor->setRank(setRankMobileActorInput);
+                        setRankMobileActorInput=0;
+                    }
+                    ImGui::TreePop();
+                }
+                auto buttonId_move=std::format("move()##move{}",&actor).c_str();
+                if(ImGui::TreeNode(buttonId_move)){
+                    if(ImGui::Button("moveClick")){
+                        if(this->mapButtonClick){
+                            actor->move({mapButtonInput.x,mapButtonInput.y});
+                        }
+                    }
+                    ImGui::TreePop();
+                }
+                auto buttonId_getPath=std::format("getPath()##getPath{}",&actor).c_str();
+                if(ImGui::TreeNode(buttonId_getPath)){
+                    ImGui::InputFloat2("getPathInput",&getPathInput[0]);
+                    if(ImGui::Button("getPathClick")){
+                        actor->getPath(getPathInput[0],getPathInput[1],actor->path);
+                        getPathInput.fill(0);
+                    }
+                    ImGui::TreePop();
+                }
             }
         }
+    }
+
+    void renderBeHurtedActor(){
+        ImGui::Begin("BeHurtedActor");
+        for(auto actorArray:gamePtr->beHurtedStaticActorList){
+            auto [poolIndex,hurtNum]=actorArray;
+            auto actor=gamePtr->staticActorPool[poolIndex];
+            if(hurtNum==0)continue;
+            auto* tex=getTextureForType(actor->typeId,true);
+            if(tex){
+                spriteBatch->Draw(tex->GetSRV(),DirectX::XMFLOAT2(actor->x*cellSize+this->globalOffsetX,actor->y*cellSize+this->globalOffsetY),nullptr,DirectX::Colors::Red,0.0f,DirectX::XMFLOAT2(0,0),spriteScale,DirectX::SpriteEffects_None, Layer_Actor);
+                auto [texW,texH]=getTextureSize(*tex);
+                ImGui::SetCursorScreenPos(ImVec2(actor->x*cellSize+this->globalOffsetX,actor->y*cellSize+this->globalOffsetY+texH));
+                ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5f,0.0f,0.0f,1.0f));
+                ImGui::Text("%d##StaticHurted%d",hurtNum,&actor);
+            }
+        }
+        for(auto actorArray:gamePtr->beHurtedMobileActorList){
+            auto [poolIndex,hurtNum]=actorArray;
+            auto actor=gamePtr->mobileActorPool[poolIndex];
+            if(hurtNum==0)continue;
+            auto* tex=getTextureForType(actor->typeId,true);
+            if(tex){
+                spriteBatch->Draw(tex->GetSRV(),DirectX::XMFLOAT2(actor->x*cellSize+this->globalOffsetX,actor->y*cellSize+this->globalOffsetY),nullptr,DirectX::Colors::Red,0.0f,DirectX::XMFLOAT2(0,0),spriteScale,DirectX::SpriteEffects_None, Layer_Actor);
+                auto [texW,texH]=getTextureSize(*tex);
+                ImGui::SetCursorScreenPos(ImVec2(actor->x*cellSize+this->globalOffsetX,actor->y*cellSize+this->globalOffsetY+texH));
+                ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5f,0.0f,0.0f,1.0f));
+                ImGui::Text("%d##MobileHurted%d",hurtNum,&actor);
+            }
+        }
+        ImGui::End();
+    }
+    
+    void setOffest(){
+        this->cellCountH=gamePtr->basicMap.size();
+        this->cellCountW=gamePtr->basicMap[0].size();
+        this->globalOffsetX=(this->windowWidth-this->cellCountW*this->cellSize)/2;
+        this->globalOffsetY=(this->windowHeight-this->cellCountH*this->cellSize)/2;
+    }
+
+    ImVec2 getGlobalPos(ImVec2 pos){
+        return ImVec2(pos.x+this->globalOffsetX,pos.y+this->globalOffsetY);
+    }
+
+    ImVec2 getLocalPos(ImVec2 pos){
+        return ImVec2(pos.x-this->globalOffsetX,pos.y-this->globalOffsetY);
+    }
+
+
+
+    void drawGame(){
+        float nowTime=std::chrono::duration<float>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
+        float deltaTime=nowTime-lastFrameTime;
+        lastFrameTime=nowTime;
+        accumLastFrameTime+=deltaTime;
+        //日间继续
+        //主要需求是计算cellCount,根据windowsLenth计算全局便宜量来获取坐标。也许可以用一个inline函数来自动转为绝对坐标?再做一个解析为相对坐标的
+        //game添加表，记录上一帧攻击、移动、受伤害的单位索引
+        //在绘制单位时，更新状态，并设置隐藏按钮。按下后触发基础属性与funcList
+        //可以考虑把血量比率作为百分比，绘制生命值
+        //创建角色的话，另置一个窗口，显示初始信息，以及一个开关 开关开启后可部署位置变绿,通过获取鼠标坐标来设置位置
+        //也许可以试试 底层覆盖一个全局大小的隐形按钮，会实时更新鼠标坐标;在其之上，Actor上覆盖一层隐形按钮，用以对对象进行操作
+        //也许可以作为一个渲染设置？
+        //全屏按钮，点按获取坐标并确认,返回坐标，并根据配置调用不同函数
+        //除此之外。尽量把不可复用的逻辑放入一个总的函数中
+        ImGui_ImplDX11_NewFrame();
+        ImGui_ImplWin32_NewFrame();
+        ImGui::NewFrame();
+        float clearColor[4]={0.15f,0.15f,0.2f,1.0f};
+        context->ClearRenderTargetView(rtv.Get(),clearColor);
+        D3D11_VIEWPORT vp={0,0,(float)windowWidth,(float)windowHeight,0,1};
+        context->RSSetViewports(1,&vp);
+        context->OMSetRenderTargets(1,rtv.GetAddressOf(),nullptr);
+        spriteBatch->Begin(DirectX::SpriteSortMode_Deferred,commonStates->NonPremultiplied());
+        ImGui::Begin("GameWindow");
+        //start
+        renderMap();
+        addMapButton();
+        renderActors();
+        renderBeHurtedActor();
+
+        RenderBasicVirtualUI();
+        
+        //end
+        spriteBatch->End();
+        ImGui::End();
+        ImGui::Render();
+        ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+        float logicTimeStep = gamePtr->timeStep;
+        if(accumLastFrameTime >= logicTimeStep) {
+            gamePtr->tick();
+            accumLastFrameTime -= logicTimeStep;
+        }
+
+        swapChain->Present(1,0);
+        
     }
 
     void run(){
@@ -1921,7 +2175,7 @@ void RenderBasicVirtualUI(bool* p_open = nullptr){
                 auto& actor=gamePtr->staticActorPool[index];
                 void* tempId=static_cast<void*>(&actor);
                 if(ImGui::TreeNode(std::format("actorData&func##actor{}",tempId).c_str())){
-                    ImGui::Text("typeId:%d hp:%f rankNum:%d timer:Attack%f Move%f %f %f %f %f",actor->typeId,actor->hp,actor->rankNum,actor->timeManger[TimeType::Attack],actor->timeManger[TimeType::Move],actor->timeManger[TimeType::Skill1],actor->timeManger[TimeType::Skill2]);
+                    ImGui::Text("typeId:%d hp:%f owner:%d rankNum:%d timer:Attack%f Move%f %f %f %f %f",actor->typeId,actor->hp,actor->owner,actor->rankNum,actor->timeManger[TimeType::Attack],actor->timeManger[TimeType::Move],actor->timeManger[TimeType::Skill1],actor->timeManger[TimeType::Skill2]);
                     if(ImGui::TreeNode("setRank()")){
                         ImGui::InputFloat("setRankInput",&setRankStaticActorInput);
                         if(ImGui::Button("setRankClick")){
@@ -1945,7 +2199,7 @@ void RenderBasicVirtualUI(bool* p_open = nullptr){
                 auto& actor=gamePtr->mobileActorPool[index];
                 void* tempId=static_cast<void*>(&actor);
                 if(ImGui::TreeNode(std::format("actorData&func##actor{}",tempId).c_str())){
-                    ImGui::Text("typeId:%d hp:%f rankNum:%d timer:Attack%f Move%f %f %f %f %f",actor->typeId,actor->hp,actor->rankNum,actor->timeManger[TimeType::Attack],actor->timeManger[TimeType::Move],actor->timeManger[TimeType::Skill1],actor->timeManger[TimeType::Skill2]);
+                    ImGui::Text("typeId:%d hp:%f owner:%d rankNum:%d timer:Attack%f Move%f %f %f %f %f",actor->typeId,actor->hp,actor->owner,actor->rankNum,actor->timeManger[TimeType::Attack],actor->timeManger[TimeType::Move],actor->timeManger[TimeType::Skill1],actor->timeManger[TimeType::Skill2]);
                     if(ImGui::TreeNode("setRank()")){
                         ImGui::InputFloat("setRankInput",&setRankMobileActorInput);
                         if(ImGui::Button("setRankClick")){
@@ -2021,7 +2275,8 @@ bool Game::creatStaticActor(float x,float y,int owner,int StaticActorType){
                 ActorPool<CenterTower>::Pool.emplace_back(this,owner,x,y);
                 break;
             default:
-                throw std::runtime_error(std::format("[ERROR][Game] the StaticActorType is {}",StaticActorType));
+                // throw std::runtime_error(std::format("[ERROR][Game] the StaticActorType is {}",StaticActorType));
+                return false;
         }
         return true;
     }
@@ -2057,15 +2312,23 @@ bool Game::creatMobileActor(float x,float y,int owner,int MobileActorType){
                 ActorPool<ExplosionMobile>::Pool.emplace_back(this,owner,x,y);
                 break;
             default:
-                throw std::runtime_error(std::format("[ERROR][Game] the StaticActorType is {}",MobileActorType));
+            return false;
+            // throw std::runtime_error(std::format("[ERROR][Game] the StaticActorType is {}",MobileActorType));
         }
         return true;
     }
+    
+    void Game::tick(){
+        //之后绑定操作按钮 暂时先不处理创建逻辑
+            this->solveDeadActor();
+            AttackList<IStaticActor,IStaticActor>::clear();
+            AttackList<IStaticActor,IMobileActor>::clear();
+            AttackList<IMobileActor,IStaticActor>::clear();
+            AttackList<IMobileActor,IMobileActor>::clear();
 
-void Game::tick(){
-            //之后绑定操作按钮 暂时先不处理创建逻辑
-
-            //移动->攻击->删除
+            this->beHurtedStaticActorList.clear();
+            this->beHurtedMobileActorList.clear();
+            //删除->移动->攻击，确保渲染时取得上一帧的受伤及死亡数据还未清除
             for(auto& actor:staticActorPool){
                 actor->checkEffect();
             }
@@ -2077,6 +2340,19 @@ void Game::tick(){
                 mobileActorPool[i]->followPath();
             }
 
+            
+            
+            costSpeed=std::vector<float>(costSpeed.size(),timeStep);//每0.1s产生的费用
+            for(auto actor:ActorPool<CenterTower>::Pool){
+                costSpeed[actor.owner]+=actor.getValue(AttributeId<CenterTower>::costRate);
+            }
+            
+            for(auto i=0;i<nowCost.size();i++){
+                nowCost[i]+=costSpeed[i];
+                if(nowCost[i]>costMax[i]){
+                    nowCost[i]=costMax[i];
+                }
+            }
             for(int i=0;i<staticActorPool.size();i++){
                 staticActorPool[i]->attack();
             }
@@ -2085,25 +2361,11 @@ void Game::tick(){
 
             }
 
-            this->solveDeadActor();
-
-            costSpeed=std::vector<float>(costSpeed.size(),timeStep);//每0.1s产生的费用
-            for(auto actor:ActorPool<CenterTower>::Pool){
-                costSpeed[actor.owner]+=actor.getValue(AttributeId<CenterTower>::costRate);
-            }
-
-            for(auto i=0;i<nowCost.size();i++){
-                nowCost[i]+=costSpeed[i];
-                if(nowCost[i]>costMax[i]){
-                    nowCost[i]=costMax[i];
-                }
-            }
-
             nowTime+=timeStep;
         }
 
 void Game::draw(){
-        mainDrawPtr->run();
+        mainDrawPtr->drawGame();
 
     }
 
