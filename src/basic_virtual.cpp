@@ -275,8 +275,8 @@ class SpecialEffect:public ISpecialEffect{
     }
 
     std::list<ISpecialEffect *>::iterator remove(){//从两边列表中删除 很危险
-        auto r1=*applyIterator;
-        auto r2=*receiveIterator;
+        // auto r1=*applyIterator;//debug
+        // auto r2=*receiveIterator;
 
         applyActorPtr->applyEffectList.erase(applyIterator);
         auto tempIterator=receiveActorPtr->receiveEffectList.erase(receiveIterator);
@@ -523,7 +523,7 @@ class AttackList{
     static std::vector<std::array<int,3>> attackList;
     
     static void push_back(int attackActorIndex,int beAttackActorIndex,AttackType attackType){
-        attackList.push_back({attackActorIndex,beAttackActorIndex,attackType});
+        attackList.push_back({attackActorIndex,beAttackActorIndex,int(attackType)});
     }
 
     static void clear(){
@@ -559,8 +559,8 @@ class Game{
     std::vector<float> returnCostMul;//返回时消耗费用的倍率
     std::vector<float> moveCostMul;//移动单位消耗费用的倍率
 
-    std::vector<std::array<int,2>> beHurtedStaticActorList;//id,hp-
-    std::vector<std::array<int,2>> beHurtedMobileActorList;
+    std::vector<std::array<float,2>> beHurtedStaticActorList;//id,hp-
+    std::vector<std::array<float,2>> beHurtedMobileActorList;
 
     Draw* mainDrawPtr;
     
@@ -883,7 +883,7 @@ class StaticActor:public IStaticActor{//用于实现通用方法的模板类
                 throw std::runtime_error(std::format("[ERROR][StaticActor] the attackType is {}",static_cast<int>(attackType)));
         }
         this->hp-=attackNum;
-        gamePtr->beHurtedStaticActorList.push_back({this->poolIndex,attackNum});
+        gamePtr->beHurtedStaticActorList.push_back({float(this->poolIndex),attackNum});
     }
 
     virtual void getAttackGoal(std::array<std::priority_queue<std::tuple<float,int>,std::vector<std::tuple<float,int>>,std::greater<std::tuple<float,int>>>,2>& goalList)override{
@@ -1189,7 +1189,7 @@ class MobileActor:public IMobileActor{
                 throw std::runtime_error(std::format("[ERROR][StaticActor] the attackType is {}",static_cast<int>(attackType)));
         }
         this->hp-=attackNum;
-        gamePtr->beHurtedMobileActorList.push_back({this->poolIndex,attackNum});
+        gamePtr->beHurtedMobileActorList.push_back({float(this->poolIndex),attackNum});
     }
 
     virtual void getAttackGoal(std::array<std::priority_queue<std::tuple<float,int>,std::vector<std::tuple<float,int>>,std::greater<std::tuple<float,int>>>,2>& goalList)override{
@@ -1887,16 +1887,16 @@ public:
             drawList->AddRect(ImVec2(texX,texY),ImVec2((texX+texW)*(actor->hp/hpMax),texY+texH-texH/10),ImColor(0,0.5,0,255));//绘制血量(百分比) 宽度为纹理的1/10
 
             ImGui::SetCursorScreenPos(ImVec2(texX,texY));
-            auto buttonId=std::format("ActorButton##{}",&actor).c_str();
-            if(ImGui::InvisibleButton(buttonId,ImVec2(texW,texH))){
+            auto buttonId="ActorButton##"+std::to_string(reinterpret_cast<uintptr_t>(&actor));
+            if(ImGui::InvisibleButton(buttonId.c_str(),ImVec2(texW,texH))){
                 if(this->actorButtonFlag.find(static_cast<void*>(actor))==this->actorButtonFlag.end())this->actorButtonFlag[static_cast<void*>(actor)]=true;
                 this->actorButtonFlag[static_cast<void*>(actor)]=!this->actorButtonFlag[static_cast<void*>(actor)];
             }
             //如何清除失效的？ 读取eraseSet?
             if(this->actorButtonFlag[static_cast<void*>(actor)]){
                 ImGui::SetCursorScreenPos(ImVec2(texX+texW,texY));
-                auto buttonId_setRank=std::format("setRank()##setRank{}",&actor).c_str();
-                if(ImGui::TreeNode(buttonId_setRank)){
+                auto buttonId_setRank="setRank()##setRank"+std::to_string(reinterpret_cast<uintptr_t>(&actor));
+                if(ImGui::TreeNode(buttonId_setRank.c_str())){
                     ImGui::InputFloat("setRankInput",&setRankStaticActorInput);
                     if(ImGui::Button("setRankClick")){
                         actor->setRank(setRankStaticActorInput);
@@ -1904,8 +1904,8 @@ public:
                     }
                     ImGui::TreePop();
                 }
-                auto buttonId_move=std::format("move()##move{}",&actor).c_str();
-                if(ImGui::TreeNode(buttonId_move)){
+                auto buttonId_move="move()##move"+std::to_string(reinterpret_cast<uintptr_t>(&actor));
+                if(ImGui::TreeNode(buttonId_move.c_str())){
                     if(ImGui::Button("moveClick")){
                         if(this->mapButtonClick){
                             actor->move({mapButtonInput.x,mapButtonInput.y});
@@ -1934,15 +1934,15 @@ public:
             drawList->AddRect(ImVec2(texX,texY),ImVec2((texX+texW)*(actor->hp/hpMax),texY+texH-texH/10),ImColor(0,0.5,0,255));//绘制血量(百分比) 宽度为纹理的1/10
 
             ImGui::SetCursorScreenPos(ImVec2(texX,texY));
-            auto buttonId=std::format("ActorButton##{}",&actor).c_str();
-            if(ImGui::InvisibleButton(buttonId,ImVec2(texW,texH))){
+             auto buttonId="ActorButton##"+std::to_string(reinterpret_cast<uintptr_t>(&actor));
+            if(ImGui::InvisibleButton(buttonId.c_str(),ImVec2(texW,texH))){
                 if(this->actorButtonFlag.find(static_cast<void*>(actor))==this->actorButtonFlag.end())this->actorButtonFlag[static_cast<void*>(actor)]=true;
                 this->actorButtonFlag[static_cast<void*>(actor)]=!this->actorButtonFlag[static_cast<void*>(actor)];
             }
             if(this->actorButtonFlag[static_cast<void*>(actor)]){
                 ImGui::SetCursorScreenPos(ImVec2(texX+texW,texY));
-                auto buttonId_setRank=std::format("setRank()##setRank{}",&actor).c_str();
-                if(ImGui::TreeNode(buttonId_setRank)){
+                auto buttonId_setRank="setRank()##setRank"+std::to_string(reinterpret_cast<uintptr_t>(&actor));
+                if(ImGui::TreeNode(buttonId_setRank.c_str())){
                     ImGui::InputFloat("setRankInput",&setRankMobileActorInput);
                     if(ImGui::Button("setRankClick")){
                         actor->setRank(setRankMobileActorInput);
@@ -1950,8 +1950,8 @@ public:
                     }
                     ImGui::TreePop();
                 }
-                auto buttonId_move=std::format("move()##move{}",&actor).c_str();
-                if(ImGui::TreeNode(buttonId_move)){
+                auto buttonId_move="move()##move"+std::to_string(reinterpret_cast<uintptr_t>(&actor));
+                if(ImGui::TreeNode(buttonId_move.c_str())){
                     if(ImGui::Button("moveClick")){
                         if(this->mapButtonClick){
                             actor->move({mapButtonInput.x,mapButtonInput.y});
@@ -1959,8 +1959,8 @@ public:
                     }
                     ImGui::TreePop();
                 }
-                auto buttonId_getPath=std::format("getPath()##getPath{}",&actor).c_str();
-                if(ImGui::TreeNode(buttonId_getPath)){
+                auto buttonId_getPath="getPath()##getPath"+std::to_string(reinterpret_cast<uintptr_t>(&actor));
+                if(ImGui::TreeNode(buttonId_getPath.c_str())){
                     ImGui::InputFloat2("getPathInput",&getPathInput[0]);
                     if(ImGui::Button("getPathClick")){
                         actor->getPath(getPathInput[0],getPathInput[1],actor->path);
@@ -1976,7 +1976,7 @@ public:
         ImGui::Begin("BeHurtedActor");
         for(auto actorArray:gamePtr->beHurtedStaticActorList){
             auto [poolIndex,hurtNum]=actorArray;
-            auto actor=gamePtr->staticActorPool[poolIndex];
+            auto actor=gamePtr->staticActorPool[int(poolIndex)];
             if(hurtNum==0)continue;
             auto* tex=getTextureForType(actor->typeId,true);
             if(tex){
@@ -1989,7 +1989,7 @@ public:
         }
         for(auto actorArray:gamePtr->beHurtedMobileActorList){
             auto [poolIndex,hurtNum]=actorArray;
-            auto actor=gamePtr->mobileActorPool[poolIndex];
+            auto actor=gamePtr->mobileActorPool[int(poolIndex)];
             if(hurtNum==0)continue;
             auto* tex=getTextureForType(actor->typeId,true);
             if(tex){

@@ -132,7 +132,7 @@ CMAKE_INSTALL_MANDIR:PATH=
 CMAKE_INSTALL_OLDINCLUDEDIR:PATH=/usr/include
 
 //Install path prefix, prepended onto install directories.
-CMAKE_INSTALL_PREFIX:PATH=C:/Program Files (x86)/JAVA_Course_Project
+CMAKE_INSTALL_PREFIX:PATH=C:/Program Files (x86)/TowerClash_with_CNN
 
 //Run-time variable data (LOCALSTATEDIR/run)
 CMAKE_INSTALL_RUNSTATEDIR:PATH=
@@ -185,7 +185,7 @@ CMAKE_PROJECT_DESCRIPTION:STATIC=
 CMAKE_PROJECT_HOMEPAGE_URL:STATIC=
 
 //Value Computed by CMake
-CMAKE_PROJECT_NAME:STATIC=JAVA_Course_Project
+CMAKE_PROJECT_NAME:STATIC=TowerClash_with_CNN
 
 //Value Computed by CMake
 CMAKE_PROJECT_SPDX_LICENSE:STATIC=
@@ -320,15 +320,6 @@ ENABLE_CODE_PROFILING:BOOL=OFF
 //Build using /Qspectre for MSVC
 ENABLE_SPECTRE_MITIGATION:BOOL=OFF
 
-//Value Computed by CMake
-JAVA_Course_Project_BINARY_DIR:STATIC=D:/Creat/GAME/TowerClash_with_CNN/build
-
-//Value Computed by CMake
-JAVA_Course_Project_IS_TOP_LEVEL:STATIC=ON
-
-//Value Computed by CMake
-JAVA_Course_Project_SOURCE_DIR:STATIC=D:/Creat/GAME/TowerClash_with_CNN
-
 //Command to build the project
 MAKECOMMAND:STRING=D:\CMake\bin\cmake.exe --build . --config "${CTEST_CONFIGURATION_TYPE}"
 
@@ -343,6 +334,15 @@ NO_WCHAR_T:BOOL=OFF
 
 //Name of the computer/site where compile is being run
 SITE:STRING=LAPTOP-FIH8GPGF
+
+//Value Computed by CMake
+TowerClash_with_CNN_BINARY_DIR:STATIC=D:/Creat/GAME/TowerClash_with_CNN/build
+
+//Value Computed by CMake
+TowerClash_with_CNN_IS_TOP_LEVEL:STATIC=ON
+
+//Value Computed by CMake
+TowerClash_with_CNN_SOURCE_DIR:STATIC=D:/Creat/GAME/TowerClash_with_CNN
 
 //Use externally built HLSL shaders
 USE_PREBUILT_SHADERS:BOOL=OFF
@@ -532,5 +532,5 @@ MEMORYCHECK_SUPPRESSIONS_FILE-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: SITE
 SITE-ADVANCED:INTERNAL=1
 //CMAKE_INSTALL_PREFIX during last run
-_GNUInstallDirs_LAST_CMAKE_INSTALL_PREFIX:INTERNAL=C:/Program Files (x86)/JAVA_Course_Project
+_GNUInstallDirs_LAST_CMAKE_INSTALL_PREFIX:INTERNAL=C:/Program Files (x86)/TowerClash_with_CNN
 

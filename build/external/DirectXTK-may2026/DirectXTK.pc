@@ -1,4 +1,4 @@
-prefix=C:/Program Files (x86)/JAVA_Course_Project
+prefix=C:/Program Files (x86)/TowerClash_with_CNN
 libdir=${prefix}/lib
 includedir=${prefix}/include
 
