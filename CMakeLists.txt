@@ -39,6 +39,8 @@ target_include_directories(imgui PUBLIC
 add_library(nlohmann_json INTERFACE)
 target_include_directories(nlohmann_json INTERFACE ${EXTERNAL_DIR}/json)
 
+add_library(directxmath INTERFACE)
+target_include_directories(directxmath INTERFACE ${EXTERNAL_DIR}/DirectXMath-may2026)
 # -------------------------
 # 第三方：DirectXTK（DirectX Tool Kit）
 # -------------------------
@@ -62,7 +64,7 @@ target_include_directories(game PRIVATE
 	${EXTERNAL_DIR}/json
 	${EXTERNAL_DIR}/DirectXTK-may2026/Inc
 )
-target_link_libraries(game PRIVATE imgui nlohmann_json DirectXTK dxgi d3d11 d3dcompiler)
+target_link_libraries(game PRIVATE imgui nlohmann_json directxmath DirectXTK dxgi d3d11 d3dcompiler)
 target_compile_features(game PUBLIC cxx_std_20)
 
 # 编译选项

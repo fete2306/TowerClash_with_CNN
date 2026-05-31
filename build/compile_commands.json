@@ -43,7 +43,7 @@
 },
 {
   "directory": "D:/Creat/GAME/TowerClash_with_CNN/build",
-  "command": "D:\\VisualStudio\\VisualStudio\\VC\\Tools\\MSVC\\14.50.35717\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUSING_XINPUT -ID:\\Creat\\GAME\\TowerClash_with_CNN\\src -ID:\\Creat\\GAME\\TowerClash_with_CNN\\src\\ui -ID:\\Creat\\GAME\\TowerClash_with_CNN\\external\\imgui -ID:\\Creat\\GAME\\TowerClash_with_CNN\\external\\json -ID:\\Creat\\GAME\\TowerClash_with_CNN\\external\\DirectXTK-may2026\\Inc -ID:\\Creat\\GAME\\TowerClash_with_CNN\\external\\imgui\\backends /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /W4 /permissive- /bigobj /utf-8 /FoCMakeFiles\\game.dir\\src\\Game.cpp.obj /FdCMakeFiles\\game.dir\\ /FS -c D:\\Creat\\GAME\\TowerClash_with_CNN\\src\\Game.cpp",
+  "command": "D:\\VisualStudio\\VisualStudio\\VC\\Tools\\MSVC\\14.50.35717\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUSING_XINPUT -ID:\\Creat\\GAME\\TowerClash_with_CNN\\src -ID:\\Creat\\GAME\\TowerClash_with_CNN\\src\\ui -ID:\\Creat\\GAME\\TowerClash_with_CNN\\external\\imgui -ID:\\Creat\\GAME\\TowerClash_with_CNN\\external\\json -ID:\\Creat\\GAME\\TowerClash_with_CNN\\external\\DirectXTK-may2026\\Inc -ID:\\Creat\\GAME\\TowerClash_with_CNN\\external\\imgui\\backends -ID:\\Creat\\GAME\\TowerClash_with_CNN\\external\\DirectXMath-may2026 /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /W4 /permissive- /bigobj /utf-8 /FoCMakeFiles\\game.dir\\src\\Game.cpp.obj /FdCMakeFiles\\game.dir\\ /FS -c D:\\Creat\\GAME\\TowerClash_with_CNN\\src\\Game.cpp",
   "file": "D:/Creat/GAME/TowerClash_with_CNN/src/Game.cpp",
   "output": "D:/Creat/GAME/TowerClash_with_CNN/build/CMakeFiles/game.dir/src/Game.cpp.obj"
 },

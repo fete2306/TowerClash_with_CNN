@@ -152,7 +152,7 @@ build CMakeFiles\game.dir\src\Game.cpp.obj: CXX_COMPILER__game_unscanned_Debug D
   CONFIG = Debug
   DEFINES = -DUSING_XINPUT
   FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd /W4 /permissive- /bigobj /utf-8
-  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\src -ID:\Creat\GAME\TowerClash_with_CNN\src\ui -ID:\Creat\GAME\TowerClash_with_CNN\external\imgui -ID:\Creat\GAME\TowerClash_with_CNN\external\json -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\imgui\backends
+  INCLUDES = -ID:\Creat\GAME\TowerClash_with_CNN\src -ID:\Creat\GAME\TowerClash_with_CNN\src\ui -ID:\Creat\GAME\TowerClash_with_CNN\external\imgui -ID:\Creat\GAME\TowerClash_with_CNN\external\json -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXTK-may2026\Inc -ID:\Creat\GAME\TowerClash_with_CNN\external\imgui\backends -ID:\Creat\GAME\TowerClash_with_CNN\external\DirectXMath-may2026
   OBJECT_DIR = CMakeFiles\game.dir
   OBJECT_FILE_DIR = CMakeFiles\game.dir\src
   TARGET_COMPILE_PDB = CMakeFiles\game.dir\
