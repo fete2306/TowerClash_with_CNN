@@ -1769,6 +1769,8 @@ public:
     bool creatStaticActorFlag=false;
     bool creatMobileActorFlag=false;
     bool mapButtonClick=false;
+
+    bool showPlaceAbleMapFlag=false;
     
     
     
@@ -2045,7 +2047,8 @@ public:
         D3D11_VIEWPORT vp={0,0,(float)windowWidth,(float)windowHeight,0,1};
         context->RSSetViewports(1,&vp);
         context->OMSetRenderTargets(1,rtv.GetAddressOf(),nullptr);
-        spriteBatch->Begin(DirectX::SpriteSortMode_Deferred,commonStates->NonPremultiplied());
+        // spriteBatch->Begin(DirectX::SpriteSortMode_Deferred,commonStates->NonPremultiplied());
+        spriteBatch->Begin(DirectX::SpriteSortMode_FrontToBack, commonStates->NonPremultiplied());
         ImGui::Begin("GameWindow");
         //start
         setOffest();
@@ -2149,7 +2152,11 @@ void RenderBasicVirtualUI(bool* p_open = nullptr){
         ImGui::TreePop();
     }
 
-    
+    if(ImGui::Button("Show Placeable Map")){
+        this->showPlaceAbleMapFlag=!this->showPlaceAbleMapFlag;
+    }
+    if(this->showPlaceAbleMapFlag)renderPlaceAbleMap();
+    ImGui::Text(this->showPlaceAbleMapFlag?"Placeable map is shown":"Placeable map is hidden");
 
     ImGui::InputFloat4("creatStaticActorInput",&creatStaticActorInput[0]);
     ImGui::Text(gamePtr->basicMap[creatStaticActorInput[1]][creatStaticActorInput[0]]?"empty":"wall");
