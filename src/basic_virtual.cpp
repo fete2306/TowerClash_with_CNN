@@ -230,33 +230,33 @@ class SpecialEffect:public ISpecialEffect{
         tempEffective.checkFlag=false;
     };
 
-    SpecialEffect(const SpecialEffect& other):ISpecialEffect(other.Id,other.modType,other.value,other.endTime),applyActorPtr(other.applyActorPtr),receiveActorPtr(other.receiveActorPtr){
-        applyIterator=other.applyIterator;
-        receiveIterator=other.receiveIterator;
+    // SpecialEffect(const SpecialEffect& other):ISpecialEffect(other.Id,other.modType,other.value,other.endTime),applyActorPtr(other.applyActorPtr),receiveActorPtr(other.receiveActorPtr){
+    //     applyIterator=other.applyIterator;
+    //     receiveIterator=other.receiveIterator;
 
-        auto& tempEffective=receiveActorPtr->nowAttributeList[this->Id];
-        switch(this->modType){
-            case ModType::add1:
-                tempEffective.add1+=this->value;
-                break;
-            case ModType::mul:
-                tempEffective.mul*=this->value;
-                break;
-            case ModType::add2:
-                tempEffective.add2+=this->value;
-                break;
-        }
-        tempEffective.checkFlag=false;
-    }
-    SpecialEffect& operator=(const SpecialEffect& other){
-        std::swap(applyIterator,other.applyIterator);
-        std::swap(receiveIterator=other.receiveIterator);
-        std::swap(Id,other.Id);
-        std::swap(modType,other.modType);
-        std::swap(value,other.value);
-        std::swap(endTime,other.endTime);
-        return *this;
-    }
+    //     auto& tempEffective=receiveActorPtr->nowAttributeList[this->Id];
+    //     switch(this->modType){
+    //         case ModType::add1:
+    //             tempEffective.add1+=this->value;
+    //             break;
+    //         case ModType::mul:
+    //             tempEffective.mul*=this->value;
+    //             break;
+    //         case ModType::add2:
+    //             tempEffective.add2+=this->value;
+    //             break;
+    //     }
+    //     tempEffective.checkFlag=false;
+    // }
+    // SpecialEffect& operator=(const SpecialEffect& other){
+    //     std::swap(applyIterator,other.applyIterator);
+    //     std::swap(receiveIterator=other.receiveIterator);
+    //     std::swap(Id,other.Id);
+    //     std::swap(modType,other.modType);
+    //     std::swap(value,other.value);
+    //     std::swap(endTime,other.endTime);
+    //     return *this;
+    // }
 
     ~SpecialEffect(){
         auto& tempEffective=receiveActorPtr->nowAttributeList[this->Id];
@@ -376,6 +376,9 @@ class ResistList{
             return;
         }
         while(resistList.size()!=0){
+            if(resistList.begin()==resistList.end()){
+                break;
+            }
             auto ttt=std::prev(resistList.end());
             auto tempResist=*ttt;
             tempResist->removeResist();
@@ -725,12 +728,17 @@ class StaticActor:public IStaticActor{//用于实现通用方法的模板类
         gamePtr->aliveStaticList[owner].push_back(poolIndex);
     };
 
-    virtual ~StaticActor(){
+    virtual void dead()override{
+        this->_dead(static_cast<SubClass*>(this));
+    };
+
+    void _dead(SubClass* subclassPtr){
+        //把析构逻辑移动至此(swap+pop，析构发生在pop，此时指向该对象的值已经失效)
         resistList.clear();
         auto start=applyEffectList.begin();
         while(start!=applyEffectList.end()){
             auto&temp =*start;
-            temp->endTime=0;//将自身所施加的异常状态置0
+            temp->removeReceive();
             ++start;
         }
         start=receiveEffectList.begin();
@@ -739,13 +747,8 @@ class StaticActor:public IStaticActor{//用于实现通用方法的模板类
             temp->removeApply();//将自身所受的异常状态从施加方删除
             ++start;
         }
-    }
 
-    virtual void dead()override{
-        this->_dead(static_cast<SubClass*>(this));
-    };
 
-    void _dead(SubClass* subclassPtr){
         auto poolEndIndex=gamePtr->staticActorPool.size()-1;
         auto& poolEndActor=gamePtr->staticActorPool[poolEndIndex];
         poolEndActor->poolIndex=this->poolIndex;
@@ -1038,12 +1041,16 @@ class MobileActor:public IMobileActor{
         gamePtr->aliveMobileList[owner].push_back(poolIndex);
     }
 
-    virtual ~MobileActor(){
+    virtual void dead()override{
+        this->_dead(static_cast<SubClass*>(this));
+    };
+
+    void _dead(SubClass* subclassPtr){
         this->resistState.removeResist();
         auto start=applyEffectList.begin();
         while(start!=applyEffectList.end()){
             auto&temp =*start;
-            temp->endTime=0;//将自身所施加的异常状态置0
+            temp->removeReceive();
             ++start;
         }
         start=receiveEffectList.begin();
@@ -1052,12 +1059,8 @@ class MobileActor:public IMobileActor{
             temp->removeApply();//将自身所受的异常状态从施加方删除
             ++start;
         }
-    }
-    virtual void dead()override{
-        this->_dead(static_cast<SubClass*>(this));
-    };
 
-    void _dead(SubClass* subclassPtr){
+
         auto poolEndIndex=gamePtr->mobileActorPool.size()-1;
         auto& poolEndActor=gamePtr->mobileActorPool[poolEndIndex];
         poolEndActor->poolIndex=this->poolIndex;
@@ -1658,8 +1661,8 @@ class ExplosionMobile:public MobileActor<ExplosionMobile>{//自爆
         MobileActor::beHurted(attackType,attackNum);
         auto explosionNum=this->getValue(AttributeId<ExplosionMobile>::explosionNum);
         if(this->hp<=0){
-            this->nowAttributeList[AttributeId<ExplosionMobile>::explosionNum].add2=this->getValue(AttributeId<ExplosionMobile>::explosionNum)-this->getValue(AttributeId<ExplosionMobile>::attackNum);
-            this->nowAttributeList[AttributeId<ExplosionMobile>::explosionNum].checkFlag=false;
+            this->nowAttributeList[AttributeId<ExplosionMobile>::attackNum].add2=this->getValue(AttributeId<ExplosionMobile>::explosionNum)-this->getValue(AttributeId<ExplosionMobile>::attackNum);
+            this->nowAttributeList[AttributeId<ExplosionMobile>::attackNum].checkFlag=false;
             this->timeManger[TimeType::Attack]=-1000.0f;
 
             this->nowAttributeList[AttributeId<ExplosionMobile>::attackScope].mul=3;
@@ -1917,7 +1920,7 @@ public:
                 this->actorButtonFlag.erase(static_cast<void*>(actor));
                 continue;
             }
-            auto* tex=getTextureForType(actor->typeId,true);
+            auto* tex=getTextureForType(actor->typeId,false);
             auto texX=actor->x*cellSize+this->globalOffsetX;
             auto texY=actor->y*cellSize+this->globalOffsetY;
             auto [texW,texH]=getTextureSize(*tex);
@@ -1972,6 +1975,7 @@ public:
     void renderBeHurtedActor(){
         for(auto actorArray:gamePtr->beHurtedStaticActorList){
             auto [poolIndex,hurtNum]=actorArray;
+            if(poolIndex==-1)continue;
             auto actor=gamePtr->staticActorPool[int(poolIndex)];
             if(hurtNum==0)continue;
             auto* tex=getTextureForType(actor->typeId,true);
@@ -1981,19 +1985,22 @@ public:
                 ImGui::SetCursorScreenPos(ImVec2(actor->x*cellSize+this->globalOffsetX,actor->y*cellSize+this->globalOffsetY+texH));
                 ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5f,0.0f,0.0f,1.0f));
                 ImGui::Text("%d##StaticHurted%d",hurtNum,&actor);
+                ImGui::PopStyleColor();
             }
         }
         for(auto actorArray:gamePtr->beHurtedMobileActorList){
             auto [poolIndex,hurtNum]=actorArray;
+            if(poolIndex==-1)continue;
             auto actor=gamePtr->mobileActorPool[int(poolIndex)];
             if(hurtNum==0)continue;
-            auto* tex=getTextureForType(actor->typeId,true);
+            auto* tex=getTextureForType(actor->typeId,false);
             if(tex){
                 spriteBatch->Draw(tex->GetSRV(),DirectX::XMFLOAT2(actor->x*cellSize+this->globalOffsetX,actor->y*cellSize+this->globalOffsetY),nullptr,DirectX::Colors::Red,0.0f,DirectX::XMFLOAT2(0,0),spriteScale,DirectX::SpriteEffects_None, Layer_Actor);
                 auto [texW,texH]=getTextureSize(*tex);
                 ImGui::SetCursorScreenPos(ImVec2(actor->x*cellSize+this->globalOffsetX,actor->y*cellSize+this->globalOffsetY+texH));
                 ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5f,0.0f,0.0f,1.0f));
                 ImGui::Text("%d##MobileHurted%d",hurtNum,&actor);
+                ImGui::PopStyleColor();
             }
         }
     }
@@ -2057,7 +2064,7 @@ public:
         ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
         float logicTimeStep = gamePtr->timeStep;
-        if(accumLastFrameTime >= logicTimeStep) {
+        while(accumLastFrameTime >= logicTimeStep) {
             gamePtr->tick();
             accumLastFrameTime -= logicTimeStep;
         }

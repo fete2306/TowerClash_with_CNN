@@ -115,10 +115,6 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE,LPSTR,int nCmdShow){
         }
         if(!running)break;
         game.draw();
-        if(game.mainDrawPtr->accumLastFrameTime>game.timeStep){
-            game.tick();
-            game.mainDrawPtr->accumLastFrameTime-=game.timeStep;
-        }
     }
 
     ImGui_ImplDX11_Shutdown();
