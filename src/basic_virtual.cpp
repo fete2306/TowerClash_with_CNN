@@ -201,7 +201,7 @@ class ISpecialEffect{
     };
     virtual std::list<ISpecialEffect*>::iterator check(){return {};};
     virtual void removeApply(){};
-    virtual void removeReceive(){};
+    virtual void removeReceive(){};//占位
 };
 
 template<typename ApplyActor,typename ReceiveActor>
@@ -283,13 +283,13 @@ class SpecialEffect:public ISpecialEffect{
         return tempIterator;
     }
 
-    void removeApply(){//接受方析构时调用
-        applyActorPtr->applyEffectList.erase(applyIterator);
+    void removeApply()override{//接受方析构时调用
+        this->applyActorPtr->applyEffectList.erase(applyIterator);
         delete this;
     }
 
-    void removeReceive(){//施加方析构时调用
-        receiveActorPtr->receiveEffectList.erase(receiveIterator);
+    void removeReceive()override{//施加方析构时调用
+        this->receiveActorPtr->receiveEffectList.erase(receiveIterator);
         delete this;
     }
 
@@ -782,7 +782,7 @@ class StaticActor:public IStaticActor{//用于实现通用方法的模板类
         auto& attributeList=Attribute<SubClass>::attributeList;
         if(rankOffest!=0){
             if(rankNum+rankOffest>attributeList.size()-1||rankNum+rankOffest<0){
-                throw std::runtime_error(std::format("[StaticActor][setRank]the rankNum={} rankOffest={} and rankMax is {}",rankNum,rankOffest,attributeList.size()));
+                // throw std::runtime_error(std::format("[StaticActor][setRank]the rankNum={} rankOffest={} and rankMax is {}",rankNum,rankOffest,attributeList.size()));
                 return false;
             }
             float costOffest=0.0;
@@ -952,9 +952,6 @@ class StaticActor:public IStaticActor{//用于实现通用方法的模板类
         auto attackNum=this->getValue(AttributeId<SubClass>::attackNum);
         auto attackType=static_cast<AttackType>(this->getValue(AttributeId<SubClass>::attackType));
 
-        applyEffectList=std::list<ISpecialEffect*>{};
-        receiveEffectList=std::list<ISpecialEffect*>{};
-
         auto& eraseMobileActorSet=gamePtr->eraseMobileActorSet;
         auto& eraseStaticActorSet=gamePtr->eraseStaticActorSet;
         std::array<std::priority_queue<std::tuple<float,int>,std::vector<std::tuple<float,int>>,std::greater<std::tuple<float,int>>>,2> goalList;
@@ -1093,7 +1090,7 @@ class MobileActor:public IMobileActor{
         auto& attributeList=Attribute<SubClass>::attributeList;
         if(rankOffest!=0){
             if(rankNum+rankOffest>attributeList.size()-1||rankNum+rankOffest<0){
-                throw std::runtime_error(std::format("[StaticActor][setRank]the rankNum={} rankOffest={} and rankMax is {}",rankNum,rankOffest,attributeList.size()));
+                // throw std::runtime_error(std::format("[StaticActor][setRank]the rankNum={} rankOffest={} and rankMax is {}",rankNum,rankOffest,attributeList.size()));
                 return false;
             }
             float costOffest=0.0;
@@ -1329,8 +1326,10 @@ class MobileActor:public IMobileActor{
 
     virtual void followPath()override{//移动以0.1s为单位
         if(path.size()!=0&&pathIndex<path.size()&&resistState.state==false){//有路&&未走完&&未阻挡
-            float dx=path[pathIndex][0]-this->x;
-            float dy=path[pathIndex][1]-this->y;
+            float pathX=path[pathIndex][0]+0.5;
+            float pathY=path[pathIndex][1]+0.5;
+            float dx=pathX-this->x;
+            float dy=pathY-this->y;
             float d=sqrt(dx*dx+dy*dy);
             float newX=this->x+dx/d*this->getValue(AttributeId<SubClass>::moveSpeed)*gamePtr->timeStep;
             float newY=this->y+dy/d*this->getValue(AttributeId<SubClass>::moveSpeed)*gamePtr->timeStep;
@@ -1735,6 +1734,8 @@ public:
     Texture2D defenseMobileTex;
     Texture2D explosionMobileTex;
 
+    Texture2D white1Tex;//白色1*1纹理,用作素材
+
     
     float cellSize=64.0f;
     float spriteScale=1.0f;
@@ -1788,7 +1789,7 @@ public:
         rangedMobileTex=Texture2D(device,L"assets/Png/RangedMobile.png");
         defenseMobileTex=Texture2D(device,L"assets/Png/DefenseMobile.png");
         explosionMobileTex=Texture2D(device,L"assets/Png/ExplosionMobile.png");
-        
+        white1Tex=Texture2D(device,L"assets/Png/White1x1.png");
         
         createRTV();
         
@@ -1876,16 +1877,23 @@ public:
                 continue;
             }
             auto* tex=getTextureForType(actor->typeId,true);
-            auto texX=actor->x*cellSize+this->globalOffsetX;
-            auto texY=actor->y*cellSize+this->globalOffsetY;
             auto [texW,texH]=getTextureSize(*tex);
+            auto texX=(actor->x*cellSize+this->globalOffsetX)-(texW*spriteScale)/2;
+            auto texY=(actor->y*cellSize+this->globalOffsetY)-(texH*spriteScale)/2;
             if(tex){
-                spriteBatch->Draw(tex->GetSRV(),DirectX::XMFLOAT2(texX,texY),nullptr,DirectX::Colors::White,0.0f,DirectX::XMFLOAT2(0,0),spriteScale,DirectX::SpriteEffects_None, Layer_Actor);
+                spriteBatch->Draw(tex->GetSRV(),DirectX::XMFLOAT2(texX,texY),nullptr,DirectX::Colors::Gray,0.0f,DirectX::XMFLOAT2(0,0),spriteScale,DirectX::SpriteEffects_None, Layer_Actor);
             }
             auto hpMax=actor->getValue(_AttributeId::hp);
             
-            auto drawList=ImGui::GetWindowDrawList();
-            drawList->AddRect(ImVec2(texX,texY),ImVec2((texX+texW)*(actor->hp/hpMax),texY+texH-texH/10),ImColor(0,0.5,0,255));//绘制血量(百分比) 宽度为纹理的1/10
+            // auto drawList=ImGui::GetWindowDrawList();
+            // //左上角坐标，右下角坐标
+            // drawList->AddRectFilled(ImVec2(texX,texY),ImVec2((texX+texW)*(actor->hp/hpMax),texY+texH+texH/10),ImColor(0,0.5,0,255));//绘制血量(百分比) 宽度为纹理的1/10
+
+            DirectX::XMFLOAT2 hpPos(texX,texY+texH*spriteScale);//血量条左上角坐标
+            DirectX::XMFLOAT2 hpScale((texW*spriteScale)*(actor->hp/hpMax),(texH/10)*spriteScale);
+            DirectX::XMFLOAT2 hpOrigin(0.0f, 0.0f);
+            spriteBatch->Draw(white1Tex.GetSRV(), hpPos, nullptr, DirectX::Colors::Green, 
+                0.0f, hpOrigin, hpScale, DirectX::SpriteEffects_None, 0.6f);
 
             ImGui::SetCursorScreenPos(ImVec2(texX,texY));
             auto buttonId="ActorButton##"+std::to_string(reinterpret_cast<uintptr_t>(&actor));
@@ -1923,16 +1931,19 @@ public:
                 continue;
             }
             auto* tex=getTextureForType(actor->typeId,false);
-            auto texX=actor->x*cellSize+this->globalOffsetX;
-            auto texY=actor->y*cellSize+this->globalOffsetY;
             auto [texW,texH]=getTextureSize(*tex);
+            auto texX=(actor->x*cellSize+this->globalOffsetX)-(texW*spriteScale)/2;//纹理所处的左上角
+            auto texY=(actor->y*cellSize+this->globalOffsetY)-(texH*spriteScale)/2;
             if(tex){
-                spriteBatch->Draw(tex->GetSRV(),DirectX::XMFLOAT2(texX,texY),nullptr,DirectX::Colors::White,0.0f,DirectX::XMFLOAT2(0,0),spriteScale,DirectX::SpriteEffects_None, Layer_Actor);
+                spriteBatch->Draw(tex->GetSRV(),DirectX::XMFLOAT2(texX,texY),nullptr,DirectX::Colors::Gray,0.0f,DirectX::XMFLOAT2(0,0),spriteScale,DirectX::SpriteEffects_None, Layer_Actor);
             }
             auto hpMax=actor->getValue(_AttributeId::hp);
             
-            auto drawList=ImGui::GetWindowDrawList();
-            drawList->AddRect(ImVec2(texX,texY),ImVec2((texX+texW)*(actor->hp/hpMax),texY+texH-texH/10),ImColor(0,0.5,0,255));//绘制血量(百分比) 宽度为纹理的1/10
+            DirectX::XMFLOAT2 hpPos(texX,texY+texH*spriteScale);//血量条左上角坐标
+            DirectX::XMFLOAT2 hpScale((texW*spriteScale)*(actor->hp/hpMax),(texH/10)*spriteScale);
+            DirectX::XMFLOAT2 hpOrigin(0.0f, 0.0f);
+            spriteBatch->Draw(white1Tex.GetSRV(), hpPos, nullptr, DirectX::Colors::Green, 
+                0.0f, hpOrigin, hpScale, DirectX::SpriteEffects_None, 0.6f);
 
             ImGui::SetCursorScreenPos(ImVec2(texX,texY));
              auto buttonId="ActorButton##"+std::to_string(reinterpret_cast<uintptr_t>(&actor));
@@ -1982,8 +1993,10 @@ public:
             if(hurtNum==0)continue;
             auto* tex=getTextureForType(actor->typeId,true);
             if(tex){
-                spriteBatch->Draw(tex->GetSRV(),DirectX::XMFLOAT2(actor->x*cellSize+this->globalOffsetX,actor->y*cellSize+this->globalOffsetY),nullptr,DirectX::Colors::Red,0.0f,DirectX::XMFLOAT2(0,0),spriteScale,DirectX::SpriteEffects_None, Layer_Actor);
                 auto [texW,texH]=getTextureSize(*tex);
+                auto texX=(actor->x*cellSize+this->globalOffsetX)-(texW*spriteScale)/2;
+                auto texY=(actor->y*cellSize+this->globalOffsetY)-(texH*spriteScale)/2;
+                spriteBatch->Draw(tex->GetSRV(),DirectX::XMFLOAT2(texX,texY),nullptr,DirectX::Colors::Red,0.0f,DirectX::XMFLOAT2(0,0),spriteScale,DirectX::SpriteEffects_None, Layer_Actor);
                 ImGui::SetCursorScreenPos(ImVec2(actor->x*cellSize+this->globalOffsetX,actor->y*cellSize+this->globalOffsetY+texH));
                 ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5f,0.0f,0.0f,1.0f));
                 ImGui::Text("%d##StaticHurted%d",hurtNum,&actor);
@@ -1997,8 +2010,10 @@ public:
             if(hurtNum==0)continue;
             auto* tex=getTextureForType(actor->typeId,false);
             if(tex){
-                spriteBatch->Draw(tex->GetSRV(),DirectX::XMFLOAT2(actor->x*cellSize+this->globalOffsetX,actor->y*cellSize+this->globalOffsetY),nullptr,DirectX::Colors::Red,0.0f,DirectX::XMFLOAT2(0,0),spriteScale,DirectX::SpriteEffects_None, Layer_Actor);
                 auto [texW,texH]=getTextureSize(*tex);
+                auto texX=(actor->x*cellSize+this->globalOffsetX)-(texW*spriteScale)/2;
+                auto texY=(actor->y*cellSize+this->globalOffsetY)-(texH*spriteScale)/2;
+                spriteBatch->Draw(tex->GetSRV(),DirectX::XMFLOAT2(texX,texY),nullptr,DirectX::Colors::Red,0.0f,DirectX::XMFLOAT2(0,0),spriteScale,DirectX::SpriteEffects_None, Layer_Actor);
                 ImGui::SetCursorScreenPos(ImVec2(actor->x*cellSize+this->globalOffsetX,actor->y*cellSize+this->globalOffsetY+texH));
                 ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5f,0.0f,0.0f,1.0f));
                 ImGui::Text("%d##MobileHurted%d",hurtNum,&actor);
@@ -2076,43 +2091,43 @@ public:
         
     }
 
-    void run(){
-        float nowTime=std::chrono::duration<float>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
-        float deltaTime=nowTime-lastFrameTime;
-        lastFrameTime=nowTime;
-        accumLastFrameTime+=deltaTime;
+    // void run(){
+    //     float nowTime=std::chrono::duration<float>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
+    //     float deltaTime=nowTime-lastFrameTime;
+    //     lastFrameTime=nowTime;
+    //     accumLastFrameTime+=deltaTime;
 
-        ImGui_ImplDX11_NewFrame();
-        ImGui_ImplWin32_NewFrame();
-        ImGui::NewFrame();
+    //     ImGui_ImplDX11_NewFrame();
+    //     ImGui_ImplWin32_NewFrame();
+    //     ImGui::NewFrame();
 
-        // float clearColor[4]={0.15f,0.15f,0.2f,1.0f};
-        float clearColor[4]={255.0f,255.0f,255.0f,1.0f};
-        context->ClearRenderTargetView(rtv.Get(),clearColor);
+    //     // float clearColor[4]={0.15f,0.15f,0.2f,1.0f};
+    //     float clearColor[4]={255.0f,255.0f,255.0f,1.0f};
+    //     context->ClearRenderTargetView(rtv.Get(),clearColor);
 
-        D3D11_VIEWPORT vp={0,0,(float)windowWidth,(float)windowHeight,0,1};
-        context->RSSetViewports(1,&vp);
+    //     D3D11_VIEWPORT vp={0,0,(float)windowWidth,(float)windowHeight,0,1};
+    //     context->RSSetViewports(1,&vp);
 
-        context->OMSetRenderTargets(1,rtv.GetAddressOf(),nullptr);
+    //     context->OMSetRenderTargets(1,rtv.GetAddressOf(),nullptr);
 
-        spriteBatch->Begin(DirectX::SpriteSortMode_Deferred,commonStates->NonPremultiplied());
-        renderMap();
-        renderActors();
+    //     spriteBatch->Begin(DirectX::SpriteSortMode_Deferred,commonStates->NonPremultiplied());
+    //     renderMap();
+    //     renderActors();
 
-        spriteBatch->End();
+    //     spriteBatch->End();
 
-        float logicTimeStep = gamePtr->timeStep;
-        while (accumLastFrameTime >= logicTimeStep) {
-            gamePtr->tick();
-            accumLastFrameTime -= logicTimeStep;
-        }
+    //     float logicTimeStep = gamePtr->timeStep;
+    //     while (accumLastFrameTime >= logicTimeStep) {
+    //         gamePtr->tick();
+    //         accumLastFrameTime -= logicTimeStep;
+    //     }
 
-        RenderBasicVirtualUI();
-        ImGui::Render();
-        ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+    //     RenderBasicVirtualUI();
+    //     ImGui::Render();
+    //     ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
-        swapChain->Present(1,0);
-    }
+    //     swapChain->Present(1,0);
+    // }
 
 void RenderBasicVirtualUI(bool* p_open = nullptr){
     if (!gamePtr)
@@ -2159,7 +2174,7 @@ void RenderBasicVirtualUI(bool* p_open = nullptr){
     ImGui::Text(this->showPlaceAbleMapFlag?"Placeable map is shown":"Placeable map is hidden");
 
     ImGui::InputFloat4("creatStaticActorInput",&creatStaticActorInput[0]);
-    ImGui::Text(gamePtr->basicMap[creatStaticActorInput[1]][creatStaticActorInput[0]]?"empty":"wall");
+    ImGui::Text(creatStaticActorInput[1]<gamePtr->basicMap[creatStaticActorInput[1]].size() && creatStaticActorInput[0]<gamePtr->basicMap[creatStaticActorInput[1]].size() ? (gamePtr->basicMap[creatStaticActorInput[1]][creatStaticActorInput[0]] ? "empty" : "wall") : "invalid");
     bool creatStaticActorFlag=false;
     auto clickFlag=ImGui::Button("Create Static Actor");
     if(clickFlag){
@@ -2169,7 +2184,7 @@ void RenderBasicVirtualUI(bool* p_open = nullptr){
 
     ImGui::Dummy(ImVec2(0,10));
     ImGui::InputFloat4("creatMobileActorInput",&creatMobileActorInput[0]);
-    ImGui::Text(gamePtr->basicMap[creatMobileActorInput[1]][creatMobileActorInput[0]]?"empty":"wall");
+        ImGui::Text(creatMobileActorInput[1]<gamePtr->basicMap[creatMobileActorInput[1]].size() && creatMobileActorInput[0]<gamePtr->basicMap[creatMobileActorInput[1]].size() ? (gamePtr->basicMap[creatMobileActorInput[1]][creatMobileActorInput[0]] ? "empty" : "wall") : "invalid");
     bool creatMobileActorFlag=false;
     if(ImGui::Button("Create Mobile Actor")){
         creatMobileActorFlag=gamePtr->creatMobileActor(creatMobileActorInput[0],creatMobileActorInput[1],creatMobileActorInput[2],creatMobileActorInput[3]);
