@@ -1708,6 +1708,47 @@ private:
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_srv;
 };
 
+
+class BasicGui{
+    public:
+    class Rect{
+        public:
+        ImVec2 p_min;//左上角
+        ImVec2 p_max;//右下角
+        ImU32 color;//颜色
+        float rounding;//圆角半径
+        ImDrawFlags flags;//圆角方向
+        float thickness;//线宽
+        bool filled=true;
+        float layer;
+        Rect(ImVec2 p_min,ImVec2 p_max,ImU32 color,float rounding,ImDrawFlags flags,float thickness,bool filled,float layer):p_min(p_min),p_max(p_max),color(color),rounding(rounding),flags(flags),thickness(thickness),filled(filled),layer(layer){
+        }
+        void Draw(){
+        }
+
+    };
+    class Text{
+        public:
+        ImVec2 pos;
+        ImU32 color;
+        char* text_begin;
+        char* test_end=nullptr;
+        Text(ImVec2 pos,ImU32 color,char* text_begin,char* text_end=nullptr):pos(pos),color(color),text_begin(text_begin),test_end(text_end){
+        }
+
+        void Draw(){
+        }
+    };
+    
+    static std::vector<Rect> rectList;
+    static std::vector<Text> textList;
+
+    static bool Button(){
+        //输入x,y,w,h,以及color和filled设置,绘制出形状后每帧检测鼠标状态,若点击状态且处于矩形范围内,则返回true
+        //基于ImGui::drawList与ImGui::GetMousePos实现
+    };
+};
+
 class Draw{
 public:
     Game* gamePtr;
